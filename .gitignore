@@ -1,0 +1,11 @@
+/vendor
+/node_modules
+.env
+composer.lock
+.DS_Store
+Thumbs.db
+.idea/
+
+# Mac Hidden Files
+.DS_Store
+._.DS_Store
