@@ -26,7 +26,8 @@ class OutfitController extends Controller {
     public function following_outfits(Request $request, User $user) {
         // return outfits from people that user is following
 
-        $following = $user->following()->get();
+        $query = $user->following()->with('outfits.user', 'outfits.pieces');
+        $following = $query->paginate(15);
 
         return response()->json($following)->setCallback($request->input('callback'));
     }

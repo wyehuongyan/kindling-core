@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder {
 
         $this->call('UserTableSeeder');
 		$this->call('OutfitAndPieceTableSeeder');
+        $this->call('FollowTableSeeder');
 	}
 
 }

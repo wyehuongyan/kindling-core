@@ -24,6 +24,7 @@ class CreateOutfitsTable extends Migration {
             $table->bigInteger("user_id")->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
             $table->bigInteger('inspired_by')->unsigned()->nullable();
+            $table->foreign('inspired_by')->references('id')->on('users');
 			$table->timestamps();
             $table->softDeletes();
 		});

@@ -4,6 +4,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Outfit extends Model {
     protected $table = "outfits";
+    protected $appends = array('created_at_custom_format');
 
     public function user() {
         return $this->belongsTo('App\Models\User');
@@ -11,6 +12,27 @@ class Outfit extends Model {
 
     public function pieces() {
         return $this->belongsToMany('App\Models\Piece', 'pieces_outfits')->orderBy('position', 'asc');
+    }
+
+    public function getCreatedAtCustomFormatAttribute()
+    {
+        if($this->created_at->isToday())
+        {
+            $created_at_date = 'Today';
+        }
+        else if($this->created_at->isYesterday())
+        {
+            $created_at_date = 'Yesterday';
+        } else {
+            $created_at_date = $this->created_at->format('F jS');
+        }
+        $created_at_time = $this->created_at->format('h:i A');
+        $created_at_human = $this->created_at->diffForHumans(null, true);
+        $created_at_custom = array();
+        $created_at_custom['created_at_date'] = $created_at_date;
+        $created_at_custom['created_at_time'] = $created_at_time;
+        $created_at_custom['created_at_human'] = $created_at_human;
+        return $created_at_custom;
     }
 
     public function scopeSearch($query, $search_fields)

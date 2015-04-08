@@ -29,7 +29,8 @@ Route::controller('password', 'Auth\PasswordController');
 /////////////////////////////
 /* User Pieces and Outfits */
 /////////////////////////////
-Route::post('user', 'UserController@user');
+Route::post('users', 'UserController@users');
+Route::get('user', 'UserController@user');
 
 /////////////////////////////
 /* User Pieces and Outfits */
