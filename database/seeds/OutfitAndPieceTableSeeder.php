@@ -707,6 +707,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1->images = "https://sprubixtest.s3.amazonaws.com/outfits/2/user2_outfit1.jpg";
         $outfit_1->height = "940";
         $outfit_1->width = "750";
+        //$outfit_1->inspiredBy()->associate($user); // testing inspired_by
         $outfit_1->save();
         $outfit_1->user()->associate($user);
         $outfit_1->save();

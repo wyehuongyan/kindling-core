@@ -10,6 +10,10 @@ class Outfit extends Model {
         return $this->belongsTo('App\Models\User');
     }
 
+    public function inspiredBy() {
+        return $this->belongsTo('App\Models\User', 'inspired_by');
+    }
+
     public function pieces() {
         return $this->belongsToMany('App\Models\Piece', 'pieces_outfits')->orderBy('position', 'asc');
     }
