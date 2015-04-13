@@ -41,5 +41,6 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('outfits', 'OutfitController@outfits');
     Route::get('user/{user}/outfits', 'OutfitController@user_outfits');
     Route::get('user/{user}/outfits/following', 'OutfitController@following_outfits');
+    Route::get('user/{user}/outfits/community', 'OutfitController@community_outfits');
 });
 

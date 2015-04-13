@@ -1064,5 +1064,27 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_3->pieces()->save($piece_7);
         $outfit_3->pieces()->save($piece_8);
         $outfit_3->pieces()->save($piece_9);
+
+        // create 1 spruced outfit
+        $piece_1 = Piece::find(9);  // jasmine's outfit 3 hat
+        $piece_2 = Piece::find(10); // jasmine's outfit 3 top
+        $piece_3 = Piece::find(14); // tingzhi's outfit 1 bottom
+        $piece_4 = Piece::find(12); // jasmine's outfit 3 shoes
+
+        $outfit_1 = new Outfit();
+        $outfit_1->name = "Spruced Outfit 1";
+        $outfit_1->description = "Spruced Outfit Description 1";
+        $outfit_1->images = "https://sprubixtest.s3.amazonaws.com/outfits/3/user3_outfit4.jpg";
+        $outfit_1->height = "1008";
+        $outfit_1->width = "750";
+        $outfit_1->inspiredBy()->associate(User::find(1)); // inspired by jasmine, cecilia was browsing jasmine's outfits
+        $outfit_1->save();
+        $outfit_1->user()->associate($user); // posted by cecilia
+        $outfit_1->save();
+
+        $outfit_1->pieces()->save($piece_1);
+        $outfit_1->pieces()->save($piece_2);
+        $outfit_1->pieces()->save($piece_3);
+        $outfit_1->pieces()->save($piece_4);
     }
 }

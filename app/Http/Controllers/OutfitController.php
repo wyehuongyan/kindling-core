@@ -31,4 +31,22 @@ class OutfitController extends Controller {
 
         return response()->json($following)->setCallback($request->input('callback'));
     }
+
+    public function community_outfits(Request $request, User $user) {
+        // $user refers to logged in user
+        // outfits where pieces == user.id && outfit user_id != user.id && unique
+        /*$query = $user->pieces()->whereHas('outfits', function ($query) use ($user) { // all outfits made up of pieces that user own, outfits may or may not belong to user
+            $query->whereNotIn('user_id', [$user->id]);
+        });
+        $pieces = $query->paginate(15);
+        */
+
+        $query = Outfit::whereNotIn('user_id', [$user->id])->whereHas('pieces', function($query) use ($user) {
+            $query->where('user_id', [$user->id]);
+        })->with('inspiredBy', 'user', 'pieces');
+
+        $outfits = $query->paginate(15);
+
+        return response()->json($outfits)->setCallback($request->input('callback'));
+    }
 }
