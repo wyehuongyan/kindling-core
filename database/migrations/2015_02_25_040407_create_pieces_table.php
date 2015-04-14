@@ -20,6 +20,9 @@ class CreatePiecesTable extends Migration {
             $table->bigInteger('position');
             $table->string('name');
             $table->text('description');
+            $table->string('category');
+            $table->string('brand');
+            $table->string('size');
             $table->text('images');
             $table->bigInteger("user_id")->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
