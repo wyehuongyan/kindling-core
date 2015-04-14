@@ -38,6 +38,8 @@ Route::get('user', 'UserController@user');
 Route::group(['middleware' => 'auth'], function() {
     Route::post('pieces', 'PieceController@pieces');
     Route::get('user/{user}/pieces', 'PieceController@user_pieces');
+    Route::get('piece/{piece}/outfits', 'PieceController@piece_outfits');
+
     Route::get('outfits', 'OutfitController@outfits');
     Route::get('user/{user}/outfits', 'OutfitController@user_outfits');
     Route::get('user/{user}/outfits/following', 'OutfitController@following_outfits');

@@ -17,7 +17,7 @@ class OutfitController extends Controller {
     public function user_outfits(Request $request, User $user) {
         // return outfits belonging to user
 
-        $query = $user->outfits()->with('inspiredBy', 'user', 'pieces');
+        $query = $user->outfits()->with('inspiredBy', 'user', 'pieces.user');
         $outfits = $query->paginate(15);
 
         return response()->json($outfits)->setCallback($request->input('callback'));
@@ -26,7 +26,7 @@ class OutfitController extends Controller {
     public function following_outfits(Request $request, User $user) {
         // return outfits from people that user is following
 
-        $query = $user->following()->with('outfits.user', 'outfits.pieces', 'outfits.inspiredBy');
+        $query = $user->following()->with('outfits.user', 'outfits.pieces.user', 'outfits.inspiredBy');
         $following = $query->paginate(15);
 
         return response()->json($following)->setCallback($request->input('callback'));
@@ -43,7 +43,7 @@ class OutfitController extends Controller {
 
         $query = Outfit::whereNotIn('user_id', [$user->id])->whereHas('pieces', function($query) use ($user) {
             $query->where('user_id', [$user->id]);
-        })->with('inspiredBy', 'user', 'pieces');
+        })->with('inspiredBy', 'user', 'pieces.user');
 
         $outfits = $query->paginate(15);
 

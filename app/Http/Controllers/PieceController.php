@@ -22,4 +22,13 @@ class PieceController extends Controller {
 
         return response()->json($pieces)->setCallback($request->input('callback'));
     }
+
+    public function piece_outfits(Request $request, Piece $piece) {
+        // return outfits that this piece belongs to
+
+        $query = $piece->outfits();
+        $outfits = $query->paginate(15);
+
+        return response()->json($outfits)->setCallback($request->input('callback'));
+    }
 }
