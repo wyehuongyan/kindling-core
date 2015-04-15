@@ -26,7 +26,7 @@ class PieceController extends Controller {
     public function piece_outfits(Request $request, Piece $piece) {
         // return outfits that this piece belongs to
 
-        $query = $piece->outfits();
+        $query = $piece->outfits()->with('inspiredBy', 'user', 'pieces.user');
         $outfits = $query->paginate(15);
 
         return response()->json($outfits)->setCallback($request->input('callback'));
