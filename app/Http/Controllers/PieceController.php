@@ -9,7 +9,7 @@ class PieceController extends Controller {
         $input = $request->all();
 
         $query = Piece::search($input);
-        $pieces = $query->paginate(15);
+        $pieces = $query->paginate(15)->shuffle();
 
         return response()->json($pieces)->setCallback($request->input('callback'));
     }
