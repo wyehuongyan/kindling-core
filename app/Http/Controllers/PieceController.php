@@ -10,6 +10,8 @@ class PieceController extends Controller {
 
         $query = Piece::search($input);
         $pieces = $query->paginate(15);
+        $pieces->setPath($request->url());
+        $pieces->getCollection()->shuffle();
 
         return response()->json($pieces)->setCallback($request->input('callback'));
     }
