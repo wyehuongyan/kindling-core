@@ -418,7 +418,16 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1 = new Outfit();
         $outfit_1->name = "Example Outfit 1";
         $outfit_1->description = "Great outfit for a sunny day.";
-        $outfit_1->images = "https://d33m37h1i2d8gt.cloudfront.net/outfits/1/user1_outfit1.jpg";
+
+        $media = new stdClass();
+        $image = new stdClass();
+        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/outfits/1/user1_outfit1.jpg";
+        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/outfits/1/user1_outfit1.jpg";
+        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/outfits/1/user1_outfit1.jpg";
+        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/outfits/1/user1_outfit1.jpg";
+        $media->images = $image;
+
+        $outfit_1->images = json_encode($media);
         $outfit_1->height = "970";
         $outfit_1->width = "750";
         $outfit_1->save();
@@ -434,7 +443,16 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_2 = new Outfit();
         $outfit_2->name = "Example Outfit 2";
         $outfit_2->description = "Wearing this for a BBQ party by the beach.";
-        $outfit_2->images = "https://d33m37h1i2d8gt.cloudfront.net/outfits/1/user1_outfit2.jpg";
+
+        $media = new stdClass();
+        $image = new stdClass();
+        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/outfits/1/user1_outfit2.jpg";
+        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/outfits/1/user1_outfit2.jpg";
+        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/outfits/1/user1_outfit2.jpg";
+        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/outfits/1/user1_outfit2.jpg";
+        $media->images = $image;
+
+        $outfit_2->images = json_encode($media);
         $outfit_2->height = "1035";
         $outfit_2->width = "750";
         $outfit_2->save();
@@ -450,7 +468,16 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_3 = new Outfit();
         $outfit_3->name = "Example Outfit 3";
         $outfit_3->description = "Going to the Gardens by the Bay.";
-        $outfit_3->images = "https://d33m37h1i2d8gt.cloudfront.net/outfits/1/user1_outfit3.jpg";
+
+        $media = new stdClass();
+        $image = new stdClass();
+        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/outfits/1/user1_outfit3.jpg";
+        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/outfits/1/user1_outfit3.jpg";
+        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/outfits/1/user1_outfit3.jpg";
+        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/outfits/1/user1_outfit3.jpg";
+        $media->images = $image;
+
+        $outfit_3->images = json_encode($media);
         $outfit_3->height = "1008";
         $outfit_3->width = "750";
         $outfit_3->save();
@@ -767,7 +794,16 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1 = new Outfit();
         $outfit_1->name = "Example Outfit 1";
         $outfit_1->description = "Love this top so much. I belong to the wild!!!";
-        $outfit_1->images = "https://d33m37h1i2d8gt.cloudfront.net/outfits/2/user2_outfit1.jpg";
+
+        $media = new stdClass();
+        $image = new stdClass();
+        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/outfits/2/user2_outfit1.jpg";
+        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/outfits/2/user2_outfit1.jpg";
+        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/outfits/2/user2_outfit1.jpg";
+        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/outfits/2/user2_outfit1.jpg";
+        $media->images = $image;
+
+        $outfit_1->images = json_encode($media);
         $outfit_1->height = "940";
         $outfit_1->width = "750";
         //$outfit_1->inspiredBy()->associate($user); // testing inspired_by
@@ -783,7 +819,16 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_2 = new Outfit();
         $outfit_2->name = "Example Outfit 2";
         $outfit_2->description = "Outfit of the day, with my self-made golden shoes.";
-        $outfit_2->images = "https://d33m37h1i2d8gt.cloudfront.net/outfits/2/user2_outfit2.jpg";
+
+        $media = new stdClass();
+        $image = new stdClass();
+        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/outfits/2/user2_outfit2.jpg";
+        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/outfits/2/user2_outfit2.jpg";
+        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/outfits/2/user2_outfit2.jpg";
+        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/outfits/2/user2_outfit2.jpg";
+        $media->images = $image;
+
+        $outfit_2->images = json_encode($media);
         $outfit_2->height = "859";
         $outfit_2->width = "750";
         $outfit_2->save();
@@ -798,7 +843,16 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_3 = new Outfit();
         $outfit_3->name = "Example Outfit 3";
         $outfit_3->description = "Here's how I combat the cold labs in the school.";
-        $outfit_3->images = "https://d33m37h1i2d8gt.cloudfront.net/outfits/2/user2_outfit3.jpg";
+
+        $media = new stdClass();
+        $image = new stdClass();
+        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/outfits/2/user2_outfit3.jpg";
+        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/outfits/2/user2_outfit3.jpg";
+        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/outfits/2/user2_outfit3.jpg";
+        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/outfits/2/user2_outfit3.jpg";
+        $media->images = $image;
+
+        $outfit_3->images = json_encode($media);
         $outfit_3->height = "854";
         $outfit_3->width = "750";
         $outfit_3->save();
@@ -1114,7 +1168,16 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1 = new Outfit();
         $outfit_1->name = "Example Outfit 1";
         $outfit_1->description = "Everything looks good with my limited edition floral print Nike shoes.";
-        $outfit_1->images = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit1.jpg";
+
+        $media = new stdClass();
+        $image = new stdClass();
+        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit1.jpg";
+        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit1.jpg";
+        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit1.jpg";
+        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit1.jpg";
+        $media->images = $image;
+
+        $outfit_1->images = json_encode($media);
         $outfit_1->height = "955";
         $outfit_1->width = "750";
         $outfit_1->save();
@@ -1129,7 +1192,16 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_2 = new Outfit();
         $outfit_2->name = "Example Outfit 2";
         $outfit_2->description = "Off for a picnic :)";
-        $outfit_2->images = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit2.jpg";
+
+        $media = new stdClass();
+        $image = new stdClass();
+        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit2.jpg";
+        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit2.jpg";
+        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit2.jpg";
+        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit2.jpg";
+        $media->images = $image;
+
+        $outfit_2->images = json_encode($media);
         $outfit_2->height = "1066";
         $outfit_2->width = "750";
         $outfit_2->save();
@@ -1144,7 +1216,16 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_3 = new Outfit();
         $outfit_3->name = "Example Outfit 3";
         $outfit_3->description = "Love my outfit of the day";
-        $outfit_3->images = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit3.jpg";
+
+        $media = new stdClass();
+        $image = new stdClass();
+        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit3.jpg";
+        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit3.jpg";
+        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit3.jpg";
+        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit3.jpg";
+        $media->images = $image;
+
+        $outfit_3->images = json_encode($media);
         $outfit_3->height = "970";
         $outfit_3->width = "750";
         $outfit_3->save();
@@ -1164,7 +1245,16 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1 = new Outfit();
         $outfit_1->name = "Spruced Outfit 1";
         $outfit_1->description = "Looking good with red shorts.";
-        $outfit_1->images = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit4.jpg";
+
+        $media = new stdClass();
+        $image = new stdClass();
+        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit4.jpg";
+        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit4.jpg";
+        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit4.jpg";
+        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit4.jpg";
+        $media->images = $image;
+
+        $outfit_1->images = json_encode($media);
         $outfit_1->height = "1008";
         $outfit_1->width = "750";
         $outfit_1->inspiredBy()->associate(User::find(1)); // inspired by jasmine, cecilia was browsing jasmine's outfits

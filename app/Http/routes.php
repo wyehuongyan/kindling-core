@@ -44,5 +44,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('user/{user}/outfits', 'OutfitController@user_outfits');
     Route::get('user/{user}/outfits/following', 'OutfitController@following_outfits');
     Route::get('user/{user}/outfits/community', 'OutfitController@community_outfits');
+
+    Route::post('upload', 'MediaController@upload_outfit');
 });
 
