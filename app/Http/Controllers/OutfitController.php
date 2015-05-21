@@ -14,7 +14,7 @@ class OutfitController extends Controller {
         return response()->json($outfits)->setCallback($request->input('callback'));
     }
 
-    public function user_outfits(Request $request, User $user) {
+    public function userOutfits(Request $request, User $user) {
         // return outfits belonging to user
 
         $query = $user->outfits()->with('inspiredBy', 'user', 'pieces.user');
@@ -23,16 +23,26 @@ class OutfitController extends Controller {
         return response()->json($outfits)->setCallback($request->input('callback'));
     }
 
-    public function following_outfits(Request $request, User $user) {
+    public function followingOutfits(Request $request, User $user) {
         // return outfits from people that user is following
 
-        $query = $user->following()->with('outfits.user', 'outfits.pieces.user', 'outfits.inspiredBy');
+        //$query = $user->following()->with('outfits.user', 'outfits.pieces.user', 'outfits.inspiredBy');
+        //$following = $query->paginate(15);
+
+        $users = $user->following()->get();
+        $userIds = array();
+
+        foreach($users as $user) {
+            $userIds[] = $user->id;
+        }
+
+        $query = Outfit::whereIn('user_id', $userIds)->with('user', 'pieces.user', 'inspiredBy')->orderBy('created_at', 'desc');
         $following = $query->paginate(15);
 
         return response()->json($following)->setCallback($request->input('callback'));
     }
 
-    public function community_outfits(Request $request, User $user) {
+    public function communityOutfits(Request $request, User $user) {
         // $user refers to logged in user
         // outfits where pieces == user.id && outfit user_id != user.id && unique
         /*$query = $user->pieces()->whereHas('outfits', function ($query) use ($user) { // all outfits made up of pieces that user own, outfits may or may not belong to user

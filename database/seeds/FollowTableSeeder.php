@@ -15,6 +15,11 @@ class FollowTableSeeder extends Seeder {
         $user_2 = User::find(2);
         $user_3 = User::find(3);
 
+        // by default, users follow themselves so mainfeed shows their own postings
+        $user_1->following()->save($user_1);
+        $user_2->following()->save($user_2);
+        $user_3->following()->save($user_3);
+
         // user 1 follows user 2 and user 3
         $user_1->following()->save($user_2);
         $user_1->following()->save($user_3);

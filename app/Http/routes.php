@@ -37,14 +37,14 @@ Route::get('user', 'UserController@user');
 /////////////////////////////
 Route::group(['middleware' => 'auth'], function() {
     Route::post('pieces', 'PieceController@pieces');
-    Route::get('user/{user}/pieces', 'PieceController@user_pieces');
-    Route::get('piece/{piece}/outfits', 'PieceController@piece_outfits');
+    Route::get('user/{user}/pieces', 'PieceController@userPieces');
+    Route::get('piece/{piece}/outfits', 'PieceController@pieceOutfits');
 
     Route::get('outfits', 'OutfitController@outfits');
-    Route::get('user/{user}/outfits', 'OutfitController@user_outfits');
-    Route::get('user/{user}/outfits/following', 'OutfitController@following_outfits');
-    Route::get('user/{user}/outfits/community', 'OutfitController@community_outfits');
+    Route::get('user/{user}/outfits', 'OutfitController@userOutfits');
+    Route::get('user/{user}/outfits/following', 'OutfitController@followingOutfits');
+    Route::get('user/{user}/outfits/community', 'OutfitController@communityOutfits');
 
-    Route::post('upload', 'MediaController@upload_outfit');
+    Route::post('upload', 'MediaController@uploadOutfit');
 });
 
