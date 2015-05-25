@@ -11,6 +11,7 @@ class AuthController extends Controller {
 
     public function authenticate(Request $request) {
         $loginAttr = "";
+        $remember = true;
 
         if($request->has('email')) {
             $loginAttr = "email";
@@ -18,7 +19,7 @@ class AuthController extends Controller {
             $loginAttr = "username";
         }
 
-        if (Auth::attempt($request->only($loginAttr, 'password')))
+        if (Auth::attempt($request->only($loginAttr, 'password'), $remember))
         {
             // success, login
             $user = User::search(array($loginAttr => $request->input($loginAttr)))->first();

@@ -11,24 +11,23 @@ use \stdClass;
 use Imagick;
 
 class MediaController extends Controller {
+    // init S3
+    var $bucket = "sprubixtest";
+    var $sizes = array(
+        "original" => "750",
+        "medium" => "375",
+        "small" => "192",
+        "thumbnail" => "96"
+    );
+
     public function uploadOutfit(Request $request) {
         try {
-            if($request->hasFile("outfit")) {
+            if ($request->hasFile("outfit")) {
                 // init S3
-                $bucket = "sprubixtest";
-
                 $client = S3Client::factory(array(
                     'profile' => 'sprubix_s3',
                     'region' => 'ap-southeast-1'
                 ));
-
-                // size array
-                $sizes = array(
-                    "original" => "750",
-                    "medium" => "375",
-                    "small" => "192",
-                    "thumbnail" => "96"
-                );
 
                 // retrieve user
                 $user = User::find($request->get("user_id"));
@@ -37,7 +36,7 @@ class MediaController extends Controller {
                 //////////////// Outfit //////////////////
                 //////////////////////////////////////////
 
-                $bucket_path = $bucket . "/outfits/" . $user->id;
+                $bucket_path = $this->bucket . "/outfits/" . $user->id;
 
                 $media = new stdClass();
                 $outfit_image = new stdClass();
@@ -48,16 +47,15 @@ class MediaController extends Controller {
                 $new_outfit->height = $request->get("height");
                 $new_outfit->width = $request->get("width");
 
-                foreach ($sizes as $size_key => $size_value) {
+                foreach ($this->sizes as $size_key => $size_value) {
                     $file_name_size_time = $user->id . "_outfit_" . $size_key . "_" . time() . ".jpg";
                     $file_path = storage_path() . "/uploads/" . $file_name_size_time;
 
                     $image = new Imagick();
                     $image->readImage($request->file("outfit"));
 
-                    if($size_key != "original") { // only resize the non-originals
-                        $image = $this->resizeImage($size_value, $image);
-                    }
+                    // even original has to be resized due to 6 plus uploading images > 750px width
+                    $image = $this->resizeImage($size_value, $image);
 
                     $image->writeImage($file_path); // write to file for s3 upload later
 
@@ -68,7 +66,7 @@ class MediaController extends Controller {
                         'ACL'        => 'public-read'
                     ));
 
-                    $outfit_image->$size_key = "https://d33m37h1i2d8gt.cloudfront.net/outfits/" . $user->id . "/" . $file_name_size_time;
+                    $outfit_image->$size_key = cdn("/outfits/" . $user->id . "/" . $file_name_size_time);
 
                     unlink($file_path);
                 }
@@ -85,10 +83,10 @@ class MediaController extends Controller {
 
                 // retrieve pieces info
                 $pieces_data = $request->get("pieces");
-                $bucket_path = $bucket . "/pieces/" . $user->id;
+                $bucket_path = $this->bucket . "/pieces/" . $user->id;
 
                 // create individual pieces
-                foreach($pieces_data as $piece_key => $piece_data){
+                foreach ($pieces_data as $piece_key => $piece_data) {
                     $new_piece = new Piece();
 
                     $new_piece->name = $piece_data["name"];
@@ -107,12 +105,12 @@ class MediaController extends Controller {
                     $media = new stdClass();
                     $piece_images = array();
 
-                    for($i = 0; $i < $num_images; $i++) {
+                    for ($i = 0; $i < $num_images; $i++) {
                         // images of the piece including cover
                         // 4 different sizes: original (w: 750px), medium (w: 375px), small (w: 192px), thumbnail (w: 96)
                         $piece_image = new stdClass();
 
-                        foreach ($sizes as $size_key => $size_value) {
+                        foreach ($this->sizes as $size_key => $size_value) {
                             $file_name = "piece_" . $piece_key . "_" . $i;
                             $file_name_size_time = $user->id . "_piece_" . $piece_key . "_" . $i . "_" . $size_key . "_" . time() . ".jpg";
                             $file_path = storage_path() . "/uploads/" . $file_name_size_time;
@@ -126,10 +124,9 @@ class MediaController extends Controller {
                             $image = new Imagick();
                             $image->readImage($request->file($file_name));
 
-                            if($size_key != "original") { // only resize the non-originals
-                                // step 1
-                                $image = $this->resizeImage($size_value, $image);
-                            }
+                            // step 1
+                            // even original has to be resized due to 6 plus uploading images > 750px width
+                            $image = $this->resizeImage($size_value, $image);
 
                             $image->writeImage($file_path); // write to file for s3 upload later
 
@@ -142,12 +139,12 @@ class MediaController extends Controller {
                             ));
 
                             // step 3
-                            $piece_image->$size_key = "https://d33m37h1i2d8gt.cloudfront.net/pieces/" . $user->id . "/" . $file_name_size_time;
+                            $piece_image->$size_key = cdn("/pieces/" . $user->id . "/" . $file_name_size_time);
 
                             // only the first image is the cover
                             if($i == 0 && $size_key == "original") {
                                 // only $size_key original has the best quality
-                                $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/" . $user->id . "/" . $file_name_size_time;
+                                $media->cover = cdn("/pieces/" . $user->id . "/" . $file_name_size_time);
                             }
 
                             unlink($file_path);
@@ -166,6 +163,91 @@ class MediaController extends Controller {
                 }
 
                 return response()->json($new_outfit)->setCallback($request->input('callback'));
+            } else {
+                throw new Exception("No files were uploaded");
+            }
+        } catch (Exception $e) {
+            Log::Error("Exception caught: \n" . $e->getMessage());
+
+            return response()->json($e)->setCallback($request->input('callback'));
+        }
+    }
+
+    public function uploadSprucedOutfit(Request $request) {
+        try {
+            if ($request->hasFile("outfit")) {
+                // init S3
+                $client = S3Client::factory(array(
+                    'profile' => 'sprubix_s3',
+                    'region' => 'ap-southeast-1'
+                ));
+
+                // retrieve posting user
+                $postedByUser = User::find($request->get("created_by"));
+
+                // retrieve credited from user
+                $fromUser = User::find($request->get("from"));
+
+                //////////////////////////////////////////
+                //////////////// Outfit //////////////////
+                //////////////////////////////////////////
+
+                $bucket_path = $this->bucket . "/outfits/" . $postedByUser->id;
+
+                $media = new stdClass();
+                $outfit_image = new stdClass();
+
+                // create new outfit
+                $new_outfit = new Outfit();
+                $new_outfit->description = $request->get("description");
+                $new_outfit->height = $request->get("height");
+                $new_outfit->width = $request->get("width");
+                $new_outfit->inspiredBy()->associate($fromUser); // inspired by fromUser
+
+                foreach ($this->sizes as $size_key => $size_value) {
+                    $file_name_size_time = $postedByUser->id . "_outfit_" . $size_key . "_" . time() . ".jpg";
+                    $file_path = storage_path() . "/uploads/" . $file_name_size_time;
+
+                    $image = new Imagick();
+                    $image->readImage($request->file("outfit"));
+
+                    if($size_key != "original") { // only resize the non-originals
+                        $image = $this->resizeImage($size_value, $image);
+                    }
+
+                    $image->writeImage($file_path); // write to file for s3 upload later
+
+                    $result = $client->putObject(array(
+                        'Bucket'     => $bucket_path,
+                        'Key'        => $file_name_size_time,
+                        'SourceFile' => $file_path,
+                        'ACL'        => 'public-read'
+                    ));
+
+                    $outfit_image->$size_key = cdn("/outfits/" . $postedByUser->id . "/" . $file_name_size_time);
+
+                    unlink($file_path);
+                }
+
+                $media->images = $outfit_image;
+                $new_outfit->images = json_encode($media);
+                $new_outfit->save();
+                $new_outfit->user()->associate($postedByUser);
+                $new_outfit->save();
+
+                //////////////////////////////////////////
+                //////////////// Pieces //////////////////
+                //////////////////////////////////////////
+
+                // retrieve pieces info
+                $pieces_data = $request->get("pieces");
+                $pieces = Piece::whereIn('id', $pieces_data)->get();
+
+                foreach ($pieces as $piece) {
+                    // many to many assignment
+                    $new_outfit->pieces()->save($piece);
+                }
+
             } else {
                 throw new Exception("No files were uploaded");
             }

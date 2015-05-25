@@ -40,13 +40,13 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_1->aspectRatio = 750.0 / 470.0;
 
         $media = new stdClass();
-        $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit1_head.jpg";
+        $media->cover = cdn("/pieces/1/user1_outfit1_head.jpg");
 
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit1_head.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit1_head.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit1_head.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit1_head.jpg";
+        $image->thumbnail = cdn("/pieces/1/user1_outfit1_head.jpg");
+        $image->small = cdn("/pieces/1/user1_outfit1_head.jpg");
+        $image->medium = cdn("/pieces/1/user1_outfit1_head.jpg");
+        $image->original = cdn("/pieces/1/user1_outfit1_head.jpg");
 
         $media->images = array($image);
 
@@ -71,13 +71,13 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_2->aspectRatio = 750.0 / 572.0;
 
         $media = new stdClass();
-        $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit1_top.jpg";
+        $media->cover = cdn("/pieces/1/user1_outfit1_top.jpg");
 
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit1_top.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit1_top.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit1_top.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit1_top.jpg";
+        $image->thumbnail = cdn("/pieces/1/user1_outfit1_top.jpg");
+        $image->small = cdn("/pieces/1/user1_outfit1_top.jpg");
+        $image->medium = cdn("/pieces/1/user1_outfit1_top.jpg");
+        $image->original = cdn("/pieces/1/user1_outfit1_top.jpg");
 
         $media->images = array($image);
 
@@ -102,13 +102,13 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_3->aspectRatio = 750.0 / 524.0;
 
         $media = new stdClass();
-        $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit1_bot.jpg";
+        $media->cover = cdn("/pieces/1/user1_outfit1_bot.jpg");
 
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit1_bot.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit1_bot.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit1_bot.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit1_bot.jpg";
+        $image->thumbnail = cdn("/pieces/1/user1_outfit1_bot.jpg");
+        $image->small = cdn("/pieces/1/user1_outfit1_bot.jpg");
+        $image->medium = cdn("/pieces/1/user1_outfit1_bot.jpg");
+        $image->original = cdn("/pieces/1/user1_outfit1_bot.jpg");
 
         $media->images = array($image);
 
@@ -133,13 +133,13 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_4->aspectRatio = 750.0 / 380.0;
 
         $media = new stdClass();
-        $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit1_shoes.jpg";
+        $media->cover = cdn("/pieces/1/user1_outfit1_shoes.jpg");
 
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit1_shoes.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit1_shoes.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit1_shoes.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit1_shoes.jpg";
+        $image->thumbnail = cdn("/pieces/1/user1_outfit1_shoes.jpg");
+        $image->small = cdn("/pieces/1/user1_outfit1_shoes.jpg");
+        $image->medium = cdn("/pieces/1/user1_outfit1_shoes.jpg");
+        $image->original = cdn("/pieces/1/user1_outfit1_shoes.jpg");
 
         $media->images = array($image);
 
@@ -164,13 +164,13 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_5->aspectRatio = 750.0 / 456.0;
 
         $media = new stdClass();
-        $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit2_head.jpg";
+        $media->cover = cdn("/pieces/1/user1_outfit2_head.jpg");
 
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit2_head.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit2_head.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit2_head.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit2_head.jpg";
+        $image->thumbnail = cdn("/pieces/1/user1_outfit2_head.jpg");
+        $image->small = cdn("/pieces/1/user1_outfit2_head.jpg");
+        $image->medium = cdn("/pieces/1/user1_outfit2_head.jpg");
+        $image->original = cdn("/pieces/1/user1_outfit2_head.jpg");
 
         $media->images = array($image);
 
@@ -195,13 +195,13 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_6->aspectRatio = 750.0 / 586.0;
 
         $media = new stdClass();
-        $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit2_top.jpg";
+        $media->cover = cdn("/pieces/1/user1_outfit2_top.jpg");
 
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit2_top.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit2_top.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit2_top.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit2_top.jpg";
+        $image->thumbnail = cdn("/pieces/1/user1_outfit2_top.jpg");
+        $image->small = cdn("/pieces/1/user1_outfit2_top.jpg");
+        $image->medium = cdn("/pieces/1/user1_outfit2_top.jpg");
+        $image->original = cdn("/pieces/1/user1_outfit2_top.jpg");
 
         $media->images = array($image);
 
@@ -226,13 +226,13 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_7->aspectRatio = 750.0 / 578.0;
 
         $media = new stdClass();
-        $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit2_bot.jpg";
+        $media->cover = cdn("/pieces/1/user1_outfit2_bot.jpg");
 
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit2_bot.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit2_bot.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit2_bot.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit2_bot.jpg";
+        $image->thumbnail = cdn("/pieces/1/user1_outfit2_bot.jpg");
+        $image->small = cdn("/pieces/1/user1_outfit2_bot.jpg");
+        $image->medium = cdn("/pieces/1/user1_outfit2_bot.jpg");
+        $image->original = cdn("/pieces/1/user1_outfit2_bot.jpg");
 
         $media->images = array($image);
 
@@ -257,13 +257,13 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_8->aspectRatio = 750.0 / 458.0;
 
         $media = new stdClass();
-        $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit2_shoes.jpg";
+        $media->cover = cdn("/pieces/1/user1_outfit2_shoes.jpg");
 
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit2_shoes.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit2_shoes.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit2_shoes.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit2_shoes.jpg";
+        $image->thumbnail = cdn("/pieces/1/user1_outfit2_shoes.jpg");
+        $image->small = cdn("/pieces/1/user1_outfit2_shoes.jpg");
+        $image->medium = cdn("/pieces/1/user1_outfit2_shoes.jpg");
+        $image->original = cdn("/pieces/1/user1_outfit2_shoes.jpg");
 
         $media->images = array($image);
 
@@ -288,13 +288,13 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_9->aspectRatio = 750.0 / 432.0;
 
         $media = new stdClass();
-        $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit3_head.jpg";
+        $media->cover = cdn("/pieces/1/user1_outfit3_head.jpg");
 
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit3_head.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit3_head.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit3_head.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit3_head.jpg";
+        $image->thumbnail = cdn("/pieces/1/user1_outfit3_head.jpg");
+        $image->small = cdn("/pieces/1/user1_outfit3_head.jpg");
+        $image->medium = cdn("/pieces/1/user1_outfit3_head.jpg");
+        $image->original = cdn("/pieces/1/user1_outfit3_head.jpg");
 
         $media->images = array($image);
 
@@ -319,13 +319,13 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_10->aspectRatio = 750.0 / 652.0;
 
         $media = new stdClass();
-        $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit3_top.jpg";
+        $media->cover = cdn("/pieces/1/user1_outfit3_top.jpg");
 
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit3_top.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit3_top.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit3_top.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit3_top.jpg";
+        $image->thumbnail = cdn("/pieces/1/user1_outfit3_top.jpg");
+        $image->small = cdn("/pieces/1/user1_outfit3_top.jpg");
+        $image->medium = cdn("/pieces/1/user1_outfit3_top.jpg");
+        $image->original = cdn("/pieces/1/user1_outfit3_top.jpg");
 
         $media->images = array($image);
 
@@ -350,13 +350,13 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_11->aspectRatio = 750.0 / 550.0;
 
         $media = new stdClass();
-        $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit3_bot.jpg";
+        $media->cover = cdn("/pieces/1/user1_outfit3_bot.jpg");
 
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit3_bot.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit3_bot.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit3_bot.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit3_bot.jpg";
+        $image->thumbnail = cdn("/pieces/1/user1_outfit3_bot.jpg");
+        $image->small = cdn("/pieces/1/user1_outfit3_bot.jpg");
+        $image->medium = cdn("/pieces/1/user1_outfit3_bot.jpg");
+        $image->original = cdn("/pieces/1/user1_outfit3_bot.jpg");
 
         $media->images = array($image);
 
@@ -381,13 +381,13 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_12->aspectRatio = 750.0 / 384.0;
 
         $media = new stdClass();
-        $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit3_shoes.jpg";
+        $media->cover = cdn("/pieces/1/user1_outfit3_shoes.jpg");
 
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit3_shoes.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit3_shoes.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit3_shoes.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/pieces/1/user1_outfit3_shoes.jpg";
+        $image->thumbnail = cdn("/pieces/1/user1_outfit3_shoes.jpg");
+        $image->small = cdn("/pieces/1/user1_outfit3_shoes.jpg");
+        $image->medium = cdn("/pieces/1/user1_outfit3_shoes.jpg");
+        $image->original = cdn("/pieces/1/user1_outfit3_shoes.jpg");
 
         $media->images = array($image);
 
@@ -409,10 +409,10 @@ class OutfitAndPieceTableSeeder extends Seeder {
 
         $media = new stdClass();
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/outfits/1/user1_outfit1.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/outfits/1/user1_outfit1.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/outfits/1/user1_outfit1.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/outfits/1/user1_outfit1.jpg";
+        $image->thumbnail = cdn("/outfits/1/user1_outfit1.jpg");
+        $image->small = cdn("/outfits/1/user1_outfit1.jpg");
+        $image->medium = cdn("/outfits/1/user1_outfit1.jpg");
+        $image->original = cdn("/outfits/1/user1_outfit1.jpg");
         $media->images = $image;
 
         $outfit_1->images = json_encode($media);
@@ -434,10 +434,10 @@ class OutfitAndPieceTableSeeder extends Seeder {
 
         $media = new stdClass();
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/outfits/1/user1_outfit2.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/outfits/1/user1_outfit2.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/outfits/1/user1_outfit2.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/outfits/1/user1_outfit2.jpg";
+        $image->thumbnail = cdn("/outfits/1/user1_outfit2.jpg");
+        $image->small = cdn("/outfits/1/user1_outfit2.jpg");
+        $image->medium = cdn("/outfits/1/user1_outfit2.jpg");
+        $image->original = cdn("/outfits/1/user1_outfit2.jpg");
         $media->images = $image;
 
         $outfit_2->images = json_encode($media);
@@ -459,10 +459,10 @@ class OutfitAndPieceTableSeeder extends Seeder {
 
         $media = new stdClass();
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/outfits/1/user1_outfit3.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/outfits/1/user1_outfit3.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/outfits/1/user1_outfit3.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/outfits/1/user1_outfit3.jpg";
+        $image->thumbnail = cdn("/outfits/1/user1_outfit3.jpg");
+        $image->small = cdn("/outfits/1/user1_outfit3.jpg");
+        $image->medium = cdn("/outfits/1/user1_outfit3.jpg");
+        $image->original = cdn("/outfits/1/user1_outfit3.jpg");
         $media->images = $image;
 
         $outfit_3->images = json_encode($media);
@@ -499,13 +499,13 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_1->aspectRatio = 750.0 / 874.0;
 
         $media = new stdClass();
-        $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit1_top.jpg";
+        $media->cover = cdn("/pieces/2/user2_outfit1_top.jpg");
 
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit1_top.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit1_top.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit1_top.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit1_top.jpg";
+        $image->thumbnail = cdn("/pieces/2/user2_outfit1_top.jpg");
+        $image->small = cdn("/pieces/2/user2_outfit1_top.jpg");
+        $image->medium = cdn("/pieces/2/user2_outfit1_top.jpg");
+        $image->original = cdn("/pieces/2/user2_outfit1_top.jpg");
 
         $media->images = array($image);
 
@@ -530,13 +530,13 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_2->aspectRatio = 750.0 / 550.0;
 
         $media = new stdClass();
-        $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit1_bot.jpg";
+        $media->cover = cdn("/pieces/2/user2_outfit1_bot.jpg");
 
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit1_bot.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit1_bot.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit1_bot.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit1_bot.jpg";
+        $image->thumbnail = cdn("/pieces/2/user2_outfit1_bot.jpg");
+        $image->small = cdn("/pieces/2/user2_outfit1_bot.jpg");
+        $image->medium = cdn("/pieces/2/user2_outfit1_bot.jpg");
+        $image->original = cdn("/pieces/2/user2_outfit1_bot.jpg");
 
         $media->images = array($image);
 
@@ -561,13 +561,13 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_3->aspectRatio = 750.0 / 456.0;
 
         $media = new stdClass();
-        $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit1_shoes.jpg";
+        $media->cover = cdn("/pieces/2/user2_outfit1_shoes.jpg");
 
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit1_shoes.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit1_shoes.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit1_shoes.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit1_shoes.jpg";
+        $image->thumbnail = cdn("/pieces/2/user2_outfit1_shoes.jpg");
+        $image->small = cdn("/pieces/2/user2_outfit1_shoes.jpg");
+        $image->medium = cdn("/pieces/2/user2_outfit1_shoes.jpg");
+        $image->original = cdn("/pieces/2/user2_outfit1_shoes.jpg");
 
         $media->images = array($image);
 
@@ -593,13 +593,13 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_4->aspectRatio = 750.0 / 760.0;
 
         $media = new stdClass();
-        $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit2_top.jpg";
+        $media->cover = cdn("/pieces/2/user2_outfit2_top.jpg");
 
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit2_top.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit2_top.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit2_top.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit2_top.jpg";
+        $image->thumbnail = cdn("/pieces/2/user2_outfit2_top.jpg");
+        $image->small = cdn("/pieces/2/user2_outfit2_top.jpg");
+        $image->medium = cdn("/pieces/2/user2_outfit2_top.jpg");
+        $image->original = cdn("/pieces/2/user2_outfit2_top.jpg");
 
         $media->images = array($image);
 
@@ -624,13 +624,13 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_5->aspectRatio = 750.0 / 530.0;
 
         $media = new stdClass();
-        $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit2_bot.jpg";
+        $media->cover = cdn("/pieces/2/user2_outfit2_bot.jpg");
 
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit2_bot.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit2_bot.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit2_bot.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit2_bot.jpg";
+        $image->thumbnail = cdn("/pieces/2/user2_outfit2_bot.jpg");
+        $image->small = cdn("/pieces/2/user2_outfit2_bot.jpg");
+        $image->medium = cdn("/pieces/2/user2_outfit2_bot.jpg");
+        $image->original = cdn("/pieces/2/user2_outfit2_bot.jpg");
 
         $media->images = array($image);
 
@@ -655,13 +655,13 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_6->aspectRatio = 750.0 / 428.0;
 
         $media = new stdClass();
-        $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit2_shoes.jpg";
+        $media->cover = cdn("/pieces/2/user2_outfit2_shoes.jpg");
 
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit2_shoes.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit2_shoes.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit2_shoes.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit2_shoes.jpg";
+        $image->thumbnail = cdn("/pieces/2/user2_outfit2_shoes.jpg");
+        $image->small = cdn("/pieces/2/user2_outfit2_shoes.jpg");
+        $image->medium = cdn("/pieces/2/user2_outfit2_shoes.jpg");
+        $image->original = cdn("/pieces/2/user2_outfit2_shoes.jpg");
 
         $media->images = array($image);
 
@@ -686,13 +686,13 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_7->aspectRatio = 750.0 / 816.0;
 
         $media = new stdClass();
-        $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit3_top.jpg";
+        $media->cover = cdn("/pieces/2/user2_outfit3_top.jpg");
 
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit3_top.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit3_top.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit3_top.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit3_top.jpg";
+        $image->thumbnail = cdn("/pieces/2/user2_outfit3_top.jpg");
+        $image->small = cdn("/pieces/2/user2_outfit3_top.jpg");
+        $image->medium = cdn("/pieces/2/user2_outfit3_top.jpg");
+        $image->original = cdn("/pieces/2/user2_outfit3_top.jpg");
 
         $media->images = array($image);
 
@@ -717,13 +717,13 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_8->aspectRatio = 750.0 / 442.0;
 
         $media = new stdClass();
-        $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit3_bot.jpg";
+        $media->cover = cdn("/pieces/2/user2_outfit3_bot.jpg");
 
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit3_bot.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit3_bot.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit3_bot.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit3_bot.jpg";
+        $image->thumbnail = cdn("/pieces/2/user2_outfit3_bot.jpg");
+        $image->small = cdn("/pieces/2/user2_outfit3_bot.jpg");
+        $image->medium = cdn("/pieces/2/user2_outfit3_bot.jpg");
+        $image->original = cdn("/pieces/2/user2_outfit3_bot.jpg");
 
         $media->images = array($image);
 
@@ -748,13 +748,13 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_9->aspectRatio = 750.0 / 450.0;
 
         $media = new stdClass();
-        $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit3_shoes.jpg";
+        $media->cover = cdn("/pieces/2/user2_outfit3_shoes.jpg");
 
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit3_shoes.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit3_shoes.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit3_shoes.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/pieces/2/user2_outfit3_shoes.jpg";
+        $image->thumbnail = cdn("/pieces/2/user2_outfit3_shoes.jpg");
+        $image->small = cdn("/pieces/2/user2_outfit3_shoes.jpg");
+        $image->medium = cdn("/pieces/2/user2_outfit3_shoes.jpg");
+        $image->original = cdn("/pieces/2/user2_outfit3_shoes.jpg");
 
         $media->images = array($image);
 
@@ -776,16 +776,15 @@ class OutfitAndPieceTableSeeder extends Seeder {
 
         $media = new stdClass();
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/outfits/2/user2_outfit1.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/outfits/2/user2_outfit1.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/outfits/2/user2_outfit1.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/outfits/2/user2_outfit1.jpg";
+        $image->thumbnail = cdn("/outfits/2/user2_outfit1.jpg");
+        $image->small = cdn("/outfits/2/user2_outfit1.jpg");
+        $image->medium = cdn("/outfits/2/user2_outfit1.jpg");
+        $image->original = cdn("/outfits/2/user2_outfit1.jpg");
         $media->images = $image;
 
         $outfit_1->images = json_encode($media);
         $outfit_1->height = "1880";
         $outfit_1->width = "750";
-        //$outfit_1->inspiredBy()->associate($user); // testing inspired_by
         $outfit_1->save();
         $outfit_1->user()->associate($user);
         $outfit_1->save();
@@ -801,10 +800,10 @@ class OutfitAndPieceTableSeeder extends Seeder {
 
         $media = new stdClass();
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/outfits/2/user2_outfit2.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/outfits/2/user2_outfit2.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/outfits/2/user2_outfit2.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/outfits/2/user2_outfit2.jpg";
+        $image->thumbnail = cdn("/outfits/2/user2_outfit2.jpg");
+        $image->small = cdn("/outfits/2/user2_outfit2.jpg");
+        $image->medium = cdn("/outfits/2/user2_outfit2.jpg");
+        $image->original = cdn("/outfits/2/user2_outfit2.jpg");
         $media->images = $image;
 
         $outfit_2->images = json_encode($media);
@@ -825,10 +824,10 @@ class OutfitAndPieceTableSeeder extends Seeder {
 
         $media = new stdClass();
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/outfits/2/user2_outfit3.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/outfits/2/user2_outfit3.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/outfits/2/user2_outfit3.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/outfits/2/user2_outfit3.jpg";
+        $image->thumbnail = cdn("/outfits/2/user2_outfit3.jpg");
+        $image->small = cdn("/outfits/2/user2_outfit3.jpg");
+        $image->medium = cdn("/outfits/2/user2_outfit3.jpg");
+        $image->original = cdn("/outfits/2/user2_outfit3.jpg");
         $media->images = $image;
 
         $outfit_3->images = json_encode($media);
@@ -864,13 +863,13 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_1->aspectRatio = 750.0 / 698.0;
 
         $media = new stdClass();
-        $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit1_top.jpg";
+        $media->cover = cdn("/pieces/3/user3_outfit1_top.jpg");
 
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit1_top.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit1_top.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit1_top.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit1_top.jpg";
+        $image->thumbnail = cdn("/pieces/3/user3_outfit1_top.jpg");
+        $image->small = cdn("/pieces/3/user3_outfit1_top.jpg");
+        $image->medium = cdn("/pieces/3/user3_outfit1_top.jpg");
+        $image->original = cdn("/pieces/3/user3_outfit1_top.jpg");
 
         $media->images = array($image);
 
@@ -895,13 +894,13 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_2->aspectRatio = 750.0 / 703.0;
 
         $media = new stdClass();
-        $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit1_bot.jpg";
+        $media->cover = cdn("/pieces/3/user3_outfit1_bot.jpg");
 
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit1_bot.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit1_bot.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit1_bot.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit1_bot.jpg";
+        $image->thumbnail = cdn("/pieces/3/user3_outfit1_bot.jpg");
+        $image->small = cdn("/pieces/3/user3_outfit1_bot.jpg");
+        $image->medium = cdn("/pieces/3/user3_outfit1_bot.jpg");
+        $image->original = cdn("/pieces/3/user3_outfit1_bot.jpg");
 
         $media->images = array($image);
 
@@ -926,13 +925,13 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_3->aspectRatio = 750.0 / 512.0;
 
         $media = new stdClass();
-        $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit1_shoes.jpg";
+        $media->cover = cdn("/pieces/3/user3_outfit1_shoes.jpg");
 
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit1_shoes.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit1_shoes.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit1_shoes.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit1_shoes.jpg";
+        $image->thumbnail = cdn("/pieces/3/user3_outfit1_shoes.jpg");
+        $image->small = cdn("/pieces/3/user3_outfit1_shoes.jpg");
+        $image->medium = cdn("/pieces/3/user3_outfit1_shoes.jpg");
+        $image->original = cdn("/pieces/3/user3_outfit1_shoes.jpg");
 
         $media->images = array($image);
 
@@ -958,13 +957,13 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_4->aspectRatio = 750.0 / 616.0;
 
         $media = new stdClass();
-        $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit2_top.jpg";
+        $media->cover = cdn("/pieces/3/user3_outfit2_top.jpg");
 
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit2_top.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit2_top.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit2_top.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit2_top.jpg";
+        $image->thumbnail = cdn("/pieces/3/user3_outfit2_top.jpg");
+        $image->small = cdn("/pieces/3/user3_outfit2_top.jpg");
+        $image->medium = cdn("/pieces/3/user3_outfit2_top.jpg");
+        $image->original = cdn("/pieces/3/user3_outfit2_top.jpg");
 
         $media->images = array($image);
 
@@ -989,13 +988,13 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_5->aspectRatio = 750.0 / 1008.0;
 
         $media = new stdClass();
-        $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit2_bot.jpg";
+        $media->cover = cdn("/pieces/3/user3_outfit2_bot.jpg");
 
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit2_bot.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit2_bot.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit2_bot.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit2_bot.jpg";
+        $image->thumbnail = cdn("/pieces/3/user3_outfit2_bot.jpg");
+        $image->small = cdn("/pieces/3/user3_outfit2_bot.jpg");
+        $image->medium = cdn("/pieces/3/user3_outfit2_bot.jpg");
+        $image->original = cdn("/pieces/3/user3_outfit2_bot.jpg");
 
         $media->images = array($image);
 
@@ -1020,13 +1019,13 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_6->aspectRatio = 750.0 / 508.0;
 
         $media = new stdClass();
-        $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit2_shoes.jpg";
+        $media->cover = cdn("/pieces/3/user3_outfit2_shoes.jpg");
 
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit2_shoes.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit2_shoes.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit2_shoes.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit2_shoes.jpg";
+        $image->thumbnail = cdn("/pieces/3/user3_outfit2_shoes.jpg");
+        $image->small = cdn("/pieces/3/user3_outfit2_shoes.jpg");
+        $image->medium = cdn("/pieces/3/user3_outfit2_shoes.jpg");
+        $image->original = cdn("/pieces/3/user3_outfit2_shoes.jpg");
 
         $media->images = array($image);
 
@@ -1051,13 +1050,13 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_7->aspectRatio = 750.0 / 773.0;
 
         $media = new stdClass();
-        $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit3_top.jpg";
+        $media->cover = cdn("/pieces/3/user3_outfit3_top.jpg");
 
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit3_top.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit3_top.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit3_top.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit3_top.jpg";
+        $image->thumbnail = cdn("/pieces/3/user3_outfit3_top.jpg");
+        $image->small = cdn("/pieces/3/user3_outfit3_top.jpg");
+        $image->medium = cdn("/pieces/3/user3_outfit3_top.jpg");
+        $image->original = cdn("/pieces/3/user3_outfit3_top.jpg");
 
         $media->images = array($image);
 
@@ -1082,13 +1081,13 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_8->aspectRatio = 750.0 / 630.0;
 
         $media = new stdClass();
-        $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit3_bot.jpg";
+        $media->cover = cdn("/pieces/3/user3_outfit3_bot.jpg");
 
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit3_bot.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit3_bot.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit3_bot.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit3_bot.jpg";
+        $image->thumbnail = cdn("/pieces/3/user3_outfit3_bot.jpg");
+        $image->small = cdn("/pieces/3/user3_outfit3_bot.jpg");
+        $image->medium = cdn("/pieces/3/user3_outfit3_bot.jpg");
+        $image->original = cdn("/pieces/3/user3_outfit3_bot.jpg");
 
         $media->images = array($image);
 
@@ -1113,13 +1112,13 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_9->aspectRatio = 750.0 / 537.0;
 
         $media = new stdClass();
-        $media->cover = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit3_shoes.jpg";
+        $media->cover = cdn("/pieces/3/user3_outfit3_shoes.jpg");
 
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit3_shoes.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit3_shoes.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit3_shoes.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/pieces/3/user3_outfit3_shoes.jpg";
+        $image->thumbnail = cdn("/pieces/3/user3_outfit3_shoes.jpg");
+        $image->small = cdn("/pieces/3/user3_outfit3_shoes.jpg");
+        $image->medium = cdn("/pieces/3/user3_outfit3_shoes.jpg");
+        $image->original = cdn("/pieces/3/user3_outfit3_shoes.jpg");
 
         $media->images = array($image);
 
@@ -1141,10 +1140,10 @@ class OutfitAndPieceTableSeeder extends Seeder {
 
         $media = new stdClass();
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit1.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit1.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit1.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit1.jpg";
+        $image->thumbnail = cdn("/outfits/3/user3_outfit1.jpg");
+        $image->small = cdn("/outfits/3/user3_outfit1.jpg");
+        $image->medium = cdn("/outfits/3/user3_outfit1.jpg");
+        $image->original = cdn("/outfits/3/user3_outfit1.jpg");
         $media->images = $image;
 
         $outfit_1->images = json_encode($media);
@@ -1165,10 +1164,10 @@ class OutfitAndPieceTableSeeder extends Seeder {
 
         $media = new stdClass();
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit2.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit2.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit2.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit2.jpg";
+        $image->thumbnail = cdn("/outfits/3/user3_outfit2.jpg");
+        $image->small = cdn("/outfits/3/user3_outfit2.jpg");
+        $image->medium = cdn("/outfits/3/user3_outfit2.jpg");
+        $image->original = cdn("/outfits/3/user3_outfit2.jpg");
         $media->images = $image;
 
         $outfit_2->images = json_encode($media);
@@ -1189,10 +1188,10 @@ class OutfitAndPieceTableSeeder extends Seeder {
 
         $media = new stdClass();
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit3.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit3.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit3.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit3.jpg";
+        $image->thumbnail = cdn("/outfits/3/user3_outfit3.jpg");
+        $image->small = cdn("/outfits/3/user3_outfit3.jpg");
+        $image->medium = cdn("/outfits/3/user3_outfit3.jpg");
+        $image->original = cdn("/outfits/3/user3_outfit3.jpg");
         $media->images = $image;
 
         $outfit_3->images = json_encode($media);
@@ -1218,10 +1217,10 @@ class OutfitAndPieceTableSeeder extends Seeder {
 
         $media = new stdClass();
         $image = new stdClass();
-        $image->thumbnail = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit4.jpg";
-        $image->small = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit4.jpg";
-        $image->medium = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit4.jpg";
-        $image->original = "https://d33m37h1i2d8gt.cloudfront.net/outfits/3/user3_outfit4.jpg";
+        $image->thumbnail = cdn("/outfits/3/user3_outfit4.jpg");
+        $image->small = cdn("/outfits/3/user3_outfit4.jpg");
+        $image->medium = cdn("/outfits/3/user3_outfit4.jpg");
+        $image->original = cdn("/outfits/3/user3_outfit4.jpg");
         $media->images = $image;
 
         $outfit_1->images = json_encode($media);

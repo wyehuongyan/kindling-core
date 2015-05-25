@@ -26,9 +26,6 @@ class OutfitController extends Controller {
     public function followingOutfits(Request $request, User $user) {
         // return outfits from people that user is following
 
-        //$query = $user->following()->with('outfits.user', 'outfits.pieces.user', 'outfits.inspiredBy');
-        //$following = $query->paginate(15);
-
         $users = $user->following()->get();
         $userIds = array();
 

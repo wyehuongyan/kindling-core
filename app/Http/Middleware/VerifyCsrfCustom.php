@@ -12,7 +12,7 @@ class VerifyCsrfCustom extends \Illuminate\Foundation\Http\Middleware\VerifyCsrf
         'auth/login',
         'user',
         'pieces',
-        'upload'
+        'upload/*'
     ];
 
     /**

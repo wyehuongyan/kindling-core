@@ -36,15 +36,22 @@ Route::get('user', 'UserController@user');
 /* User Pieces and Outfits */
 /////////////////////////////
 Route::group(['middleware' => 'auth'], function() {
+    // pieces
     Route::post('pieces', 'PieceController@pieces');
     Route::get('user/{user}/pieces', 'PieceController@userPieces');
     Route::get('piece/{piece}/outfits', 'PieceController@pieceOutfits');
 
+    // outfits
     Route::get('outfits', 'OutfitController@outfits');
     Route::get('user/{user}/outfits', 'OutfitController@userOutfits');
     Route::get('user/{user}/outfits/following', 'OutfitController@followingOutfits');
     Route::get('user/{user}/outfits/community', 'OutfitController@communityOutfits');
 
-    Route::post('upload', 'MediaController@uploadOutfit');
+    // upload
+    Route::post('upload/outfit/create', 'MediaController@uploadOutfit');
+    Route::post('upload/outfit/spruce', 'MediaController@uploadSprucedOutfit');
+
+    // follow
+    Route::get('user/{user}/follow', 'UserController@followingUser');
 });
 

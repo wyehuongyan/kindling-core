@@ -28,6 +28,19 @@ return [
 
 	'url' => 'http://localhost',
 
+    /*
+    |--------------------------------------------------------------------------
+    | Application KeyCDN domains
+    |--------------------------------------------------------------------------
+    |
+    | Specify different domains for your assets.
+    |
+    */
+
+    'cdn' => array(
+        "d33m37h1i2d8gt.cloudfront.net" => ""
+    ),
+
 	/*
 	|--------------------------------------------------------------------------
 	| Application Timezone
