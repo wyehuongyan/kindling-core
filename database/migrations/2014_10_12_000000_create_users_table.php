@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration {
             $table->text('description');
             $table->text('image');
             $table->text('cover');
+            $table->string('firebase_token')->nullable();
 			$table->rememberToken();
 			$table->timestamps();
             $table->softDeletes();

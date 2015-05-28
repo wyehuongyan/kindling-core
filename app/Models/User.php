@@ -29,7 +29,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 *
 	 * @var array
 	 */
-	protected $hidden = ['password', 'remember_token', 'deleted_at'];
+	protected $hidden = ['password', 'remember_token', 'firebase_token', 'deleted_at'];
 
     public function outfits() {
         return $this->hasMany('App\Models\Outfit');

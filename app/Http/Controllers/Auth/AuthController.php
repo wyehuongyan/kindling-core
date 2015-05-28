@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Validator;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
+use Services_FirebaseTokenGenerator;
 
 class AuthController extends Controller {
 
@@ -30,8 +31,7 @@ class AuthController extends Controller {
                 "data" => $user
             );
 
-            return response()->json($success)
-                ->setCallback($request->input('callback'));
+            return response()->json($success)->setCallback($request->input('callback'));
         } else {
             // failed to login
             $error = array(
@@ -40,8 +40,7 @@ class AuthController extends Controller {
                 "data" => "failed to login, please try again."
             );
 
-            return response()->json($error)
-                ->setCallback($request->input('callback'));
+            return response()->json($error)->setCallback($request->input('callback'));
         }
     }
 
@@ -95,4 +94,22 @@ class AuthController extends Controller {
 
     }
 
+    // Firebase methods
+    public function generateFireBaseToken(Request $request) {
+        $user = Auth::user();
+
+        $tokenGen = new Services_FirebaseTokenGenerator(env("FIREBASE_KEY"));
+        $token = $tokenGen->createToken(array("uid" => "sprubix-user:" . $user->id));
+
+        $success = array(
+            "status" => "200",
+            "message" => "success",
+            "token" => $token
+        );
+
+        $user->firebase_token = $token;
+        $user->save();
+
+        return response()->json($success)->setCallback($request->input('callback'));
+    }
 }

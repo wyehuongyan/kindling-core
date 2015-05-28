@@ -53,5 +53,8 @@ Route::group(['middleware' => 'auth'], function() {
 
     // follow
     Route::get('user/{user}/follow', 'UserController@followingUser');
+
+    // firebase
+    Route::get('auth/firebase/token', 'Auth\AuthController@generateFireBaseToken');
 });
 
