@@ -42,7 +42,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('piece/{piece}/outfits', 'PieceController@pieceOutfits');
 
     // outfits
-    Route::get('outfits', 'OutfitController@outfits');
+    Route::post('outfits', 'OutfitController@outfits');
     Route::get('user/{user}/outfits', 'OutfitController@userOutfits');
     Route::get('user/{user}/outfits/following', 'OutfitController@followingOutfits');
     Route::get('user/{user}/outfits/community', 'OutfitController@communityOutfits');
@@ -52,9 +52,9 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('upload/outfit/spruce', 'MediaController@uploadSprucedOutfit');
 
     // follow
-    Route::get('user/{user}/follow', 'UserController@followingUser');
+    Route::post('user/followed', 'UserController@followedUser');
+    Route::post('user/following', 'UserController@followingUsers');
 
     // firebase
     Route::get('auth/firebase/token', 'Auth\AuthController@generateFireBaseToken');
 });
-

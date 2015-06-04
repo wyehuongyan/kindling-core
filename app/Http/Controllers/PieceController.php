@@ -8,7 +8,7 @@ class PieceController extends Controller {
     public function pieces(Request $request) {
         $input = $request->all();
 
-        $query = Piece::search($input);
+        $query = Piece::search($input)->with('user');
         $pieces = $query->paginate(15);
         $pieces->setPath($request->url());
         $pieces->getCollection()->shuffle();

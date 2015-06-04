@@ -8,7 +8,7 @@ class OutfitController extends Controller {
     public function outfits(Request $request) {
         $input = $request->all();
 
-        $query = Outfit::search($input);
+        $query = Outfit::search($input)->with('user', 'pieces.user', 'inspiredBy');
         $outfits = $query->paginate(15);
 
         return response()->json($outfits)->setCallback($request->input('callback'));

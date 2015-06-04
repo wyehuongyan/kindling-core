@@ -18,22 +18,47 @@ class UserController extends Controller {
         return response()->json(Auth::user())->setCallback($request->input('callback'));
     }
 
-    public function followingUser(Request $request, User $targetUser) {
-        // checks if you are following a certain user
-        $user = Auth::user();
-        $canFollow = true;
+    public function followedUser(Request $request) {
+        $input = $request->all();
+        $targetUser = User::preciseSearch($input)->select('id')->first();
 
-        if ($targetUser->followers->contains($user->id)) {
-            // you are already a follower of this user, you cannot follow him again
-            $canFollow = false;
+        if ($targetUser) {
+            // checks if you are following a certain user
+            $user = Auth::user();
+            $alreadyFollowed = false;
+
+            if ($targetUser->followers->contains($user->id)) {
+                // you are already a follower of this user, you cannot follow him again
+                $alreadyFollowed = true;
+            }
+
+            $leanUser = User::find($targetUser->id);
+
+            $jsonResponse = array(
+                "status" => "200",
+                "message" => "success",
+                "already_followed" => $alreadyFollowed,
+                "followed_user" => $leanUser
+            );
+        } else {
+            $jsonResponse = array(
+                "status" => "500",
+                "message" => "error: user not found",
+            );
         }
 
-        $success = array(
-            "status" => "200",
-            "message" => "success",
-            "can_follow" => $canFollow
-        );
+        return response()->json($jsonResponse)->setCallback($request->input('callback'));
+    }
 
-        return response()->json($success)->setCallback($request->input('callback'));
+    public function followingUsers(Request $request) {
+        // retrieves the list of users you are following, with conditions
+        $initials = $request->get("initials"); // this will be used to match username or name
+        $user = Auth::user();
+
+        $following = $user->following()->where(function($query) use ($initials) {
+            $query->where('username', 'like', '%' . $initials . '%')->orWhere('name', 'like', '%' . $initials . '%');
+        })->get();
+
+        return response()->json($following)->setCallback($request->input('callback'));
     }
 }

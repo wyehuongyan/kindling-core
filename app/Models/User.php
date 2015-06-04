@@ -44,12 +44,12 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     public function following() {
-        // who do i follow
+        // who am i following
         return $this->belongsToMany('App\Models\User', 'follows', 'follower_id', 'following_id');
     }
 
     public function followers() {
-        // who is following me
+        // who are my followers
         return $this->belongsToMany('App\Models\User', 'follows', 'following_id', 'follower_id');
     }
 
@@ -59,6 +59,20 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         }
         if (isset($search_fields['username'])) {
             $query->where('username', 'like', '%' . $search_fields['username'] . '%');
+        }
+        if (isset($search_fields['email'])) {
+            return $query->where('email', '=', $search_fields['email']);
+        }
+        return $query;
+    }
+
+    // username must match letter for letter
+    public function scopePreciseSearch($query, $search_fields) {
+        if (isset($search_fields['id']) && is_numeric($search_fields['id'])) {
+            return $query->where('id', '=', $search_fields['id']);
+        }
+        if (isset($search_fields['username'])) {
+            $query->where('username', '=', $search_fields['username']);
         }
         if (isset($search_fields['email'])) {
             return $query->where('email', '=', $search_fields['email']);
