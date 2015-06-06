@@ -19,7 +19,7 @@ class PieceController extends Controller {
     public function userPieces(Request $request, User $user) {
         // return pieces belonging to user
 
-        $query = $user->pieces()->with('user');
+        $query = $user->pieces()->withTrashed()->with('user');
         $pieces = $query->paginate(15);
 
         return response()->json($pieces)->setCallback($request->input('callback'));

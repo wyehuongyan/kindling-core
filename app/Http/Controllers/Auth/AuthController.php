@@ -23,7 +23,7 @@ class AuthController extends Controller {
         if (Auth::attempt($request->only($loginAttr, 'password'), $remember))
         {
             // success, login
-            $user = User::search(array($loginAttr => $request->input($loginAttr)))->first();
+            $user = User::search(array($loginAttr => $request->input($loginAttr)))->with('shoppable')->first();
 
             $success = array(
                 "status" => "200",

@@ -17,7 +17,9 @@ class OutfitController extends Controller {
     public function userOutfits(Request $request, User $user) {
         // return outfits belonging to user
 
-        $query = $user->outfits()->with('inspiredBy', 'user', 'pieces.user');
+        $query = $user->outfits()->with('inspiredBy', 'user')->with(array('pieces' => function($query) {
+                $query->withTrashed()->with('user');
+            }));
         $outfits = $query->paginate(15);
 
         return response()->json($outfits)->setCallback($request->input('callback'));

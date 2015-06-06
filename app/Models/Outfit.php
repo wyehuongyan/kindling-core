@@ -1,9 +1,13 @@
 <?php  namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Outfit extends Model {
+    use SoftDeletes;
+
     protected $table = "outfits";
+    protected $dates = ['deleted_at'];
     protected $appends = array('created_at_custom_format');
 
     public function user() {

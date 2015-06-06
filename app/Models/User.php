@@ -2,13 +2,17 @@
 
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract {
 
+    use SoftDeletes;
 	use Authenticatable, CanResetPassword;
+
+    protected $dates = ['deleted_at'];
 
 	/**
 	 * The database table used by the model.
@@ -29,7 +33,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 *
 	 * @var array
 	 */
-	protected $hidden = ['password', 'remember_token', 'firebase_token', 'deleted_at'];
+	protected $hidden = ['password', 'remember_token', 'firebase_token', 'suspended_at', 'deleted_at'];
 
     public function outfits() {
         return $this->hasMany('App\Models\Outfit');
@@ -51,6 +55,14 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function followers() {
         // who are my followers
         return $this->belongsToMany('App\Models\User', 'follows', 'following_id', 'follower_id');
+    }
+
+    public function shoppable() {
+        return $this->morphTo();
+    }
+
+    public function owns() {
+        return $this->hasMany('App\Models\Shop');
     }
 
     public function scopeSearch($query, $search_fields) {
