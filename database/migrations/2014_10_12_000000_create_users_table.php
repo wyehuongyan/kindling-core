@@ -14,7 +14,7 @@ class CreateUsersTable extends Migration {
 	{
 		Schema::create('users', function(Blueprint $table)
 		{
-            $table->engine = 'Aria';
+            $table->engine = 'InnoDB';
 			$table->bigIncrements('id');
             $table->string('username')->unique();
 			$table->string('email')->unique();

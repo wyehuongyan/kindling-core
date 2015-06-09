@@ -14,6 +14,16 @@ class OutfitController extends Controller {
         return response()->json($outfits)->setCallback($request->input('callback'));
     }
 
+    public function outfitsByIds(Request $request) {
+        $ids = $request->get("ids");
+
+        $query = Outfit::with('user', 'pieces.user', 'inspiredBy')->whereIn('id', $ids);
+
+        $outfits = $query->paginate(15);
+
+        return response()->json($outfits)->setCallback($request->input('callback'));
+    }
+
     public function userOutfits(Request $request, User $user) {
         // return outfits belonging to user
 

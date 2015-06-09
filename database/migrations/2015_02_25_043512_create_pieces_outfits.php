@@ -14,7 +14,7 @@ class CreatePiecesOutfits extends Migration {
 	{
 		Schema::create('pieces_outfits', function(Blueprint $table)
 		{
-            $table->engine = 'Aria';
+            $table->engine = 'InnoDB';
 			$table->bigIncrements('id');
             $table->bigInteger('piece_id')->unsigned();
             $table->foreign('piece_id')->references('id')->on('pieces');

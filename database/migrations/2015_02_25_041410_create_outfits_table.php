@@ -14,7 +14,7 @@ class CreateOutfitsTable extends Migration {
 	{
 		Schema::create('outfits', function(Blueprint $table)
 		{
-            $table->engine = 'Aria';
+            $table->engine = 'InnoDB';
 			$table->bigIncrements('id');
             $table->string("name");
             $table->text("description");

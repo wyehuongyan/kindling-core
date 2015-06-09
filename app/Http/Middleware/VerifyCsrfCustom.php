@@ -13,7 +13,9 @@ class VerifyCsrfCustom extends \Illuminate\Foundation\Http\Middleware\VerifyCsrf
         'user/*',
         'users',
         'outfits',
+        'outfits/ids',
         'pieces',
+        'pieces/ids',
         'upload/*'
     ];
 

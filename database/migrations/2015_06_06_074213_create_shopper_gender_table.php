@@ -14,7 +14,7 @@ class CreateShopperGenderTable extends Migration {
 	{
 		Schema::create('shopper_gender', function(Blueprint $table)
 		{
-            $table->engine = 'Aria';
+            $table->engine = 'InnoDB';
             $table->bigIncrements('id');
             $table->string('gender');
             $table->timestamps();

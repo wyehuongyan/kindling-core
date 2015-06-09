@@ -38,11 +38,13 @@ Route::get('user', 'UserController@user');
 Route::group(['middleware' => 'auth'], function() {
     // pieces
     Route::post('pieces', 'PieceController@pieces');
+    Route::post('pieces/ids', 'PieceController@piecesByIds');
     Route::get('user/{user}/pieces', 'PieceController@userPieces');
     Route::get('piece/{piece}/outfits', 'PieceController@pieceOutfits');
 
     // outfits
     Route::post('outfits', 'OutfitController@outfits');
+    Route::post('outfits/ids', 'OutfitController@outfitsByIds');
     Route::get('user/{user}/outfits', 'OutfitController@userOutfits');
     Route::get('user/{user}/outfits/following', 'OutfitController@followingOutfits');
     Route::get('user/{user}/outfits/community', 'OutfitController@communityOutfits');

@@ -14,7 +14,7 @@ class CreateFollowsTable extends Migration {
 	{
 		Schema::create('follows', function(Blueprint $table)
 		{
-            $table->engine = 'Aria';
+            $table->engine = 'InnoDB';
             $table->bigIncrements('id');
             $table->bigInteger("follower_id")->unsigned();
             $table->foreign('follower_id')->references('id')->on('users');

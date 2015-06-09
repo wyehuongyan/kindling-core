@@ -14,7 +14,7 @@ class CreatePiecesTable extends Migration {
 	{
 		Schema::create('pieces', function(Blueprint $table)
 		{
-            $table->engine = 'Aria';
+            $table->engine = 'InnoDB';
 			$table->bigIncrements('id');
             $table->string('type');
             $table->bigInteger('position');

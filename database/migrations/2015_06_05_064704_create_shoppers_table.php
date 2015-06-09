@@ -14,7 +14,7 @@ class CreateShoppersTable extends Migration {
 	{
 		Schema::create('shoppers', function(Blueprint $table)
 		{
-            $table->engine = 'Aria';
+            $table->engine = 'InnoDB';
             $table->bigIncrements('id');
             $table->string('first_name');
             $table->string('last_name')->nullable();

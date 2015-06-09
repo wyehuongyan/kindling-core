@@ -16,6 +16,15 @@ class PieceController extends Controller {
         return response()->json($pieces)->setCallback($request->input('callback'));
     }
 
+    public function piecesByIds(Request $request) {
+        $ids = $request->get("ids");
+
+        $query = Piece::with('user')->whereIn('id', $ids)->with('user');
+        $pieces = $query->paginate(15);
+
+        return response()->json($pieces)->setCallback($request->input('callback'));
+    }
+
     public function userPieces(Request $request, User $user) {
         // return pieces belonging to user
 
