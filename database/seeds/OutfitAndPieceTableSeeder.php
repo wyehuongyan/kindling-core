@@ -51,7 +51,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $media->images = array($image);
 
         $piece_1->images = json_encode($media);
-        $piece_1->save();
 
         $piece_1->user()->associate($user);
         $piece_1->save();
@@ -82,7 +81,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $media->images = array($image);
 
         $piece_2->images = json_encode($media);
-        $piece_2->save();
 
         $piece_2->user()->associate($user);
         $piece_2->save();
@@ -113,7 +111,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $media->images = array($image);
 
         $piece_3->images = json_encode($media);
-        $piece_3->save();
 
         $piece_3->user()->associate($user);
         $piece_3->save();
@@ -144,7 +141,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $media->images = array($image);
 
         $piece_4->images = json_encode($media);
-        $piece_4->save();
 
         $piece_4->user()->associate($user);
         $piece_4->save();
@@ -175,7 +171,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $media->images = array($image);
 
         $piece_5->images = json_encode($media);
-        $piece_5->save();
 
         $piece_5->user()->associate($user);
         $piece_5->save();
@@ -206,7 +201,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $media->images = array($image);
 
         $piece_6->images = json_encode($media);
-        $piece_6->save();
 
         $piece_6->user()->associate($user);
         $piece_6->save();
@@ -237,7 +231,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $media->images = array($image);
 
         $piece_7->images = json_encode($media);
-        $piece_7->save();
 
         $piece_7->user()->associate($user);
         $piece_7->save();
@@ -268,7 +261,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $media->images = array($image);
 
         $piece_8->images = json_encode($media);
-        $piece_8->save();
 
         $piece_8->user()->associate($user);
         $piece_8->save();
@@ -299,7 +291,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $media->images = array($image);
 
         $piece_9->images = json_encode($media);
-        $piece_9->save();
 
         $piece_9->user()->associate($user);
         $piece_9->save();
@@ -330,7 +321,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $media->images = array($image);
 
         $piece_10->images = json_encode($media);
-        $piece_10->save();
 
         $piece_10->user()->associate($user);
         $piece_10->save();
@@ -361,7 +351,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $media->images = array($image);
 
         $piece_11->images = json_encode($media);
-        $piece_11->save();
 
         $piece_11->user()->associate($user);
         $piece_11->save();
@@ -392,7 +381,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $media->images = array($image);
 
         $piece_12->images = json_encode($media);
-        $piece_12->save();
 
         $piece_12->user()->associate($user);
         $piece_12->save();
@@ -418,7 +406,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1->images = json_encode($media);
         $outfit_1->height = "1940";
         $outfit_1->width = "750";
-        $outfit_1->save();
         $outfit_1->user()->associate($user);
         $outfit_1->save();
 
@@ -443,7 +430,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_2->images = json_encode($media);
         $outfit_2->height = "2070";
         $outfit_2->width = "750";
-        $outfit_2->save();
         $outfit_2->user()->associate($user);
         $outfit_2->save();
 
@@ -468,7 +454,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_3->images = json_encode($media);
         $outfit_3->height = "2016";
         $outfit_3->width = "750";
-        $outfit_3->save();
         $outfit_3->user()->associate($user);
         $outfit_3->save();
 
@@ -510,7 +495,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $media->images = array($image);
 
         $piece_1->images = json_encode($media);
-        $piece_1->save();
 
         $piece_1->user()->associate($user);
         $piece_1->save();
@@ -541,7 +525,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $media->images = array($image);
 
         $piece_2->images = json_encode($media);
-        $piece_2->save();
 
         $piece_2->user()->associate($user);
         $piece_2->save();
@@ -572,7 +555,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $media->images = array($image);
 
         $piece_3->images = json_encode($media);
-        $piece_3->save();
 
         $piece_3->user()->associate($user);
         $piece_3->save();
@@ -604,7 +586,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $media->images = array($image);
 
         $piece_4->images = json_encode($media);
-        $piece_4->save();
 
         $piece_4->user()->associate($user);
         $piece_4->save();
@@ -635,7 +616,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $media->images = array($image);
 
         $piece_5->images = json_encode($media);
-        $piece_5->save();
 
         $piece_5->user()->associate($user);
         $piece_5->save();
@@ -666,7 +646,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $media->images = array($image);
 
         $piece_6->images = json_encode($media);
-        $piece_6->save();
 
         $piece_6->user()->associate($user);
         $piece_6->save();
@@ -697,7 +676,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $media->images = array($image);
 
         $piece_7->images = json_encode($media);
-        $piece_7->save();
 
         $piece_7->user()->associate($user);
         $piece_7->save();
@@ -728,7 +706,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $media->images = array($image);
 
         $piece_8->images = json_encode($media);
-        $piece_8->save();
 
         $piece_8->user()->associate($user);
         $piece_8->save();
@@ -759,7 +736,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $media->images = array($image);
 
         $piece_9->images = json_encode($media);
-        $piece_9->save();
 
         $piece_9->user()->associate($user);
         $piece_9->save();
@@ -785,7 +761,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1->images = json_encode($media);
         $outfit_1->height = "1880";
         $outfit_1->width = "750";
-        $outfit_1->save();
         $outfit_1->user()->associate($user);
         $outfit_1->save();
 
@@ -809,7 +784,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_2->images = json_encode($media);
         $outfit_2->height = "1718";
         $outfit_2->width = "750";
-        $outfit_2->save();
         $outfit_2->user()->associate($user);
         $outfit_2->save();
 
@@ -833,7 +807,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_3->images = json_encode($media);
         $outfit_3->height = "1708";
         $outfit_3->width = "750";
-        $outfit_3->save();
         $outfit_3->user()->associate($user);
         $outfit_3->save();
 
@@ -874,7 +847,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $media->images = array($image);
 
         $piece_1->images = json_encode($media);
-        $piece_1->save();
 
         $piece_1->user()->associate($user);
         $piece_1->save();
@@ -905,7 +877,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $media->images = array($image);
 
         $piece_2->images = json_encode($media);
-        $piece_2->save();
 
         $piece_2->user()->associate($user);
         $piece_2->save();
@@ -936,7 +907,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $media->images = array($image);
 
         $piece_3->images = json_encode($media);
-        $piece_3->save();
 
         $piece_3->user()->associate($user);
         $piece_3->save();
@@ -968,7 +938,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $media->images = array($image);
 
         $piece_4->images = json_encode($media);
-        $piece_4->save();
 
         $piece_4->user()->associate($user);
         $piece_4->save();
@@ -999,7 +968,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $media->images = array($image);
 
         $piece_5->images = json_encode($media);
-        $piece_5->save();
 
         $piece_5->user()->associate($user);
         $piece_5->save();
@@ -1030,7 +998,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $media->images = array($image);
 
         $piece_6->images = json_encode($media);
-        $piece_6->save();
 
         $piece_6->user()->associate($user);
         $piece_6->save();
@@ -1061,7 +1028,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $media->images = array($image);
 
         $piece_7->images = json_encode($media);
-        $piece_7->save();
 
         $piece_7->user()->associate($user);
         $piece_7->save();
@@ -1092,7 +1058,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $media->images = array($image);
 
         $piece_8->images = json_encode($media);
-        $piece_8->save();
 
         $piece_8->user()->associate($user);
         $piece_8->save();
@@ -1123,7 +1088,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $media->images = array($image);
 
         $piece_9->images = json_encode($media);
-        $piece_9->save();
 
         $piece_9->user()->associate($user);
         $piece_9->save();
@@ -1149,7 +1113,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1->images = json_encode($media);
         $outfit_1->height = "1910";
         $outfit_1->width = "750";
-        $outfit_1->save();
         $outfit_1->user()->associate($user);
         $outfit_1->save();
 
@@ -1173,7 +1136,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_2->images = json_encode($media);
         $outfit_2->height = "2132";
         $outfit_2->width = "750";
-        $outfit_2->save();
         $outfit_2->user()->associate($user);
         $outfit_2->save();
 
@@ -1197,7 +1159,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_3->images = json_encode($media);
         $outfit_3->height = "1940";
         $outfit_3->width = "750";
-        $outfit_3->save();
         $outfit_3->user()->associate($user);
         $outfit_3->save();
 
@@ -1227,7 +1188,6 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1->height = "2016";
         $outfit_1->width = "750";
         $outfit_1->inspiredBy()->associate(User::find(1)); // inspired by jasmine, cecilia was browsing jasmine's outfits
-        $outfit_1->save();
         $outfit_1->user()->associate($user); // posted by cecilia
         $outfit_1->save();
 

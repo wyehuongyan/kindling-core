@@ -73,7 +73,6 @@ class MediaController extends Controller {
 
                 $media->images = $outfit_image;
                 $new_outfit->images = json_encode($media);
-                $new_outfit->save();
                 $new_outfit->user()->associate($user);
                 $new_outfit->save();
 
@@ -231,7 +230,6 @@ class MediaController extends Controller {
 
                 $media->images = $outfit_image;
                 $new_outfit->images = json_encode($media);
-                $new_outfit->save();
                 $new_outfit->user()->associate($postedByUser);
                 $new_outfit->save();
 
