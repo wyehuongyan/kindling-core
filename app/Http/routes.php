@@ -50,6 +50,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('user/{user}/outfits/community', 'OutfitController@communityOutfits');
 
     // upload
+    Route::post('upload/piece/create', 'MediaController@uploadPiece');
     Route::post('upload/outfit/create', 'MediaController@uploadOutfit');
     Route::post('upload/outfit/spruce', 'MediaController@uploadSprucedOutfit');
 
