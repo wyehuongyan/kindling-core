@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Outfit;
+use App\Models\Piece;
 
 class OutfitController extends Controller {
     public function outfits(Request $request) {
@@ -27,6 +28,9 @@ class OutfitController extends Controller {
     public function userOutfits(Request $request, User $user) {
         // return outfits belonging to user
 
+        /*$piece = Piece::find(1);
+        $piece->delete();*/
+
         $query = $user->outfits()->with('inspiredBy', 'user')->with(array('pieces' => function($query) {
                 $query->withTrashed()->with('user');
             }));
@@ -45,7 +49,9 @@ class OutfitController extends Controller {
             $userIds[] = $user->id;
         }
 
-        $query = Outfit::whereIn('user_id', $userIds)->with('user', 'pieces.user', 'inspiredBy')->orderBy('created_at', 'desc');
+        $query = Outfit::whereIn('user_id', $userIds)->with('user', 'inspiredBy')->with(array('pieces' => function($query) {
+                $query->withTrashed()->with('user');
+            }))->orderBy('created_at', 'desc');
         $following = $query->paginate(15);
 
         return response()->json($following)->setCallback($request->input('callback'));
