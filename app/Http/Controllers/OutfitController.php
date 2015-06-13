@@ -18,7 +18,9 @@ class OutfitController extends Controller {
     public function outfitsByIds(Request $request) {
         $ids = $request->get("ids");
 
-        $query = Outfit::with('user', 'pieces.user', 'inspiredBy')->whereIn('id', $ids);
+        $query = Outfit::with('user', 'inspiredBy')->with(array('pieces' => function($query) {
+                $query->withTrashed()->with('user');
+            }))->whereIn('id', $ids);
 
         $outfits = $query->paginate(15);
 
