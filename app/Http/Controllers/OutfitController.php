@@ -59,13 +59,13 @@ class OutfitController extends Controller {
                     $query->withTrashed()->with('user');
                 }))->orderBy('created_at', 'desc');
 
-            $following = $query->take(4)->get();
+            $following = $query->take(15)->get();
         } else {
             $query = Outfit::whereIn('user_id', $userIds)->with('user', 'inspiredBy')->with(array('pieces' => function($query) {
                     $query->withTrashed()->with('user');
                 }))->orderBy('created_at', 'desc');
 
-            $following = $query->paginate(4);
+            $following = $query->paginate(15);
         }
         return response()->json($following)->setCallback($request->input('callback'));
     }
