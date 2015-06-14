@@ -41,6 +41,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('pieces/ids', 'PieceController@piecesByIds');
     Route::get('user/{user}/pieces', 'PieceController@userPieces');
     Route::get('piece/{piece}/outfits', 'PieceController@pieceOutfits');
+    Route::delete('piece/{piece}', 'PieceController@deletePiece');
 
     // outfits
     Route::post('outfits', 'OutfitController@outfits');
@@ -48,6 +49,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('user/{user}/outfits', 'OutfitController@userOutfits');
     Route::get('user/{user}/outfits/following', 'OutfitController@followingOutfits');
     Route::get('user/{user}/outfits/community', 'OutfitController@communityOutfits');
+    Route::delete('outfit/{outfit}', 'OutfitController@deleteOutfit');
 
     // upload
     Route::post('upload/piece/create', 'MediaController@uploadPiece');

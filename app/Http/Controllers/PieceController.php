@@ -43,4 +43,24 @@ class PieceController extends Controller {
 
         return response()->json($outfits)->setCallback($request->input('callback'));
     }
+
+    public function deletePiece(Request $request, Piece $piece) {
+        if($piece->user->id == $request->get("ownerId")) {
+            $piece->delete();
+
+            $json = array(
+                "status" => "200",
+                "message" => "success",
+                "deleted" => $piece
+            );
+        } else {
+            $json = array(
+                "status" => "400",
+                "message" => "error",
+                "data" => "failed to delete, please try again."
+            );
+        }
+
+        return response()->json($json)->setCallback($request->input('callback'));
+    }
 }

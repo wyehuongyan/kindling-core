@@ -9,7 +9,9 @@ class OutfitController extends Controller {
     public function outfits(Request $request) {
         $input = $request->all();
 
-        $query = Outfit::search($input)->with('user', 'pieces.user', 'inspiredBy');
+        $query = Outfit::search($input)->with('user', 'inspiredBy')->with(array('pieces' => function($query) {
+                $query->withTrashed()->with('user');
+            }));
         $outfits = $query->paginate(15);
 
         return response()->json($outfits)->setCallback($request->input('callback'));
@@ -75,5 +77,25 @@ class OutfitController extends Controller {
         $outfits = $query->paginate(15);
 
         return response()->json($outfits)->setCallback($request->input('callback'));
+    }
+
+    public function deleteOutfit(Request $request, Outfit $outfit) {
+        if($outfit->user->id == $request->get("ownerId")) {
+            $outfit->delete();
+
+            $json = array(
+                "status" => "200",
+                "message" => "success",
+                "deleted" => $outfit
+            );
+        } else {
+            $json = array(
+                "status" => "400",
+                "message" => "error",
+                "data" => "failed to delete, please try again."
+            );
+        }
+
+        return response()->json($json)->setCallback($request->input('callback'));
     }
 }
