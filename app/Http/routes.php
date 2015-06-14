@@ -47,7 +47,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('outfits', 'OutfitController@outfits');
     Route::post('outfits/ids', 'OutfitController@outfitsByIds');
     Route::get('user/{user}/outfits', 'OutfitController@userOutfits');
-    Route::get('user/{user}/outfits/following', 'OutfitController@followingOutfits');
+    Route::post('user/{user}/outfits/following', 'OutfitController@followingOutfits');
     Route::get('user/{user}/outfits/community', 'OutfitController@communityOutfits');
     Route::delete('outfit/{outfit}', 'OutfitController@deleteOutfit');
 

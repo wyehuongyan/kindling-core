@@ -53,11 +53,23 @@ class OutfitController extends Controller {
             $userIds[] = $user->id;
         }
 
-        $query = Outfit::whereIn('user_id', $userIds)->with('user', 'inspiredBy')->with(array('pieces' => function($query) {
-                $query->withTrashed()->with('user');
-            }))->orderBy('created_at', 'desc');
-        $following = $query->paginate(15);
+        $lastOutfitId = $request->get("last_outfit_id");
 
+        if($lastOutfitId) {
+            $lastOutfit = Outfit::find($lastOutfitId);
+
+            $query = Outfit::whereIn('user_id', $userIds)->where('created_at', '<', $lastOutfit->created_at)->with('user', 'inspiredBy')->with(array('pieces' => function($query) {
+                    $query->withTrashed()->with('user');
+                }))->orderBy('created_at', 'desc');
+
+            $following = $query->take(3)->get();
+        } else {
+            $query = Outfit::whereIn('user_id', $userIds)->with('user', 'inspiredBy')->with(array('pieces' => function($query) {
+                    $query->withTrashed()->with('user');
+                }))->orderBy('created_at', 'desc');
+
+            $following = $query->paginate(3);
+        }
         return response()->json($following)->setCallback($request->input('callback'));
     }
 
@@ -80,7 +92,7 @@ class OutfitController extends Controller {
     }
 
     public function deleteOutfit(Request $request, Outfit $outfit) {
-        if($outfit->user->id == $request->get("ownerId")) {
+        if($outfit->user->id == $request->get("owner_id")) {
             $outfit->delete();
 
             $json = array(

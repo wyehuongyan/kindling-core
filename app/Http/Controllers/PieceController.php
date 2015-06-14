@@ -45,7 +45,7 @@ class PieceController extends Controller {
     }
 
     public function deletePiece(Request $request, Piece $piece) {
-        if($piece->user->id == $request->get("ownerId")) {
+        if($piece->user->id == $request->get("owner_id")) {
             $piece->delete();
 
             $json = array(
