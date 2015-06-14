@@ -31,14 +31,11 @@ class OutfitController extends Controller {
 
     public function userOutfits(Request $request, User $user) {
         // return outfits belonging to user
-
-        /*$piece = Piece::find(1);
-        $piece->delete();*/
-
         $query = $user->outfits()->with('inspiredBy', 'user')->with(array('pieces' => function($query) {
                 $query->withTrashed()->with('user');
             }));
         $outfits = $query->paginate(15);
+        $outfits->setPath($request->url()); // outfits/?page=2 to outfits?page=2
 
         return response()->json($outfits)->setCallback($request->input('callback'));
     }
@@ -87,6 +84,7 @@ class OutfitController extends Controller {
         })->with('inspiredBy', 'user', 'pieces.user');
 
         $outfits = $query->paginate(15);
+        $outfits->setPath($request->url()); // outfits/?page=2 to outfits?page=2
 
         return response()->json($outfits)->setCallback($request->input('callback'));
     }

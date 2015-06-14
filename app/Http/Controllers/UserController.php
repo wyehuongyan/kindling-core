@@ -57,25 +57,6 @@ class UserController extends Controller {
         $initials = $request->get("initials"); // this will be used to match username or name
         $user = Auth::user();
 
-        /*
-        $followingUsers = array();
-
-        foreach ($user->following()->get() as $followingUser) {
-            if ($followingUser->shoppable instanceof Shopper) {
-                $firstName = $followingUser->shoppable->first_name;
-            } else {
-                $firstName = $followingUser->shoppable->shop_name;
-            }
-
-            $userName = $followingUser->username;
-
-            if (strpos(strtolower($firstName), strtolower($initials)) !== false ||
-                strpos(strtolower($userName), strtolower($initials)) !== false) {
-                $followingUsers[] = $followingUser;
-            }
-        }
-        */
-
         $following = $user->following()->where(function($query) use ($initials) {
             $query->where('username', 'like', '%' . $initials . '%')->orWhere('name', 'like', '%' . $initials . '%');
         })->get();

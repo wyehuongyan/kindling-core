@@ -31,6 +31,7 @@ class PieceController extends Controller {
         //$query = $user->pieces()->withTrashed()->with('user');
         $query = $user->pieces()->with('user');
         $pieces = $query->paginate(15);
+        $pieces->setPath($request->url()); // pieces/?page=2 to pieces?page=2
 
         return response()->json($pieces)->setCallback($request->input('callback'));
     }
