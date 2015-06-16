@@ -34,6 +34,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_1->brand = "Chanel";
         $piece_1->size = "-";
         $piece_1->type = "HEAD";
+        $piece_1->is_dress = false;
         $piece_1->position = "1";
         $piece_1->height = 470.0;
         $piece_1->width = 750.0;
@@ -64,6 +65,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_2->brand = "Forever 21";
         $piece_2->size = "XS";
         $piece_2->type = "TOP";
+        $piece_2->is_dress = false;
         $piece_2->position = "2";
         $piece_2->height = 572.0;
         $piece_2->width = 750.0;
@@ -94,6 +96,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_3->brand = "Pull&Bear";
         $piece_3->size = "XS";
         $piece_3->type = "BOTTOM";
+        $piece_3->is_dress = false;
         $piece_3->position = "3";
         $piece_3->height = 524.0;
         $piece_3->width = 750.0;
@@ -124,6 +127,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_4->brand = "Marc by Marc Jacobs";
         $piece_4->size = "US 6";
         $piece_4->type = "FEET";
+        $piece_4->is_dress = false;
         $piece_4->position = "4";
         $piece_4->height = 380.0;
         $piece_4->width = 750.0;
@@ -154,6 +158,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_5->brand = "Gucci";
         $piece_5->size = "-";
         $piece_5->type = "HEAD";
+        $piece_5->is_dress = false;
         $piece_5->position = "1";
         $piece_5->height = 456.0;
         $piece_5->width = 750.0;
@@ -184,6 +189,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_6->brand = "Forever 21";
         $piece_6->size = "XS";
         $piece_6->type = "TOP";
+        $piece_6->is_dress = false;
         $piece_6->position = "2";
         $piece_6->height = 586.0;
         $piece_6->width = 750.0;
@@ -214,6 +220,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_7->brand = "Forever 21";
         $piece_7->size = "XS";
         $piece_7->type = "BOTTOM";
+        $piece_7->is_dress = false;
         $piece_7->position = "3";
         $piece_7->height = 578.0;
         $piece_7->width = 750.0;
@@ -244,6 +251,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_8->brand = "Converse";
         $piece_8->size = "US 6";
         $piece_8->type = "FEET";
+        $piece_8->is_dress = false;
         $piece_8->position = "4";
         $piece_8->height = 458.0;
         $piece_8->width = 750.0;
@@ -274,6 +282,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_9->brand = "Forever 21";
         $piece_9->size = "-";
         $piece_9->type = "HEAD";
+        $piece_9->is_dress = false;
         $piece_9->position = "1";
         $piece_9->height = 432.0;
         $piece_9->width = 750.0;
@@ -304,6 +313,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_10->brand = "River Island";
         $piece_10->size = "XS";
         $piece_10->type = "TOP";
+        $piece_10->is_dress = false;
         $piece_10->position = "2";
         $piece_10->height = 652.0;
         $piece_10->width = 750.0;
@@ -334,6 +344,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_11->brand = "Topshop";
         $piece_11->size = "XS";
         $piece_11->type = "BOTTOM";
+        $piece_11->is_dress = false;
         $piece_11->position = "3";
         $piece_11->height = 550.0;
         $piece_11->width = 750.0;
@@ -364,6 +375,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_12->brand = "Converse";
         $piece_12->size = "US 6";
         $piece_12->type = "FEET";
+        $piece_12->is_dress = false;
         $piece_12->position = "4";
         $piece_12->height = 384.0;
         $piece_12->width = 750.0;
@@ -385,10 +397,73 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_12->user()->associate($user);
         $piece_12->save();
 
+        // u1p13
+
+        $piece_13 = new Piece();
+        $piece_13->name = "Tropical Printed Dress";
+        $piece_13->description = "Tropical Printed Silk Dress by Giada Forte Resort. 100% silk.";
+        $piece_13->category = "Dress";
+        $piece_13->brand = "River Island";
+        $piece_13->size = "-";
+        $piece_13->type = "TOP";
+        $piece_13->is_dress = false;
+        $piece_13->position = "2";
+        $piece_13->height = 1634.0;
+        $piece_13->width = 750.0;
+        $piece_13->aspectRatio = 750.0 / 1634.0;
+
+        $media = new stdClass();
+        $media->cover = cdn("/pieces/1/user1_outfit4_top.jpg");
+
+        $image = new stdClass();
+        $image->thumbnail = cdn("/pieces/1/user1_outfit4_top.jpg");
+        $image->small = cdn("/pieces/1/user1_outfit4_top.jpg");
+        $image->medium = cdn("/pieces/1/user1_outfit4_top.jpg");
+        $image->original = cdn("/pieces/1/user1_outfit4_top.jpg");
+
+        $media->images = array($image);
+
+        $piece_13->images = json_encode($media);
+
+        $piece_13->user()->associate($user);
+        $piece_13->save();
+
+        // u1p14
+
+        $piece_14 = new Piece();
+        $piece_14->name = "Vintage Gold Shoes";
+        $piece_14->description = "Bows are the best, but when they're gilded and on a shoe? Well it's better than the best.";
+        $piece_14->category = "Shoes";
+        $piece_14->brand = "H&M";
+        $piece_14->size = "US 6";
+        $piece_14->type = "FEET";
+        $piece_14->is_dress = true;
+        $piece_14->position = "4";
+        $piece_14->height = 382.0;
+        $piece_14->width = 750.0;
+        $piece_14->aspectRatio = 750.0 / 382.0;
+
+        $media = new stdClass();
+        $media->cover = cdn("/pieces/1/user1_outfit4_shoes.jpg");
+
+        $image = new stdClass();
+        $image->thumbnail = cdn("/pieces/1/user1_outfit4_shoes.jpg");
+        $image->small = cdn("/pieces/1/user1_outfit4_shoes.jpg");
+        $image->medium = cdn("/pieces/1/user1_outfit4_shoes.jpg");
+        $image->original = cdn("/pieces/1/user1_outfit4_shoes.jpg");
+
+        $media->images = array($image);
+
+        $piece_14->images = json_encode($media);
+
+        $piece_14->user()->associate($user);
+        $piece_14->save();
+
         // create 3 outfits
         // outfit 1: piece 1, 2, 3, 4
         // outfit 2: piece 5, 6, 7, 8
         // outfit 3: piece 9, 10, 11, 12
+        // outfit 4: piece 13, 14
 
         // 1
         $outfit_1 = new Outfit();
@@ -462,6 +537,28 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_3->pieces()->save($piece_11);
         $outfit_3->pieces()->save($piece_12);
 
+        //4
+        $outfit_4 = new Outfit();
+        $outfit_4->name = "Example Outfit 4";
+        $outfit_4->description = "Ready for prom night!";
+
+        $media = new stdClass();
+        $image = new stdClass();
+        $image->thumbnail = cdn("/outfits/1/user1_outfit4.jpg");
+        $image->small = cdn("/outfits/1/user1_outfit4.jpg");
+        $image->medium = cdn("/outfits/1/user1_outfit4.jpg");
+        $image->original = cdn("/outfits/1/user1_outfit4.jpg");
+        $media->images = $image;
+
+        $outfit_4->images = json_encode($media);
+        $outfit_4->height = "2016";
+        $outfit_4->width = "750";
+        $outfit_4->user()->associate($user);
+        $outfit_4->save();
+
+        $outfit_4->pieces()->save($piece_13);
+        $outfit_4->pieces()->save($piece_14);
+
         //////////////////////////////////////////////////////////////////////////////////////////////////////////
         /*                                        User 2 Pieces & Outfits                                       */
         //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -478,6 +575,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_1->brand = "Topshop";
         $piece_1->size = "XS";
         $piece_1->type = "TOP";
+        $piece_1->is_dress = false;
         $piece_1->position = "2";
         $piece_1->height = 874.0;
         $piece_1->width = 750.0;
@@ -508,6 +606,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_2->brand = "Forever 21";
         $piece_2->size = "XS";
         $piece_2->type = "BOTTOM";
+        $piece_2->is_dress = false;
         $piece_2->position = "3";
         $piece_2->height = 550.0;
         $piece_2->width = 750.0;
@@ -538,6 +637,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_3->brand = "Converse";
         $piece_3->size = "US 7";
         $piece_3->type = "FEET";
+        $piece_3->is_dress = false;
         $piece_3->position = "4";
         $piece_3->height = 456.0;
         $piece_3->width = 750.0;
@@ -569,6 +669,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_4->brand = "American Apparel";
         $piece_4->size = "XS";
         $piece_4->type = "TOP";
+        $piece_4->is_dress = false;
         $piece_4->position = "2";
         $piece_4->height = 760.0;
         $piece_4->width = 750.0;
@@ -599,6 +700,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_5->brand = "American Apparel";
         $piece_5->size = "XS";
         $piece_5->type = "BOTTOM";
+        $piece_5->is_dress = false;
         $piece_5->position = "3";
         $piece_5->height = 530.0;
         $piece_5->width = 750.0;
@@ -629,6 +731,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_6->brand = "Converse";
         $piece_6->size = "XS";
         $piece_6->type = "FEET";
+        $piece_6->is_dress = false;
         $piece_6->position = "4";
         $piece_6->height = 428.0;
         $piece_6->width = 750.0;
@@ -659,6 +762,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_7->brand = "Vans";
         $piece_7->size = "Free";
         $piece_7->type = "TOP";
+        $piece_7->is_dress = false;
         $piece_7->position = "2";
         $piece_7->height = 816.0;
         $piece_7->width = 750.0;
@@ -689,6 +793,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_8->brand = "Uniqlo";
         $piece_8->size = "XS";
         $piece_8->type = "BOTTOM";
+        $piece_8->is_dress = false;
         $piece_8->position = "3";
         $piece_8->height = 442.0;
         $piece_8->width = 750.0;
@@ -719,6 +824,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_9->brand = "Vans";
         $piece_9->size = "US 7";
         $piece_9->type = "FEET";
+        $piece_9->is_dress = false;
         $piece_9->position = "4";
         $piece_9->height = 450.0;
         $piece_9->width = 750.0;
@@ -830,6 +936,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_1->brand = "H&M";
         $piece_1->size = "S";
         $piece_1->type = "TOP";
+        $piece_1->is_dress = false;
         $piece_1->position = "2";
         $piece_1->height = 698.0;
         $piece_1->width = 750.0;
@@ -860,6 +967,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_2->brand = "Nordstorm";
         $piece_2->size = "S";
         $piece_2->type = "BOTTOM";
+        $piece_2->is_dress = false;
         $piece_2->position = "3";
         $piece_2->height = 703.0;
         $piece_2->width = 750.0;
@@ -890,6 +998,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_3->brand = "Nike";
         $piece_3->size = "US 8";
         $piece_3->type = "FEET";
+        $piece_3->is_dress = false;
         $piece_3->position = "4";
         $piece_3->height = 512.0;
         $piece_3->width = 750.0;
@@ -921,6 +1030,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_4->brand = "American Apparel";
         $piece_4->size = "XS";
         $piece_4->type = "TOP";
+        $piece_4->is_dress = false;
         $piece_4->position = "2";
         $piece_4->height = 616.0;
         $piece_4->width = 750.0;
@@ -951,6 +1061,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_5->brand = "Nordstorm";
         $piece_5->size = "S";
         $piece_5->type = "BOTTOM";
+        $piece_5->is_dress = false;
         $piece_5->position = "3";
         $piece_5->height = 1008.0;
         $piece_5->width = 750.0;
@@ -981,6 +1092,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_6->brand = "ASOS";
         $piece_6->size = "US 8";
         $piece_6->type = "FEET";
+        $piece_6->is_dress = false;
         $piece_6->position = "4";
         $piece_6->height = 508.0;
         $piece_6->width = 750.0;
@@ -1011,6 +1123,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_7->brand = "H&M";
         $piece_7->size = "S";
         $piece_7->type = "TOP";
+        $piece_7->is_dress = false;
         $piece_7->position = "2";
         $piece_7->height = 773.0;
         $piece_7->width = 750.0;
@@ -1041,6 +1154,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_8->brand = "New Look";
         $piece_8->size = "S";
         $piece_8->type = "BOTTOM";
+        $piece_8->is_dress = false;
         $piece_8->position = "3";
         $piece_8->height = 630.0;
         $piece_8->width = 750.0;
@@ -1071,6 +1185,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_9->brand = "Urban Outfitters";
         $piece_9->size = "US 8";
         $piece_9->type = "FEET";
+        $piece_9->is_dress = false;
         $piece_9->position = "4";
         $piece_9->height = 537.0;
         $piece_9->width = 750.0;

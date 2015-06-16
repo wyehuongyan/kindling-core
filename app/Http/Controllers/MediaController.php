@@ -49,6 +49,7 @@ class MediaController extends Controller {
                 $new_piece->brand = $piece_data["brand"];
                 $new_piece->size = $piece_data["size"];
                 $new_piece->type = $piece_data["type"];
+                $new_piece->is_dress = $piece_data["is_dress"];
                 $new_piece->position = $this->getPosition($piece_data["type"]);
                 $new_piece->height = $piece_data["height"];
                 $new_piece->width = $piece_data["width"];
@@ -194,6 +195,7 @@ class MediaController extends Controller {
                     $new_piece->brand = $piece_data["brand"];
                     $new_piece->size = $piece_data["size"];
                     $new_piece->type = $piece_data["type"];
+                    $new_piece->is_dress = $piece_data["is_dress"];
                     $new_piece->position = $this->getPosition($piece_data["type"]);
                     $new_piece->height = $piece_data["height"];
                     $new_piece->width = $piece_data["width"];
