@@ -21,11 +21,34 @@ class Piece extends Model {
         if (isset($search_fields['id']) && is_numeric($search_fields['id'])) {
             return $query->where('id', '=', $search_fields['id']);
         }
+        if (isset($search_fields['user_id']) && is_numeric($search_fields['user_id'])) {
+            $query->where('user_id', '=', $search_fields['user_id']);
+        }
         if (isset($search_fields['name'])) {
             $query->where('name', 'like', '%' . $search_fields['name'] . '%');
         }
         if (isset($search_fields['type'])) {
             $query->where('type', 'like', '%' . $search_fields['type'] . '%');
+        }
+        if (isset($search_fields['types'])) {
+            $types = $search_fields['types'];
+
+            $query->where(function($query) use ($types) {
+                for($i = 0; $i < count($types); $i++) {
+                    $type = $types[$i];
+
+                    if ($i == 0) {
+                        $query->where('type', 'like', '%' . $type . '%');
+                    } else {
+                        $query->orWhere('type', 'like', '%' . $type . '%');
+                    }
+                }
+            });
+        }
+        if (isset($search_fields['full_text'])) {
+            $fulltext = $search_fields['full_text'];
+
+            $query->whereRaw("MATCH (name, description) AGAINST ('$fulltext')");
         }
         if (isset($search_fields['description'])) {
             $query->where('description', 'like', '%' . $search_fields['description'] . '%');

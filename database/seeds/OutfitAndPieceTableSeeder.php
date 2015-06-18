@@ -406,7 +406,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_13->brand = "River Island";
         $piece_13->size = "-";
         $piece_13->type = "TOP";
-        $piece_13->is_dress = false;
+        $piece_13->is_dress = true;
         $piece_13->position = "2";
         $piece_13->height = 1634.0;
         $piece_13->width = 750.0;
