@@ -42,6 +42,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('user/{user}/pieces', 'PieceController@userPieces');
     Route::get('piece/{piece}/outfits', 'PieceController@pieceOutfits');
     Route::delete('piece/{piece}', 'PieceController@deletePiece');
+    Route::get('piece/categories', 'PieceController@pieceCategories');
 
     // outfits
     Route::post('outfits', 'OutfitController@outfits');

@@ -1,5 +1,6 @@
 <?php namespace App\Http\Controllers;
 
+use App\Models\PieceCategory;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Piece;
@@ -8,7 +9,7 @@ class PieceController extends Controller {
     public function pieces(Request $request) {
         $input = $request->all();
 
-        $query = Piece::search($input)->with('user');
+        $query = Piece::search($input)->with('user', 'category');
         $pieces = $query->paginate(15);
         $pieces->setPath($request->url());
         $pieces->getCollection()->shuffle();
@@ -29,7 +30,7 @@ class PieceController extends Controller {
         // return pieces belonging to user
 
         //$query = $user->pieces()->withTrashed()->with('user');
-        $query = $user->pieces()->with('user');
+        $query = $user->pieces()->with('user', 'category');
         $pieces = $query->paginate(15);
         $pieces->setPath($request->url()); // pieces/?page=2 to pieces?page=2
 
@@ -39,7 +40,7 @@ class PieceController extends Controller {
     public function pieceOutfits(Request $request, Piece $piece) {
         // return outfits that this piece belongs to
 
-        $query = $piece->outfits()->with('inspiredBy', 'user', 'pieces.user');
+        $query = $piece->outfits()->with('inspiredBy', 'user', 'pieces.user', 'pieces.category');
         $outfits = $query->paginate(15);
 
         return response()->json($outfits)->setCallback($request->input('callback'));
@@ -63,5 +64,11 @@ class PieceController extends Controller {
         }
 
         return response()->json($json)->setCallback($request->input('callback'));
+    }
+
+    public function pieceCategories(Request $request) {
+        $pieceCategories = PieceCategory::all();
+
+        return response()->json($pieceCategories)->setCallback($request->input('callback'));
     }
 }

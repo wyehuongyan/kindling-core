@@ -10,7 +10,7 @@ class OutfitController extends Controller {
         $input = $request->all();
 
         $query = Outfit::search($input)->with('user', 'inspiredBy')->with(array('pieces' => function($query) {
-                $query->withTrashed()->with('user');
+                $query->withTrashed()->with('user', 'category');
             }));
         $outfits = $query->paginate(15);
 
@@ -21,7 +21,7 @@ class OutfitController extends Controller {
         $ids = $request->get("ids");
 
         $query = Outfit::with('user', 'inspiredBy')->with(array('pieces' => function($query) {
-                $query->withTrashed()->with('user');
+                $query->withTrashed()->with('user', 'category');
             }))->whereIn('id', $ids);
 
         $outfits = $query->paginate(15);
@@ -32,7 +32,7 @@ class OutfitController extends Controller {
     public function userOutfits(Request $request, User $user) {
         // return outfits belonging to user
         $query = $user->outfits()->with('inspiredBy', 'user')->with(array('pieces' => function($query) {
-                $query->withTrashed()->with('user');
+                $query->withTrashed()->with('user', 'category');
             }));
         $outfits = $query->paginate(15);
         $outfits->setPath($request->url()); // outfits/?page=2 to outfits?page=2
@@ -56,13 +56,13 @@ class OutfitController extends Controller {
             $lastOutfit = Outfit::find($lastOutfitId);
 
             $query = Outfit::whereIn('user_id', $userIds)->where('created_at', '<', $lastOutfit->created_at)->with('user', 'inspiredBy')->with(array('pieces' => function($query) {
-                    $query->withTrashed()->with('user');
+                    $query->withTrashed()->with('user', 'category');
                 }))->orderBy('created_at', 'desc');
 
             $following = $query->take(15)->get();
         } else {
             $query = Outfit::whereIn('user_id', $userIds)->with('user', 'inspiredBy')->with(array('pieces' => function($query) {
-                    $query->withTrashed()->with('user');
+                    $query->withTrashed()->with('user', 'category');
                 }))->orderBy('created_at', 'desc');
 
             $following = $query->paginate(15);
@@ -107,5 +107,11 @@ class OutfitController extends Controller {
         }
 
         return response()->json($json)->setCallback($request->input('callback'));
+    }
+
+    public function outfitCategories(Request $request) {
+        $pieceCategories = PieceCategory::all();
+
+        return response()->json($pieceCategories)->setCallback($request->input('callback'));
     }
 }

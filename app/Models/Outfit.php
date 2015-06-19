@@ -14,6 +14,10 @@ class Outfit extends Model {
         return $this->belongsTo('App\Models\User');
     }
 
+    public function categories() {
+        return $this->belongsToMany('App\Models\OutfitCategory', 'outfits_categories');
+    }
+
     public function inspiredBy() {
         return $this->belongsTo('App\Models\User', 'inspired_by');
     }
