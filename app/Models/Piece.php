@@ -17,6 +17,10 @@ class Piece extends Model {
         return $this->belongsTo('App\Models\PieceCategory');
     }
 
+    public function brand() {
+        return $this->belongsTo('App\Models\PieceBrand');
+    }
+
     public function outfits() {
         return $this->belongsToMany('App\Models\Outfit', 'pieces_outfits');
     }

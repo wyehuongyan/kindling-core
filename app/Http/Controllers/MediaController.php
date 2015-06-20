@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Log;
 use App\Models\User;
 use App\Models\Piece;
+use App\Models\PieceCategory;
+use App\Models\PieceBrand;
 use \stdClass;
 use Imagick;
 
@@ -45,8 +47,20 @@ class MediaController extends Controller {
 
                 $new_piece->name = $piece_data["name"];
                 $new_piece->description = $piece_data["description"];
-                $new_piece->category = $piece_data["category"];
-                $new_piece->brand = $piece_data["brand"];
+                $new_piece->category()->associate(PieceCategory::search(array("name" => $piece_data["category"]))->first());
+
+                $existing_brand = PieceBrand::search(array("name" => $piece_data["brand"]))->first();
+                if($existing_brand) {
+                    $new_piece->brand()->associate($existing_brand);
+                } else {
+                    // create new entry in piece brands
+                    $new_brand = new PieceBrand();
+                    $new_brand->name = $piece_data["brand"];
+                    $new_brand->save();
+
+                    $new_piece->brand()->associate($new_brand);
+                }
+
                 $new_piece->size = $piece_data["size"];
                 $new_piece->type = $piece_data["type"];
                 $new_piece->is_dress = $piece_data["is_dress"];
@@ -191,8 +205,20 @@ class MediaController extends Controller {
 
                     $new_piece->name = $piece_data["name"];
                     $new_piece->description = $piece_data["description"];
-                    $new_piece->category = $piece_data["category"];
-                    $new_piece->brand = $piece_data["brand"];
+                    $new_piece->category->category()->associate(PieceCategory::search(array("name" => $piece_data["category"]))->first());
+
+                    $existing_brand = PieceBrand::search(array("name" => $piece_data["brand"]))->first();
+                    if($existing_brand) {
+                        $new_piece->brand()->associate($existing_brand);
+                    } else {
+                        // create new entry in piece brands
+                        $new_brand = new PieceBrand();
+                        $new_brand->name = $piece_data["brand"];
+                        $new_brand->save();
+
+                        $new_piece->brand()->associate($new_brand);
+                    }
+
                     $new_piece->size = $piece_data["size"];
                     $new_piece->type = $piece_data["type"];
                     $new_piece->is_dress = $piece_data["is_dress"];

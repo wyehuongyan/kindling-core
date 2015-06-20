@@ -43,6 +43,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('piece/{piece}/outfits', 'PieceController@pieceOutfits');
     Route::delete('piece/{piece}', 'PieceController@deletePiece');
     Route::get('piece/categories', 'PieceController@pieceCategories');
+    Route::post('piece/brands', 'PieceController@pieceBrands');
 
     // outfits
     Route::post('outfits', 'OutfitController@outfits');
