@@ -23,7 +23,9 @@ class AuthController extends Controller {
         if (Auth::attempt($request->only($loginAttr, 'password'), $remember))
         {
             // success, login
-            $user = User::search(array($loginAttr => $request->input($loginAttr)))->with('shoppable')->first();
+            $trimLoginAttr = preg_replace('/\s+/', '', $request->input($loginAttr));
+
+            $user = User::search(array($loginAttr => $trimLoginAttr))->with('shoppable')->first();
 
             $success = array(
                 "status" => "200",

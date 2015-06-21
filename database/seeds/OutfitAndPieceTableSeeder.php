@@ -469,7 +469,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
 
         // 1
         $outfit_1 = new Outfit();
-        $outfit_1->name = "Example Outfit 1";
+        $outfit_1->name = "User Outfit 1";
         $outfit_1->description = "Great outfit for a sunny day.";
 
         $media = new stdClass();
@@ -493,7 +493,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
 
         // 2
         $outfit_2 = new Outfit();
-        $outfit_2->name = "Example Outfit 2";
+        $outfit_2->name = "User Outfit 2";
         $outfit_2->description = "Wearing this for a BBQ party by the beach.";
 
         $media = new stdClass();
@@ -517,7 +517,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
 
         // 3
         $outfit_3 = new Outfit();
-        $outfit_3->name = "Example Outfit 3";
+        $outfit_3->name = "User Outfit 3";
         $outfit_3->description = "Going to the Gardens by the Bay.";
 
         $media = new stdClass();
@@ -541,7 +541,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
 
         //4
         $outfit_4 = new Outfit();
-        $outfit_4->name = "Example Outfit 4";
+        $outfit_4->name = "User Outfit 4";
         $outfit_4->description = "Ready for prom night!";
 
         $media = new stdClass();
@@ -855,7 +855,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
 
         // 1
         $outfit_1 = new Outfit();
-        $outfit_1->name = "Example Outfit 1";
+        $outfit_1->name = "User Outfit 1";
         $outfit_1->description = "Love this top so much. I belong to the wild!!!";
 
         $media = new stdClass();
@@ -878,7 +878,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
 
         // 2
         $outfit_2 = new Outfit();
-        $outfit_2->name = "Example Outfit 2";
+        $outfit_2->name = "User Outfit 2";
         $outfit_2->description = "Outfit of the day, with my self-made golden shoes.";
 
         $media = new stdClass();
@@ -901,7 +901,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
 
         // 3
         $outfit_3 = new Outfit();
-        $outfit_3->name = "Example Outfit 3";
+        $outfit_3->name = "User Outfit 3";
         $outfit_3->description = "Here's how I combat the cold labs in the school.";
 
         $media = new stdClass();
@@ -1216,7 +1216,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
 
         // 1
         $outfit_1 = new Outfit();
-        $outfit_1->name = "Example Outfit 1";
+        $outfit_1->name = "User Outfit 1";
         $outfit_1->description = "Everything looks good with my limited edition floral print Nike shoes.";
 
         $media = new stdClass();
@@ -1239,7 +1239,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
 
         // 2
         $outfit_2 = new Outfit();
-        $outfit_2->name = "Example Outfit 2";
+        $outfit_2->name = "User Outfit 2";
         $outfit_2->description = "Off for a picnic :)";
 
         $media = new stdClass();
@@ -1262,7 +1262,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
 
         // 3
         $outfit_3 = new Outfit();
-        $outfit_3->name = "Example Outfit 3";
+        $outfit_3->name = "User Outfit 3";
         $outfit_3->description = "Love my outfit of the day";
 
         $media = new stdClass();
@@ -1312,5 +1312,136 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1->pieces()->save($piece_2);
         $outfit_1->pieces()->save($piece_3);
         $outfit_1->pieces()->save($piece_4);
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /*                                        Shop 1 Pieces & Outfits                                       */
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        $user = User::find(4); // find sprubixshop
+
+        // create the pieces first
+
+        // u4p1
+        $piece_1 = new Piece();
+        $piece_1->name = "Mint Tank-Top Endless Summer";
+        $piece_1->description = "BELLA + CANVAS Women's Flowy Boxy Tank" .
+                                "\n- 3.7 oz., 65% polyester / 35% viscose" .
+                                "\n- 30 single jersey" .
+                                "\n- Side seams" .
+                                "\n- Cropped body length" .
+                                "\n- Easy, drapey fit";
+        $piece_1->brand()->associate(PieceBrand::find(18));
+        $piece_1->size = "S";
+        $piece_1->type = "TOP";
+        $piece_1->is_dress = false;
+        $piece_1->position = "2";
+        $piece_1->height = 638.0;
+        $piece_1->width = 750.0;
+        $piece_1->aspectRatio = 750.0 / 638.0;
+
+        $media = new stdClass();
+        $media->cover = cdn("/pieces/4/user4_outfit1_top.jpg");
+
+        $image = new stdClass();
+        $image->thumbnail = cdn("/pieces/4/user4_outfit1_top.jpg");
+        $image->small = cdn("/pieces/4/user4_outfit1_top.jpg");
+        $image->medium = cdn("/pieces/4/user4_outfit1_top.jpg");
+        $image->original = cdn("/pieces/4/user4_outfit1_top.jpg");
+
+        $media->images = array($image);
+
+        $piece_1->images = json_encode($media);
+
+        $piece_1->category()->associate(PieceCategory::find(3));
+        $piece_1->user()->associate($user);
+        $piece_1->save();
+
+        // u4p2
+
+        $piece_2 = new Piece();
+        $piece_2->name = "Highwaisted Dark Acid Wash Frayed Distressed Shorts";
+        $piece_2->description = "Prepare for the season ahead! These blue acid wash high waisted frayed denim shorts with revealing pockets will make you stand out from the crowd!";
+        $piece_2->brand()->associate(PieceBrand::find(18));
+        $piece_2->size = "S";
+        $piece_2->type = "BOTTOM";
+        $piece_2->is_dress = false;
+        $piece_2->position = "3";
+        $piece_2->height = 523.0;
+        $piece_2->width = 750.0;
+        $piece_2->aspectRatio = 750.0 / 523.0;
+
+        $media = new stdClass();
+        $media->cover = cdn("/pieces/4/user4_outfit1_bot.jpg");
+
+        $image = new stdClass();
+        $image->thumbnail = cdn("/pieces/4/user4_outfit1_bot.jpg");
+        $image->small = cdn("/pieces/4/user4_outfit1_bot.jpg");
+        $image->medium = cdn("/pieces/4/user4_outfit1_bot.jpg");
+        $image->original = cdn("/pieces/4/user4_outfit1_bot.jpg");
+
+        $media->images = array($image);
+
+        $piece_2->images = json_encode($media);
+
+        $piece_2->category()->associate(PieceCategory::find(5));
+        $piece_2->user()->associate($user);
+        $piece_2->save();
+
+        // u4p3
+
+        $piece_3 = new Piece();
+        $piece_3->name = "Carol Flats";
+        $piece_3->description = "Out of the box you will feel compelled to show off in them. Just make sure that they get seen by as many people as possible!";
+        $piece_3->brand()->associate(PieceBrand::find(18));
+        $piece_3->size = "S";
+        $piece_3->type = "FEET";
+        $piece_3->is_dress = false;
+        $piece_3->position = "4";
+        $piece_3->height = 477.0;
+        $piece_3->width = 750.0;
+        $piece_3->aspectRatio = 750.0 / 477.0;
+
+        $media = new stdClass();
+        $media->cover = cdn("/pieces/4/user4_outfit1_shoes.jpg");
+
+        $image = new stdClass();
+        $image->thumbnail = cdn("/pieces/4/user4_outfit1_shoes.jpg");
+        $image->small = cdn("/pieces/4/user4_outfit1_shoes.jpg");
+        $image->medium = cdn("/pieces/4/user4_outfit1_shoes.jpg");
+        $image->original = cdn("/pieces/4/user4_outfit1_shoes.jpg");
+
+        $media->images = array($image);
+
+        $piece_3->images = json_encode($media);
+
+        $piece_3->category()->associate(PieceCategory::find(7));
+        $piece_3->user()->associate($user);
+        $piece_3->save();
+
+        // create 1 outfits
+        // outfit 1: piece 1, 2, 3
+
+        // 1
+        $outfit_1 = new Outfit();
+        $outfit_1->name = "Shop Outfit 1";
+        $outfit_1->description = "Beat the hot weather with a singlet and shorts!";
+
+        $media = new stdClass();
+        $image = new stdClass();
+        $image->thumbnail = cdn("/outfits/4/user4_outfit1.jpg");
+        $image->small = cdn("/outfits/4/user4_outfit1.jpg");
+        $image->medium = cdn("/outfits/4/user4_outfit1.jpg");
+        $image->original = cdn("/outfits/4/user4_outfit1.jpg");
+        $media->images = $image;
+
+        $outfit_1->images = json_encode($media);
+        $outfit_1->height = "1636";
+        $outfit_1->width = "750";
+        $outfit_1->user()->associate($user);
+        $outfit_1->save();
+
+        $outfit_1->pieces()->save($piece_1);
+        $outfit_1->pieces()->save($piece_2);
+        $outfit_1->pieces()->save($piece_3);
     }
 }
