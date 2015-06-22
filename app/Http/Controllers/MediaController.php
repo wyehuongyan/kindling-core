@@ -47,18 +47,23 @@ class MediaController extends Controller {
 
                 $new_piece->name = $piece_data["name"];
                 $new_piece->description = $piece_data["description"];
-                $new_piece->category()->associate(PieceCategory::search(array("name" => $piece_data["category"]))->first());
 
-                $existing_brand = PieceBrand::search(array("name" => $piece_data["brand"]))->first();
-                if($existing_brand) {
-                    $new_piece->brand()->associate($existing_brand);
-                } else {
-                    // create new entry in piece brands
-                    $new_brand = new PieceBrand();
-                    $new_brand->name = $piece_data["brand"];
-                    $new_brand->save();
+                if(isset($piece_data["category"]) && $piece_data["category"] != "") {
+                    $new_piece->category()->associate(PieceCategory::search(array("name" => $piece_data["category"]))->first());
+                }
 
-                    $new_piece->brand()->associate($new_brand);
+                if(isset($piece_data["brand"]) && $piece_data["brand"] != "") {
+                    $existing_brand = PieceBrand::search(array("name" => $piece_data["brand"]))->first();
+                    if($existing_brand) {
+                        $new_piece->brand()->associate($existing_brand);
+                    } else {
+                        // create new entry in piece brands
+                        $new_brand = new PieceBrand();
+                        $new_brand->name = $piece_data["brand"];
+                        $new_brand->save();
+
+                        $new_piece->brand()->associate($new_brand);
+                    }
                 }
 
                 $new_piece->size = $piece_data["size"];
@@ -205,18 +210,23 @@ class MediaController extends Controller {
 
                     $new_piece->name = $piece_data["name"];
                     $new_piece->description = $piece_data["description"];
-                    $new_piece->category->category()->associate(PieceCategory::search(array("name" => $piece_data["category"]))->first());
 
-                    $existing_brand = PieceBrand::search(array("name" => $piece_data["brand"]))->first();
-                    if($existing_brand) {
-                        $new_piece->brand()->associate($existing_brand);
-                    } else {
-                        // create new entry in piece brands
-                        $new_brand = new PieceBrand();
-                        $new_brand->name = $piece_data["brand"];
-                        $new_brand->save();
+                    if(isset($piece_data["category"]) && $piece_data["category"] != "") {
+                        $new_piece->category()->associate(PieceCategory::search(array("name" => $piece_data["category"]))->first());
+                    }
 
-                        $new_piece->brand()->associate($new_brand);
+                    if(isset($piece_data["brand"]) && $piece_data["brand"] != "") {
+                        $existing_brand = PieceBrand::search(array("name" => $piece_data["brand"]))->first();
+                        if($existing_brand) {
+                            $new_piece->brand()->associate($existing_brand);
+                        } else {
+                            // create new entry in piece brands
+                            $new_brand = new PieceBrand();
+                            $new_brand->name = $piece_data["brand"];
+                            $new_brand->save();
+
+                            $new_piece->brand()->associate($new_brand);
+                        }
                     }
 
                     $new_piece->size = $piece_data["size"];
