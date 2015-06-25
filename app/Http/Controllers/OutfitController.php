@@ -3,7 +3,6 @@
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Outfit;
-use App\Models\Piece;
 
 class OutfitController extends Controller {
     public function outfits(Request $request) {

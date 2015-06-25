@@ -55,12 +55,17 @@ Route::group(['middleware' => 'auth'], function() {
 
     // upload
     Route::post('upload/piece/create', 'MediaController@uploadPiece');
+    Route::post('upload/piece/update', 'MediaController@updatePiece');
     Route::post('upload/outfit/create', 'MediaController@uploadOutfit');
     Route::post('upload/outfit/spruce', 'MediaController@uploadSprucedOutfit');
 
     // follow
     Route::post('user/followed', 'UserController@followedUser');
     Route::post('user/following', 'UserController@followingUsers');
+
+    // delivery options
+    Route::post('delivery/options', 'DeliveryController@deliveryOptions');
+    Route::post('delivery/option/create', 'DeliveryController@createDeliveryOption');
 
     // firebase
     Route::get('auth/firebase/token', 'Auth\AuthController@generateFireBaseToken');

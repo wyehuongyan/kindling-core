@@ -56,7 +56,9 @@ class Piece extends Model {
         if (isset($search_fields['full_text'])) {
             $fulltext = $search_fields['full_text'];
 
-            $query->whereRaw("MATCH (name, description) AGAINST ('$fulltext')");
+            $query->whereRaw("MATCH (name, description) AGAINST ('$fulltext')")->orWhereHas('category', function($query) use ($fulltext) {
+                $query->whereRaw("MATCH (name) AGAINST ('$fulltext')");
+            });
         }
         if (isset($search_fields['description'])) {
             $query->where('description', 'like', '%' . $search_fields['description'] . '%');

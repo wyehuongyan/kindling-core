@@ -1338,6 +1338,8 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_1->height = 638.0;
         $piece_1->width = 750.0;
         $piece_1->aspectRatio = 750.0 / 638.0;
+        $piece_1->quantity = 20;
+        $piece_1->price = 22.00;
 
         $media = new stdClass();
         $media->cover = cdn("/pieces/4/user4_outfit1_top.jpg");
@@ -1369,6 +1371,8 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_2->height = 523.0;
         $piece_2->width = 750.0;
         $piece_2->aspectRatio = 750.0 / 523.0;
+        $piece_2->quantity = 25;
+        $piece_2->price = 18.00;
 
         $media = new stdClass();
         $media->cover = cdn("/pieces/4/user4_outfit1_bot.jpg");
@@ -1400,6 +1404,8 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_3->height = 477.0;
         $piece_3->width = 750.0;
         $piece_3->aspectRatio = 750.0 / 477.0;
+        $piece_3->quantity = 10;
+        $piece_3->price = 25.00;
 
         $media = new stdClass();
         $media->cover = cdn("/pieces/4/user4_outfit1_shoes.jpg");

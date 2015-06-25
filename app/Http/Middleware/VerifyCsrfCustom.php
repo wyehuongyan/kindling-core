@@ -18,7 +18,9 @@ class VerifyCsrfCustom extends \Illuminate\Foundation\Http\Middleware\VerifyCsrf
         'piece/*',
         'pieces',
         'pieces/ids',
-        'upload/*'
+        'upload/*',
+        'delivery/options',
+        'delivery/option/*'
     ];
 
     /**

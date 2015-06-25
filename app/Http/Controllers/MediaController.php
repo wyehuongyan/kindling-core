@@ -22,6 +22,177 @@ class MediaController extends Controller {
         "thumbnail" => "96"
     );
 
+    public function updatePiece(Request $request) {
+
+        try {
+            // init S3
+            $client = S3Client::factory(array(
+                'profile' => 'sprubix_s3',
+                'region' => 'ap-southeast-1'
+            ));
+
+            // retrieve user
+            $user = User::find($request->get("user_id"));
+
+            //////////////////////////////////////////
+            /////////// Delete Old Images ////////////
+            //////////////////////////////////////////
+
+            $pieces_data = $request->get("pieces");
+            $bucket_path = "pieces/" . $user->id . "/";
+
+            foreach ($pieces_data as $piece_key => $piece_data) {
+                $existing_piece = Piece::find($piece_data["id"]);
+                $pieceImages = json_decode($existing_piece->images);
+
+                foreach($pieceImages->images as $image){
+                    $stringArray = explode("/", $image->original);
+                    $originalFilename = $stringArray[count($stringArray) - 1];
+
+                    $stringArray = explode("/", $image->medium);
+                    $mediumFilename = $stringArray[count($stringArray) - 1];
+
+                    $stringArray = explode("/", $image->small);
+                    $smallFilename = $stringArray[count($stringArray) - 1];
+
+                    $stringArray = explode("/", $image->thumbnail);
+                    $thumbnailFilename = $stringArray[count($stringArray) - 1];
+
+                    $result = $client->deleteObjects(array(
+                        // Bucket is required
+                        'Bucket' => $this->bucket,
+                        // Objects is required
+                        'Objects' => array(
+                            array(
+                                // Key is required
+                                'Key' => $bucket_path . $originalFilename
+                            ),
+                            array(
+                                // Key is required
+                                'Key' => $bucket_path . $mediumFilename
+                            ),
+                            array(
+                                // Key is required
+                                'Key' => $bucket_path . $smallFilename
+                            ),
+                            array(
+                                // Key is required
+                                'Key' => $bucket_path . $thumbnailFilename
+                            )
+                        )
+                    ));
+                }
+            }
+
+            //////////////////////////////////////////
+            //////////////// Pieces //////////////////
+            //////////////////////////////////////////
+
+            // retrieve pieces info
+            $pieces_data = $request->get("pieces");
+            $bucket_path = $this->bucket . "/pieces/" . $user->id;
+
+            // create individual pieces
+            foreach ($pieces_data as $piece_key => $piece_data) {
+                $existing_piece = Piece::find($piece_data["id"]);
+
+                $existing_piece->name = $piece_data["name"];
+                $existing_piece->description = $piece_data["description"];
+
+                if(isset($piece_data["category"]) && $piece_data["category"] != "") {
+                    $existing_piece->category()->associate(PieceCategory::search(array("name" => $piece_data["category"]))->first());
+                }
+
+                if(isset($piece_data["brand"]) && $piece_data["brand"] != "") {
+                    $existing_brand = PieceBrand::search(array("name" => $piece_data["brand"]))->first();
+                    if($existing_brand) {
+                        $existing_piece->brand()->associate($existing_brand);
+                    } else {
+                        // create new entry in piece brands
+                        $new_brand = new PieceBrand();
+                        $new_brand->name = $piece_data["brand"];
+                        $new_brand->save();
+
+                        $existing_piece->brand()->associate($new_brand);
+                    }
+                }
+
+                $existing_piece->size = $piece_data["size"];
+                $existing_piece->type = $piece_data["type"];
+                $existing_piece->is_dress = $piece_data["is_dress"];
+                $existing_piece->position = $this->getPosition($piece_data["type"]);
+                $existing_piece->height = $piece_data["height"];
+                $existing_piece->width = $piece_data["width"];
+                $existing_piece->aspectRatio = $piece_data["width"] / $piece_data["height"];
+                $existing_piece->quantity = $piece_data["quantity"];
+                $existing_piece->price = $piece_data["price"];
+
+                $num_images = $piece_data["num_images"];
+
+                $media = new stdClass();
+                $piece_images = array();
+
+                for ($i = 0; $i < $num_images; $i++) {
+                    // images of the piece including cover
+                    // 4 different sizes: original (w: 750px), medium (w: 375px), small (w: 192px), thumbnail (w: 96)
+                    $piece_image = new stdClass();
+
+                    foreach ($this->sizes as $size_key => $size_value) {
+                        $file_name = "piece_" . $piece_key . "_" . $i;
+                        $file_name_size_time = $user->id . "_piece_" . $piece_key . "_" . $i . "_" . $size_key . "_" . time() . ".jpg";
+                        $file_path = storage_path() . "/uploads/" . $file_name_size_time;
+
+                        //$request->file($file_name)->move($file_path);
+
+                        // 1. resize
+                        // 2. upload to s3
+                        // 3. record url
+
+                        $image = new Imagick();
+                        $image->readImage($request->file($file_name));
+
+                        // step 1
+                        // even original has to be resized due to 6 plus uploading images > 750px width
+                        $image = $this->resizeImage($size_value, $image);
+
+                        $image->writeImage($file_path); // write to file for s3 upload later
+
+                        // step 2
+                        $result = $client->putObject(array(
+                            'Bucket'     => $bucket_path,
+                            'Key'        => $file_name_size_time,
+                            'SourceFile' => $file_path,
+                            'ACL'        => 'public-read'
+                        ));
+
+                        // step 3
+                        $piece_image->$size_key = cdn("/pieces/" . $user->id . "/" . $file_name_size_time);
+
+                        // only the first image is the cover
+                        if($i == 0 && $size_key == "original") {
+                            // only $size_key original has the best quality
+                            $media->cover = cdn("/pieces/" . $user->id . "/" . $file_name_size_time);
+                        }
+
+                        unlink($file_path);
+                    }
+
+                    $piece_images[] = $piece_image;
+                }
+
+                $media->images = $piece_images;
+
+                $existing_piece->images = json_encode($media);
+                $existing_piece->user()->associate($user);
+                $existing_piece->save(); // remember to save
+            }
+        } catch (Exception $e) {
+            Log::Error("Exception caught: \n" . $e->getMessage());
+
+            return response()->json($e)->setCallback($request->input('callback'));
+        }
+    }
+
     public function uploadPiece(Request $request) {
         try {
             // init S3
@@ -73,6 +244,8 @@ class MediaController extends Controller {
                 $new_piece->height = $piece_data["height"];
                 $new_piece->width = $piece_data["width"];
                 $new_piece->aspectRatio = $piece_data["width"] / $piece_data["height"];
+                $new_piece->quantity = $piece_data["quantity"];
+                $new_piece->price = $piece_data["price"];
 
                 $num_images = $piece_data["num_images"];
 
@@ -236,6 +409,8 @@ class MediaController extends Controller {
                     $new_piece->height = $piece_data["height"];
                     $new_piece->width = $piece_data["width"];
                     $new_piece->aspectRatio = $piece_data["width"] / $piece_data["height"];
+                    $new_piece->quantity = $piece_data["quantity"];
+                    $new_piece->price = $piece_data["price"];
 
                     $num_images = $piece_data["num_images"];
 
