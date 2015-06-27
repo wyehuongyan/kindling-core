@@ -1286,7 +1286,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         // create 1 spruced outfit
         $piece_1 = Piece::find(9);  // jasmine's outfit 3 hat
         $piece_2 = Piece::find(10); // jasmine's outfit 3 top
-        $piece_3 = Piece::find(14); // tingzhi's outfit 1 bottom
+        $piece_3 = Piece::find(16); // tingzhi's outfit 1 bottom
         $piece_4 = Piece::find(12); // jasmine's outfit 3 shoes
 
         $outfit_1 = new Outfit();
