@@ -248,7 +248,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
 
         $piece_8 = new Piece();
         $piece_8->name = "Anchor Print Chuck Taylor Sneaker";
-        $piece_8->description = "\nLace-up front with D-rings\nCanvas lining, cushioning insole\nRubber midsole\nRubber traction outsole.";
+        $piece_8->description = "Lace-up front with D-rings\nCanvas lining, cushioning insole\nRubber midsole\nRubber traction outsole.";
         $piece_8->brand()->associate(PieceBrand::find(6));
         $piece_8->size = "US 6";
         $piece_8->type = "FEET";
