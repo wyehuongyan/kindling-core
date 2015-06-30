@@ -11,7 +11,7 @@ class ShopTableSeeder extends Seeder {
         // empty the shops table first
         DB::table('shops')->delete();
 
-        // jasmine owns sprubix shop
+        // cameron owns sprubix shop
         $owner = User::find(1);
 
         // shop 1

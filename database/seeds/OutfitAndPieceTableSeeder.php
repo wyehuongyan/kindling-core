@@ -24,7 +24,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         /*                                        User 1 Pieces & Outfits                                       */
         //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        $user = User::find(1); // find jasmine
+        $user = User::find(1); // find cameron
 
         // create the pieces first
 
@@ -1284,10 +1284,10 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_3->pieces()->save($piece_9);
 
         // create 1 spruced outfit
-        $piece_1 = Piece::find(9);  // jasmine's outfit 3 hat
-        $piece_2 = Piece::find(10); // jasmine's outfit 3 top
+        $piece_1 = Piece::find(9);  // cameron's outfit 3 hat
+        $piece_2 = Piece::find(10); // cameron's outfit 3 top
         $piece_3 = Piece::find(16); // tingzhi's outfit 1 bottom
-        $piece_4 = Piece::find(12); // jasmine's outfit 3 shoes
+        $piece_4 = Piece::find(12); // cameron's outfit 3 shoes
 
         $outfit_1 = new Outfit();
         $outfit_1->name = "Spruced Outfit 1";
@@ -1304,7 +1304,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1->images = json_encode($media);
         $outfit_1->height = "2016";
         $outfit_1->width = "750";
-        $outfit_1->inspiredBy()->associate(User::find(1)); // inspired by jasmine, cecilia was browsing jasmine's outfits
+        $outfit_1->inspiredBy()->associate(User::find(1)); // inspired by cameron, cecilia was browsing cameron's outfits
         $outfit_1->user()->associate($user); // posted by cecilia
         $outfit_1->save();
 

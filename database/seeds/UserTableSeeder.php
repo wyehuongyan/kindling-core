@@ -15,17 +15,17 @@ class UserTableSeeder extends Seeder {
 
         // user 1
         $user_1 = new User();
-        $user_1->username = "jasmine";
-        $user_1->email = "jasmine@example.com";
+        $user_1->username = "cameron";
+        $user_1->email = "cameron@example.com";
         $user_1->password = bcrypt("password");
-        $user_1->name = "Jasmine";
-        $user_1->image = "https://d33m37h1i2d8gt.cloudfront.net/users/1/profile_display_user1_jasmine.jpg";
-        $user_1->cover = "https://d33m37h1i2d8gt.cloudfront.net/users/1/profile_cover_user1_jasmine.jpg";
+        $user_1->name = "Cameron";
+        $user_1->image = "https://d33m37h1i2d8gt.cloudfront.net/users/1/profile_display_user1_cameron.jpg";
+        $user_1->cover = "https://d33m37h1i2d8gt.cloudfront.net/users/1/profile_cover_user1_cameron.jpg";
         $user_1->save();
 
         // // polymorphic shopper 1
         $shopper_1 = new Shopper();
-        $shopper_1->first_name = "Jasmine";
+        $shopper_1->first_name = "Cameron";
         $shopper_1->save();
         $shopper_1->gender()->associate(ShopperGender::find(2));
         $shopper_1->user()->save($user_1);
