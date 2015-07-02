@@ -66,6 +66,8 @@ Route::group(['middleware' => 'auth'], function() {
     // delivery options
     Route::post('delivery/options', 'DeliveryController@deliveryOptions');
     Route::post('delivery/option/create', 'DeliveryController@createDeliveryOption');
+    Route::post('delivery/option/edit/{deliveryOption}', 'DeliveryController@updateDeliveryOption');
+    Route::delete('delivery/option/{deliveryOption}', 'DeliveryController@deleteDeliveryOption');
 
     // firebase
     Route::get('auth/firebase/token', 'Auth\AuthController@generateFireBaseToken');

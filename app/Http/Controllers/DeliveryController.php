@@ -27,11 +27,32 @@ class DeliveryController extends Controller {
         $deliveryOption->save();
     }
 
-    public function updateDeliveryOption(Request $request) {
+    public function updateDeliveryOption(Request $request, DeliveryOption $deliveryOption) {
+        $name = $request->get("name");
+        $price = $request->get("price");
 
+        $deliveryOption->name = $name;
+        $deliveryOption->price = $price;
+        $deliveryOption->save();
     }
 
-    public function deleteDeliveryOption(Request $request) {
+    public function deleteDeliveryOption(Request $request, DeliveryOption $deliveryOption) {
+        if($deliveryOption->user->id == $request->get("owner_id")) {
+            $deliveryOption->delete();
 
+            $json = array(
+                "status" => "200",
+                "message" => "success",
+                "deleted" => $deliveryOption
+            );
+        } else {
+            $json = array(
+                "status" => "400",
+                "message" => "error",
+                "data" => "failed to delete, please try again."
+            );
+        }
+
+        return response()->json($json)->setCallback($request->input('callback'));
     }
 }

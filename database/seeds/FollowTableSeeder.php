@@ -20,6 +20,7 @@ class FollowTableSeeder extends Seeder {
         $user_1->following()->save($user_1);
         $user_2->following()->save($user_2);
         $user_3->following()->save($user_3);
+        $user_4->following()->save($user_4);
 
         // user 1 follows user 2, user 3 and user 4
         $user_1->following()->save($user_2);

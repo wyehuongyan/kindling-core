@@ -117,7 +117,9 @@ class MediaController extends Controller {
                     }
                 }
 
-                $existing_piece->size = $piece_data["size"];
+                $piece_sizes = explode("/", $piece_data["size"]);
+
+                $existing_piece->size = json_encode($piece_sizes);
                 $existing_piece->type = $piece_data["type"];
                 $existing_piece->is_dress = $piece_data["is_dress"];
                 $existing_piece->position = $this->getPosition($piece_data["type"]);
@@ -237,7 +239,9 @@ class MediaController extends Controller {
                     }
                 }
 
-                $new_piece->size = $piece_data["size"];
+                $piece_sizes = explode("/", $piece_data["size"]);
+
+                $new_piece->size = json_encode($piece_sizes);
                 $new_piece->type = $piece_data["type"];
                 $new_piece->is_dress = $piece_data["is_dress"];
                 $new_piece->position = $this->getPosition($piece_data["type"]);
@@ -402,7 +406,9 @@ class MediaController extends Controller {
                         }
                     }
 
-                    $new_piece->size = $piece_data["size"];
+                    $piece_sizes = explode("/", $piece_data["size"]);
+
+                    $new_piece->size = json_encode($piece_sizes);
                     $new_piece->type = $piece_data["type"];
                     $new_piece->is_dress = $piece_data["is_dress"];
                     $new_piece->position = $this->getPosition($piece_data["type"]);
