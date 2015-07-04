@@ -17,8 +17,12 @@ class CartItem extends Model {
         return $this->belongsTo('App\Models\Piece');
     }
 
-    public function shop() {
-        return $this->belongsTo('App\Models\Shop');
+    public function seller() {
+        return $this->belongsTo('App\Models\User', 'seller_id');
+    }
+
+    public function deliveryOption() {
+        return $this->belongsTo('App\Models\DeliveryOption');
     }
 
     public function scopeSearch($query, $search_fields) {
@@ -27,6 +31,9 @@ class CartItem extends Model {
         }
         if (isset($search_fields['cart_id']) && is_numeric($search_fields['cart_id'])) {
             $query->where('cart_id', '=', $search_fields['cart_id']);
+        }
+        if (isset($search_fields['piece_id']) && is_numeric($search_fields['piece_id'])) {
+            $query->where('piece_id', '=', $search_fields['piece_id']);
         }
         return $query;
     }

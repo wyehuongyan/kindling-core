@@ -69,6 +69,10 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('delivery/option/edit/{deliveryOption}', 'DeliveryController@updateDeliveryOption');
     Route::delete('delivery/option/{deliveryOption}', 'DeliveryController@deleteDeliveryOption');
 
+    // cart
+    Route::post('cart/item/add', 'CartController@addCartItem');
+    Route::get('cart', 'CartController@cart');
+
     // firebase
     Route::get('auth/firebase/token', 'Auth\AuthController@generateFireBaseToken');
 });

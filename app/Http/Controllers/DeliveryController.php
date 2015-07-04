@@ -25,6 +25,8 @@ class DeliveryController extends Controller {
         $deliveryOption->user()->associate($user);
 
         $deliveryOption->save();
+
+        return response()->json($deliveryOption)->setCallback($request->input('callback'));
     }
 
     public function updateDeliveryOption(Request $request, DeliveryOption $deliveryOption) {
@@ -34,6 +36,8 @@ class DeliveryController extends Controller {
         $deliveryOption->name = $name;
         $deliveryOption->price = $price;
         $deliveryOption->save();
+
+        return response()->json($deliveryOption)->setCallback($request->input('callback'));
     }
 
     public function deleteDeliveryOption(Request $request, DeliveryOption $deliveryOption) {
