@@ -51,6 +51,10 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $this->hasMany('App\Models\Piece');
     }
 
+    public function shippingAddresses() {
+        return $this->hasMany('App\Models\UserShippingAddress');
+    }
+
     public function following() {
         // who am i following
         return $this->belongsToMany('App\Models\User', 'follows', 'follower_id', 'following_id');
