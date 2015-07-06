@@ -1331,14 +1331,22 @@ class OutfitAndPieceTableSeeder extends Seeder {
                                 "\n- Cropped body length" .
                                 "\n- Easy, drapey fit";
         $piece_1->brand()->associate(PieceBrand::find(18));
-        $piece_1->size = json_encode(array("S"));
+        $sizes = array("S", "M");
+        $piece_1->size = json_encode($sizes);
         $piece_1->type = "TOP";
         $piece_1->is_dress = false;
         $piece_1->position = "2";
         $piece_1->height = 638.0;
         $piece_1->width = 750.0;
         $piece_1->aspectRatio = 750.0 / 638.0;
-        $piece_1->quantity = 20;
+
+        $quantity = new stdClass();
+
+        foreach($sizes as $size) {
+            $quantity->$size = "5";
+        }
+
+        $piece_1->quantity = json_encode($quantity);
         $piece_1->price = 22.00;
 
         $media = new stdClass();
@@ -1364,14 +1372,23 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_2->name = "Highwaisted Dark Acid Wash Frayed Distressed Shorts";
         $piece_2->description = "Prepare for the season ahead! These blue acid wash high waisted frayed denim shorts with revealing pockets will make you stand out from the crowd!";
         $piece_2->brand()->associate(PieceBrand::find(18));
-        $piece_2->size = json_encode(array("XS", "S", "M", "L"));
+
+        $sizes = array("XS", "S", "M", "L");
+        $piece_2->size = json_encode($sizes);
         $piece_2->type = "BOTTOM";
         $piece_2->is_dress = false;
         $piece_2->position = "3";
         $piece_2->height = 523.0;
         $piece_2->width = 750.0;
         $piece_2->aspectRatio = 750.0 / 523.0;
-        $piece_2->quantity = 25;
+
+        $quantity = new stdClass();
+
+        foreach($sizes as $size) {
+            $quantity->$size = "10";
+        }
+
+        $piece_2->quantity = json_encode($quantity);
         $piece_2->price = 18.00;
 
         $media = new stdClass();
@@ -1397,14 +1414,23 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_3->name = "Carol Flats";
         $piece_3->description = "Out of the box you will feel compelled to show off in them. Just make sure that they get seen by as many people as possible!";
         $piece_3->brand()->associate(PieceBrand::find(18));
-        $piece_3->size = json_encode(array("US 7"));
+
+        $sizes = array("US 7", "US 8");
+        $piece_3->size = json_encode($sizes);
         $piece_3->type = "FEET";
         $piece_3->is_dress = false;
         $piece_3->position = "4";
         $piece_3->height = 477.0;
         $piece_3->width = 750.0;
         $piece_3->aspectRatio = 750.0 / 477.0;
-        $piece_3->quantity = 10;
+
+        $quantity = new stdClass();
+
+        foreach($sizes as $size) {
+            $quantity->$size = "8";
+        }
+
+        $piece_3->quantity = json_encode($quantity);
         $piece_3->price = 25.00;
 
         $media = new stdClass();
