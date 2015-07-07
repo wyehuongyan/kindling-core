@@ -1,10 +1,17 @@
 <?php namespace App\Http\Controllers;
 
+use App\Models\UserShippingAddress;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use App\Models\DeliveryOption;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\Debug\Exception\FatalErrorException;
 
 class DeliveryController extends Controller {
+    //////////////////////////////////////////////
+    ////////////// Delivery Options //////////////
+    //////////////////////////////////////////////
     public function deliveryOptions(Request $request) {
         $input = $request->all();
 
@@ -58,5 +65,80 @@ class DeliveryController extends Controller {
         }
 
         return response()->json($json)->setCallback($request->input('callback'));
+    }
+
+    //////////////////////////////////////////////
+    ///////////// Shipping Addresses /////////////
+    //////////////////////////////////////////////
+    public function userShippingAddresses(Request $request) {
+        $user = $request->user();
+
+        $userShippingAddresses = $user->shippingAddresses()->get();
+
+        return response()->json($userShippingAddresses)->setCallback($request->input('callback'));
+    }
+
+    public function createShippingAddress(Request $request) {
+        $user= $request->user();
+        $firstName = $request->get("first_name");
+        $lastName = $request->get("last_name");
+        $company = $request->get("company");
+        $contact = $request->get("contact_number");
+
+        $addressLineOne = $request->get("address_1");
+        $addressLineTwo = $request->get("address_2");
+        $postalCode = $request->get("postal_code");
+        $countryCode = $request->get("country_code");
+        $city = $request->get("city");
+        $state = $request->get("state");
+        $country = $request->get("country");
+
+        try {
+            $userShippingAddress = new UserShippingAddress();
+            $userShippingAddress->first_name = $firstName;
+            $userShippingAddress->last_name = $lastName;
+
+            if(isset($company)) {
+                $userShippingAddress->company = $company;
+            }
+
+            $userShippingAddress->contact_number = $contact;
+            $userShippingAddress->address_1 = $addressLineOne;
+
+            if(isset($addressLineTwo)) {
+                $userShippingAddress->address_2 = $addressLineTwo;
+            }
+
+            $userShippingAddress->postal_code = $postalCode;
+            $userShippingAddress->country_code = $countryCode;
+            $userShippingAddress->city = $city;
+            $userShippingAddress->state = $state;
+            $userShippingAddress->country = $country;
+
+            $userShippingAddress->user()->associate($user);
+
+            $userShippingAddress->save();
+
+            $json = array("status" => "200",
+                "message" => "success",
+                "cart_item" => $userShippingAddress
+            );
+
+        } catch (\Exception $e) {
+            $json = array("status" => "500",
+                "message" => "exception",
+                "exception" => $e->getMessage()
+            );
+        }
+
+        return response()->json($json)->setCallback($request->input('callback'));
+    }
+
+    public function  updateShippingAddress(Request $request, UserShippingAddress $userShippingAddress) {
+
+    }
+
+    public function deleteShippingAddress(Request $request, UserShippingAddress $userShippingAddress) {
+
     }
 }

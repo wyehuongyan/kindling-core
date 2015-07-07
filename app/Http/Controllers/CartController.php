@@ -69,7 +69,7 @@ class CartController extends Controller {
                     "cart_item" => $cartItem
                 );
             }
-        } catch (QueryException $e) {
+        } catch (\Exception $e) {
             $json = array("status" => "500",
                 "message" => "exception",
                 "exception" => $e->getMessage()

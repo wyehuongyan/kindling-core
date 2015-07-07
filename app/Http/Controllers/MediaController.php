@@ -126,7 +126,11 @@ class MediaController extends Controller {
                 $existing_piece->height = $piece_data["height"];
                 $existing_piece->width = $piece_data["width"];
                 $existing_piece->aspectRatio = $piece_data["width"] / $piece_data["height"];
-                $existing_piece->quantity = json_encode($piece_data["quantity"]);
+
+                if(isset($piece_data["quantity"])) {
+                    $existing_piece->quantity = json_encode($piece_data["quantity"]);
+                }
+
                 $existing_piece->price = $piece_data["price"];
 
                 $num_images = $piece_data["num_images"];
@@ -248,7 +252,11 @@ class MediaController extends Controller {
                 $new_piece->height = $piece_data["height"];
                 $new_piece->width = $piece_data["width"];
                 $new_piece->aspectRatio = $piece_data["width"] / $piece_data["height"];
-                $new_piece->quantity = json_encode($piece_data["quantity"]);
+
+                if(isset($piece_data["quantity"])) {
+                    $new_piece->quantity = json_encode($piece_data["quantity"]);
+                }
+
                 $new_piece->price = $piece_data["price"];
 
                 $num_images = $piece_data["num_images"];
@@ -415,7 +423,11 @@ class MediaController extends Controller {
                     $new_piece->height = $piece_data["height"];
                     $new_piece->width = $piece_data["width"];
                     $new_piece->aspectRatio = $piece_data["width"] / $piece_data["height"];
-                    $new_piece->quantity = json_encode($piece_data["quantity"]);
+
+                    if(isset($piece_data["quantity"])) {
+                        $new_piece->quantity = json_encode($piece_data["quantity"]);
+                    }
+
                     $new_piece->price = $piece_data["price"];
 
                     $num_images = $piece_data["num_images"];

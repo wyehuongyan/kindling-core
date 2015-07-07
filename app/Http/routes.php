@@ -63,11 +63,18 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('user/followed', 'UserController@followedUser');
     Route::post('user/following', 'UserController@followingUsers');
 
-    // delivery options
+    // delivery
+    // // delivery options
     Route::post('delivery/options', 'DeliveryController@deliveryOptions');
     Route::post('delivery/option/create', 'DeliveryController@createDeliveryOption');
     Route::post('delivery/option/edit/{deliveryOption}', 'DeliveryController@updateDeliveryOption');
     Route::delete('delivery/option/{deliveryOption}', 'DeliveryController@deleteDeliveryOption');
+
+    // // shipping address
+    Route::get('shipping/addresses', 'DeliveryController@userShippingAddresses');
+    Route::post('shipping/address/create', 'DeliveryController@createShippingAddress');
+    Route::post('shipping/address/edit/{userShippingAddress}', 'DeliveryController@updateShippingAddress');
+    Route::delete('shipping/address/{userShippingAddress}', 'DeliveryController@deleteShippingAddress');
 
     // cart
     Route::post('cart/item/add', 'CartController@addCartItem');
