@@ -84,6 +84,12 @@ class AuthController extends Controller {
 
             $user->save();
 
+            $shopper = new Shopper();
+            $shopper->save();
+            $shopper->user()->save($user);
+            
+            $shopper->save();
+
             $success = array(
                 "status" => "200",
                 "message" => "success",
