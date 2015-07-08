@@ -73,9 +73,17 @@ class DeliveryController extends Controller {
     public function userShippingAddresses(Request $request) {
         $user = $request->user();
 
-        $userShippingAddresses = $user->shippingAddresses()->get();
+        $userShippingAddresses = $user->shippingAddresses()->orderBy('is_current', 'desc')->get();
 
         return response()->json($userShippingAddresses)->setCallback($request->input('callback'));
+    }
+
+    public function userShippingAddress(Request $request) {
+        $user = $request->user();
+
+        $userShippingAddress = UserShippingAddress::search(["user_id" => $user->id, "is_current" => 1])->first();
+
+        return response()->json($userShippingAddress)->setCallback($request->input('callback'));
     }
 
     public function createShippingAddress(Request $request) {
@@ -92,6 +100,8 @@ class DeliveryController extends Controller {
         $city = $request->get("city");
         $state = $request->get("state");
         $country = $request->get("country");
+
+        $isCurrent = $request->get("is_current");
 
         try {
             $userShippingAddress = new UserShippingAddress();
@@ -115,13 +125,28 @@ class DeliveryController extends Controller {
             $userShippingAddress->state = $state;
             $userShippingAddress->country = $country;
 
+            if(isset($isCurrent)) {
+                if ($isCurrent) {
+                    // set all other shipping addresses to be not current
+                    $userShippingAddresses = $user->shippingAddresses()->get();
+
+                    foreach($userShippingAddresses as $shippingAddress){
+                        $shippingAddress->is_current = false;
+
+                        $shippingAddress->save();
+                    }
+
+                    $userShippingAddress->is_current = $isCurrent;
+                }
+            }
+
             $userShippingAddress->user()->associate($user);
 
             $userShippingAddress->save();
 
             $json = array("status" => "200",
                 "message" => "success",
-                "cart_item" => $userShippingAddress
+                "user_shipping_address" => $userShippingAddress
             );
 
         } catch (\Exception $e) {
@@ -135,10 +160,110 @@ class DeliveryController extends Controller {
     }
 
     public function  updateShippingAddress(Request $request, UserShippingAddress $userShippingAddress) {
+        $user= $request->user();
+        $firstName = $request->get("first_name");
+        $lastName = $request->get("last_name");
+        $company = $request->get("company");
+        $contact = $request->get("contact_number");
 
+        $addressLineOne = $request->get("address_1");
+        $addressLineTwo = $request->get("address_2");
+        $postalCode = $request->get("postal_code");
+        $countryCode = $request->get("country_code");
+        $city = $request->get("city");
+        $state = $request->get("state");
+        $country = $request->get("country");
+
+        $isCurrent = $request->get("is_current");
+
+        try {
+            $userShippingAddress->first_name = $firstName;
+            $userShippingAddress->last_name = $lastName;
+
+            if(isset($company)) {
+                $userShippingAddress->company = $company;
+            }
+
+            $userShippingAddress->contact_number = $contact;
+            $userShippingAddress->address_1 = $addressLineOne;
+
+            if(isset($addressLineTwo)) {
+                $userShippingAddress->address_2 = $addressLineTwo;
+            }
+
+            $userShippingAddress->postal_code = $postalCode;
+            $userShippingAddress->country_code = $countryCode;
+            $userShippingAddress->city = $city;
+            $userShippingAddress->state = $state;
+            $userShippingAddress->country = $country;
+
+            if(isset($isCurrent)) {
+                if ($isCurrent) {
+                    // set all other shipping addresses to be not current
+                    $userShippingAddresses = $user->shippingAddresses()->get();
+
+                    foreach($userShippingAddresses as $shippingAddress){
+                        $shippingAddress->is_current = false;
+
+                        $shippingAddress->save();
+                    }
+
+                    $userShippingAddress->is_current = $isCurrent;
+                }
+            }
+
+            $userShippingAddress->user()->associate($user);
+
+            $userShippingAddress->save();
+
+            $json = array("status" => "200",
+                "message" => "success",
+                "user_shipping_address" => $userShippingAddress
+            );
+
+        } catch (\Exception $e) {
+            $json = array("status" => "500",
+                "message" => "exception",
+                "exception" => $e->getMessage()
+            );
+        }
+
+        return response()->json($json)->setCallback($request->input('callback'));
     }
 
     public function deleteShippingAddress(Request $request, UserShippingAddress $userShippingAddress) {
+        $user = $request->user();
 
+        if($userShippingAddress->user->id == $request->get("owner_id")) {
+            if($userShippingAddress->is_current) {
+                // set the immediate successor to be current
+                $userShippingAddresses = $user->shippingAddresses()->get();
+
+                foreach($userShippingAddresses as $shippingAddress) {
+                    if(!$shippingAddress->is_current) {
+                        $shippingAddress->is_current = true;
+                        $shippingAddress->save();
+
+                        break;
+                    }
+                }
+            }
+
+            $userShippingAddress->delete();
+
+            $json = array(
+                "status" => "200",
+                "message" => "success",
+                "deleted" => $userShippingAddress
+            );
+        } else {
+            $json = array(
+                "status" => "400",
+                "message" => "error",
+                "data" => "failed to delete, please try again."
+            );
+        }
+
+        return response()->json($json)->setCallback($request->input('callback'));
     }
 }

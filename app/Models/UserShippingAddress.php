@@ -18,6 +18,12 @@ class UserShippingAddress extends Model {
         if (isset($search_fields['id']) && is_numeric($search_fields['id'])) {
             return $query->where('id', '=', $search_fields['id']);
         }
+        if (isset($search_fields['user_id']) && is_numeric($search_fields['user_id'])) {
+            $query->where('user_id', '=', $search_fields['user_id']);
+        }
+        if (isset($search_fields['is_current']) && is_numeric($search_fields['is_current'])) {
+            $query->where('is_current', '=', $search_fields['is_current']);
+        }
 
         return $query;
     }

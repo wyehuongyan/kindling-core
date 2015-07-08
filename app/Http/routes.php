@@ -72,6 +72,7 @@ Route::group(['middleware' => 'auth'], function() {
 
     // // shipping address
     Route::get('shipping/addresses', 'DeliveryController@userShippingAddresses');
+    Route::get('shipping/address', 'DeliveryController@userShippingAddress');
     Route::post('shipping/address/create', 'DeliveryController@createShippingAddress');
     Route::post('shipping/address/edit/{userShippingAddress}', 'DeliveryController@updateShippingAddress');
     Route::delete('shipping/address/{userShippingAddress}', 'DeliveryController@deleteShippingAddress');
@@ -79,6 +80,7 @@ Route::group(['middleware' => 'auth'], function() {
     // cart
     Route::post('cart/item/add', 'CartController@addCartItem');
     Route::get('cart', 'CartController@cart');
+    Route::delete('cart/item/{cartItem}', 'CartController@deleteCartItem');
 
     // firebase
     Route::get('auth/firebase/token', 'Auth\AuthController@generateFireBaseToken');

@@ -82,7 +82,26 @@ class CartController extends Controller {
     public function updateCartItem(Request $request) {
     }
 
-    public function deleteCartItem(Request $request) {
+    public function deleteCartItem(Request $request, CartItem $cartItem) {
+        $cartOwner = $cartItem->cart->user;
+
+        if($cartOwner->id == $request->get("owner_id")) {
+            $cartItem->delete();
+
+            $json = array(
+                "status" => "200",
+                "message" => "success",
+                "deleted" => $cartItem
+            );
+        } else {
+            $json = array(
+                "status" => "400",
+                "message" => "error",
+                "data" => "failed to delete, please try again."
+            );
+        }
+
+        return response()->json($json)->setCallback($request->input('callback'));
     }
 
     // Cart
