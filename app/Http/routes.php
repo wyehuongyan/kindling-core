@@ -80,6 +80,7 @@ Route::group(['middleware' => 'auth'], function() {
     // cart
     Route::post('cart/item/add', 'CartController@addCartItem');
     Route::get('cart', 'CartController@cart');
+    Route::post('cart/item/edit/{cartItem}', 'CartController@updateCartItem');
     Route::delete('cart/item/{cartItem}', 'CartController@deleteCartItem');
 
     // firebase

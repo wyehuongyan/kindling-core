@@ -37,14 +37,27 @@ class DeliveryController extends Controller {
     }
 
     public function updateDeliveryOption(Request $request, DeliveryOption $deliveryOption) {
-        $name = $request->get("name");
-        $price = $request->get("price");
+        try {
+            $name = $request->get("name");
+            $price = $request->get("price");
 
-        $deliveryOption->name = $name;
-        $deliveryOption->price = $price;
-        $deliveryOption->save();
+            $deliveryOption->name = $name;
+            $deliveryOption->price = $price;
 
-        return response()->json($deliveryOption)->setCallback($request->input('callback'));
+            $deliveryOption->save();
+
+            $json = array("status" => "200",
+                "message" => "success",
+                "delivery_option" => $deliveryOption
+            );
+        } catch (\Exception $e) {
+            $json = array("status" => "500",
+                "message" => "exception",
+                "exception" => $e->getMessage()
+            );
+        }
+
+        return response()->json($json)->setCallback($request->input('callback'));
     }
 
     public function deleteDeliveryOption(Request $request, DeliveryOption $deliveryOption) {

@@ -80,6 +80,28 @@ class CartController extends Controller {
     }
 
     public function updateCartItem(Request $request) {
+        try {
+            $cartItem = CartItem::find($request->get("id"));
+            $cartItem->size = $request->get("size");
+            $cartItem->quantity = $request->get("quantity");
+
+            $deliveryOption = DeliveryOption::find($request->get("delivery_option_id"));
+            $cartItem->deliveryOption()->associate($deliveryOption);
+
+            $cartItem->save();
+
+            $json = array("status" => "200",
+                "message" => "success",
+                "cart_item" => $cartItem
+            );
+        } catch (\Exception $e) {
+            $json = array("status" => "500",
+                "message" => "exception",
+                "exception" => $e->getMessage()
+            );
+        }
+
+        return response()->json($json)->setCallback($request->input('callback'));
     }
 
     public function deleteCartItem(Request $request, CartItem $cartItem) {

@@ -41,6 +41,24 @@ return [
         "d33m37h1i2d8gt.cloudfront.net" => ""
     ),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Braintree Environment and API Credentials
+    |--------------------------------------------------------------------------
+    |
+    | You'll need your:
+    | 1. Sandbox Merchant ID
+    | 2. Public Key
+    | 3. Private Key
+    | Use these credentials for your development and testing.
+    |
+    */
+
+    'braintree_environment' => env('BT_ENV'),
+    'braintree_merchantid' => env('BT_MERCHANT_ID'),
+    'braintree_public_key' => env('BT_PUBLIC_KEY'),
+    'braintree_private_key' => env('BT_PRIVATE_KEY'),
+
 	/*
 	|--------------------------------------------------------------------------
 	| Application Timezone
