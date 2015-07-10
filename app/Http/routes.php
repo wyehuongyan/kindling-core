@@ -83,6 +83,13 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('cart/item/edit/{cartItem}', 'CartController@updateCartItem');
     Route::delete('cart/item/{cartItem}', 'CartController@deleteCartItem');
 
-    // firebase
+    // payments
+    Route::get('billing/payments', 'PaymentController@userPaymentMethods');
+    Route::post('billing/payment/create', 'PaymentController@createPaymentMethod');
+
+    // firebase token
     Route::get('auth/firebase/token', 'Auth\AuthController@generateFireBaseToken');
+
+    // braintree token
+    Route::get('auth/braintree/token', 'Auth\AuthController@generateBraintreeToken');
 });

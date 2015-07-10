@@ -51,8 +51,8 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $this->hasMany('App\Models\Piece');
     }
 
-    public function shippingAddresses() {
-        return $this->hasMany('App\Models\UserShippingAddress');
+    public function paymentMethods() {
+        return $this->hasMany('App\Models\UserPaymentMethod');
     }
 
     public function following() {

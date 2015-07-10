@@ -1,7 +1,6 @@
 <?php namespace App\Http\Controllers;
 
 use App\Models\DeliveryOption;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use App\Models\CartItem;
 use App\Models\Cart;

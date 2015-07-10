@@ -86,7 +86,7 @@ class DeliveryController extends Controller {
     public function userShippingAddresses(Request $request) {
         $user = $request->user();
 
-        $userShippingAddresses = $user->shippingAddresses()->orderBy('is_current', 'desc')->get();
+        $userShippingAddresses = $user->shoppable->shippingAddresses()->orderBy('is_current', 'desc')->get();
 
         return response()->json($userShippingAddresses)->setCallback($request->input('callback'));
     }
@@ -141,7 +141,7 @@ class DeliveryController extends Controller {
             if(isset($isCurrent)) {
                 if ($isCurrent) {
                     // set all other shipping addresses to be not current
-                    $userShippingAddresses = $user->shippingAddresses()->get();
+                    $userShippingAddresses = $user->shoppable->shippingAddresses()->get();
 
                     foreach($userShippingAddresses as $shippingAddress){
                         $shippingAddress->is_current = false;
@@ -192,18 +192,10 @@ class DeliveryController extends Controller {
         try {
             $userShippingAddress->first_name = $firstName;
             $userShippingAddress->last_name = $lastName;
-
-            if(isset($company)) {
-                $userShippingAddress->company = $company;
-            }
-
+            $userShippingAddress->company = $company;
             $userShippingAddress->contact_number = $contact;
             $userShippingAddress->address_1 = $addressLineOne;
-
-            if(isset($addressLineTwo)) {
-                $userShippingAddress->address_2 = $addressLineTwo;
-            }
-
+            $userShippingAddress->address_2 = $addressLineTwo;
             $userShippingAddress->postal_code = $postalCode;
             $userShippingAddress->country_code = $countryCode;
             $userShippingAddress->city = $city;
@@ -213,7 +205,7 @@ class DeliveryController extends Controller {
             if(isset($isCurrent)) {
                 if ($isCurrent) {
                     // set all other shipping addresses to be not current
-                    $userShippingAddresses = $user->shippingAddresses()->get();
+                    $userShippingAddresses = $user->shoppable->shippingAddresses()->get();
 
                     foreach($userShippingAddresses as $shippingAddress){
                         $shippingAddress->is_current = false;
@@ -250,7 +242,7 @@ class DeliveryController extends Controller {
         if($userShippingAddress->user->id == $request->get("owner_id")) {
             if($userShippingAddress->is_current) {
                 // set the immediate successor to be current
-                $userShippingAddresses = $user->shippingAddresses()->get();
+                $userShippingAddresses = $user->shoppable->shippingAddresses()->get();
 
                 foreach($userShippingAddresses as $shippingAddress) {
                     if(!$shippingAddress->is_current) {

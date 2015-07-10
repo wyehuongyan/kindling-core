@@ -3,11 +3,13 @@
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Validator;
 use App\Models\User;
 use App\Models\Shopper;
-use Illuminate\Support\Facades\Log;
 use Services_FirebaseTokenGenerator;
+use Braintree_ClientToken;
+use Braintree_Configuration;
 
 class AuthController extends Controller {
 
@@ -105,21 +107,53 @@ class AuthController extends Controller {
 
     // Firebase methods
     public function generateFireBaseToken(Request $request) {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
 
-        $tokenGen = new Services_FirebaseTokenGenerator(env("FIREBASE_KEY"));
-        $token = $tokenGen->createToken(array("uid" => "sprubix-user:" . $user->id));
+            $tokenGen = new Services_FirebaseTokenGenerator(env("FIREBASE_KEY"));
+            $token = $tokenGen->createToken(array("uid" => "sprubix-user:" . $user->id));
 
-        $success = array(
-            "status" => "200",
-            "message" => "success",
-            "token" => $token
-        );
+            $json = array(
+                "status" => "200",
+                "message" => "success",
+                "token" => $token
+            );
 
-        $user->firebase_token = $token;
-        $user->save();
+            $user->firebase_token = $token;
+            $user->save();
+        } catch (\Exception $e) {
+            $json = array("status" => "500",
+                "message" => "exception",
+                "exception" => $e->getMessage()
+            );
+        }
 
-        return response()->json($success)->setCallback($request->input('callback'));
+        return response()->json($json)->setCallback($request->input('callback'));
+    }
+
+    // Braintree
+    public function generateBraintreeToken(Request $request) {
+        try {
+            // set up braintree environment
+            Braintree_Configuration::environment(Config::get('app.braintree_environment'));
+            Braintree_Configuration::merchantId(Config::get('app.braintree_merchantid'));
+            Braintree_Configuration::publicKey(Config::get('app.braintree_public_key'));
+            Braintree_Configuration::privateKey(Config::get('app.braintree_private_key'));
+
+            $clientToken = Braintree_ClientToken::generate();
+
+            $json = array("status" => "200",
+                "message" => "success",
+                "token" => $clientToken
+            );
+        } catch (\Exception $e) {
+            $json = array("status" => "500",
+                "message" => "exception",
+                "exception" => $e->getMessage()
+            );
+        }
+
+        return response()->json($json)->setCallback($request->input('callback'));
     }
 
     /**
