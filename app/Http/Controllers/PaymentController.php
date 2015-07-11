@@ -36,21 +36,21 @@ class PaymentController extends Controller {
         try {
             $userPaymentMethod = new UserPaymentMethod();
 
+            // set up braintree environment (looks like this always has to be done)
+            Braintree_Configuration::environment(Config::get('app.braintree_environment'));
+            Braintree_Configuration::merchantId(Config::get('app.braintree_merchantid'));
+            Braintree_Configuration::publicKey(Config::get('app.braintree_public_key'));
+            Braintree_Configuration::privateKey(Config::get('app.braintree_private_key'));
+
             // check if user has is already a braintree customer
             if(!isset($user->braintree_cust_id)) {
-                // set up braintree environment (looks like this always has to be done)
-                Braintree_Configuration::environment(Config::get('app.braintree_environment'));
-                Braintree_Configuration::merchantId(Config::get('app.braintree_merchantid'));
-                Braintree_Configuration::publicKey(Config::get('app.braintree_public_key'));
-                Braintree_Configuration::privateKey(Config::get('app.braintree_private_key'));
-
                 // if not, init a new customer + payment method at braintree
                 $result = Braintree_Customer::create([
                     'creditCard' => [
                         'paymentMethodNonce' => Braintree_Test_Nonces::$transactable,
                         'options' => [
                             'verifyCard' => true,
-                            'failOnDuplicatePaymentMethod' => true,
+                            //'failOnDuplicatePaymentMethod' => true,
                             'makeDefault' => $isDefault
                         ]
                     ]
@@ -69,32 +69,6 @@ class PaymentController extends Controller {
                     $user->braintree_cust_id = $result->customer->id;
                     $user->save();
 
-                    if(isset($isDefault)) {
-                        if($isDefault) {
-                            // set all other payment methods to be not default
-                            $userPaymentMethods = $user->paymentMethods()->get();
-
-                            foreach($userPaymentMethods as $paymentMethod) {
-                                $paymentMethod->is_default = false;
-
-                                $paymentMethod->save();
-                            }
-
-                            $userPaymentMethod->is_default = $isDefault;
-                        }
-                    }
-
-                    $userPaymentMethod->user()->associate($user);
-
-                    $userPaymentMethod->save();
-
-                    $json = array("status" => "200",
-                        "message" => "success",
-                        "user_payment_method" => $userPaymentMethod
-                    );
-
-                    Log::info("User payment method created successfully");
-
                 } else {
                     foreach($result->errors->deepAll() AS $error) {
                         $errorString = 'Braintree Error: ';
@@ -105,6 +79,65 @@ class PaymentController extends Controller {
 
                     throw new \Exception($errorString);
                 }
+            } else {
+                // already has a BT account
+                // // just create a new payment method
+                $result = \Braintree_PaymentMethod::create([
+                    'customerId' => $user->braintree_cust_id,
+                    'paymentMethodNonce' => Braintree_Test_Nonces::$transactable,
+                    'options' => [
+                        'verifyCard' => true,
+                        //'failOnDuplicatePaymentMethod' => true,
+                        'makeDefault' => $isDefault
+                    ]
+                ]);
+
+                if($result->success) {
+                    Log::info("BT create new payment method success");
+
+                    // set token for payment method
+                    $userPaymentMethod->token = $result->paymentMethod->token;
+                    $userPaymentMethod->redacted_card_num = $result->paymentMethod->last4;
+                    $userPaymentMethod->card_type = $result->paymentMethod->cardType;
+                    $userPaymentMethod->image = $result->paymentMethod->imageUrl;
+                }
+            }
+
+            if($result->success) {
+                if(isset($isDefault)) {
+                    if($isDefault) {
+                        // set all other payment methods to be not default
+                        $userPaymentMethods = $user->paymentMethods()->get();
+
+                        foreach($userPaymentMethods as $paymentMethod) {
+                            $paymentMethod->is_default = false;
+
+                            $paymentMethod->save();
+                        }
+
+                        $userPaymentMethod->is_default = $isDefault;
+                    }
+                }
+
+                $userPaymentMethod->user()->associate($user);
+                $userPaymentMethod->save();
+
+                $json = array("status" => "200",
+                    "message" => "success",
+                    "user_payment_method" => $userPaymentMethod
+                );
+
+                Log::info("User payment method created successfully");
+
+            } else {
+                foreach($result->errors->deepAll() AS $error) {
+                    $errorString = 'Braintree Error: ';
+                    $errorString .= $error->code . ": " . $error->message . "\r";
+
+                    Log::info($error->code . ": " . $error->message . "\r\n");
+                }
+
+                throw new \Exception($errorString);
             }
         } catch (\Exception $e) {
             $json = array("status" => "500",
