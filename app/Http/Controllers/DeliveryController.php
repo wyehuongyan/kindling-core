@@ -189,6 +189,8 @@ class DeliveryController extends Controller {
 
         $isCurrent = $request->get("is_current");
 
+        Log::info($request->all());
+
         try {
             $userShippingAddress->first_name = $firstName;
             $userShippingAddress->last_name = $lastName;
@@ -213,13 +215,15 @@ class DeliveryController extends Controller {
                         $shippingAddress->save();
                     }
 
-                    $userShippingAddress->is_current = $isCurrent;
+                    $userShippingAddress->is_current = true;
                 }
             }
 
             $userShippingAddress->user()->associate($user);
 
             $userShippingAddress->save();
+
+            Log::info($userShippingAddress);
 
             $json = array("status" => "200",
                 "message" => "success",

@@ -85,6 +85,7 @@ Route::group(['middleware' => 'auth'], function() {
 
     // payments
     Route::get('billing/payments', 'PaymentController@userPaymentMethods');
+    Route::get('billing/payment', 'PaymentController@userPaymentMethod');
     Route::post('billing/payment/create', 'PaymentController@createPaymentMethod');
 
     // firebase token
