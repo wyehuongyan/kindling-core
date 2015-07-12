@@ -57,8 +57,6 @@ class PaymentController extends Controller {
                 ]);
 
                 if($result->success) {
-                    Log::info("BT create customer with payment success");
-
                     // set token for payment method
                     $userPaymentMethod->token = $result->customer->paymentMethods()[0]->token;
                     $userPaymentMethod->redacted_card_num = $result->customer->paymentMethods()[0]->last4;
@@ -133,8 +131,6 @@ class PaymentController extends Controller {
                 foreach($result->errors->deepAll() AS $error) {
                     $errorString = 'Braintree Error: ';
                     $errorString .= $error->code . ": " . $error->message . "\r";
-
-                    Log::info($error->code . ": " . $error->message . "\r\n");
                 }
 
                 throw new \Exception($errorString);
@@ -144,8 +140,6 @@ class PaymentController extends Controller {
                 "message" => "exception",
                 "exception" => $e->getMessage()
             );
-
-            Log::info($e->getMessage());
         }
 
         return response()->json($json)->setCallback($request->input('callback'));
