@@ -172,7 +172,7 @@ class DeliveryController extends Controller {
         return response()->json($json)->setCallback($request->input('callback'));
     }
 
-    public function  updateShippingAddress(Request $request, UserShippingAddress $userShippingAddress) {
+    public function updateShippingAddress(Request $request, UserShippingAddress $userShippingAddress) {
         $user= $request->user();
         $firstName = $request->get("first_name");
         $lastName = $request->get("last_name");

@@ -28,8 +28,6 @@ class PaymentController extends Controller {
     public function createPaymentMethod(Request $request) {
         $user = $request->user();
 
-        $reductedCartNum = $request->get("reducted_card_number");
-        $cardType = $request->get("card_type");
         $isDefault = $request->get("is_default");
         $nonceFromTheClient = $request->get("nonce");
 
