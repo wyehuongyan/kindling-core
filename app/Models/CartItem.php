@@ -21,6 +21,10 @@ class CartItem extends Model {
         return $this->belongsTo('App\Models\User', 'seller_id');
     }
 
+    public function outfit() {
+        return $this->belongsTo('App\Models\Outfit');
+    }
+
     public function deliveryOption() {
         return $this->belongsTo('App\Models\DeliveryOption');
     }

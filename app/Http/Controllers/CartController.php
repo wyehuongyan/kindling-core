@@ -6,6 +6,7 @@ use App\Models\CartItem;
 use App\Models\Cart;
 use App\Models\User;
 use App\Models\Piece;
+use App\Models\Outfit;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,6 +20,7 @@ class CartController extends Controller {
         $size = $request->get("size");
         $sellerId = $request->get("seller_id");
         $buyerId = $request->get("buyer_id");
+        $outfitId = $request->get("outfit_id");
 
         try {
             // check if user has cart
@@ -58,6 +60,12 @@ class CartController extends Controller {
                 $cartItem->cart()->associate($cart);
                 $cartItem->piece()->associate($piece);
                 $cartItem->seller()->associate($seller);
+
+                if(isset($outfitId)) {
+                    $outfit = Outfit::find($outfitId);
+                    $cartItem->outfit()->associate($outfit);
+                }
+
                 $cartItem->deliveryOption()->associate($deliveryOption);
                 $cartItem->size = $size;
                 $cartItem->quantity = $quantity;
@@ -129,7 +137,7 @@ class CartController extends Controller {
     public function cart(Request $request) {
         $cart = Auth::user()->cart;
 
-        $cartItems = $cart->with('cartItems.piece', 'cartItems.seller', 'cartItems.deliveryOption')->first();
+        $cartItems = $cart->with('cartItems.outfit', 'cartItems.piece', 'cartItems.seller', 'cartItems.deliveryOption')->first();
 
         return response()->json($cartItems)->setCallback($request->input('callback'));
     }

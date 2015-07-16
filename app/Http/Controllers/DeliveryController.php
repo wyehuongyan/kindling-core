@@ -172,7 +172,7 @@ class DeliveryController extends Controller {
         return response()->json($json)->setCallback($request->input('callback'));
     }
 
-    public function  updateShippingAddress(Request $request, UserShippingAddress $userShippingAddress) {
+    public function updateShippingAddress(Request $request, UserShippingAddress $userShippingAddress) {
         $user= $request->user();
         $firstName = $request->get("first_name");
         $lastName = $request->get("last_name");
@@ -188,6 +188,8 @@ class DeliveryController extends Controller {
         $country = $request->get("country");
 
         $isCurrent = $request->get("is_current");
+
+        Log::info($request->all());
 
         try {
             $userShippingAddress->first_name = $firstName;
@@ -213,13 +215,15 @@ class DeliveryController extends Controller {
                         $shippingAddress->save();
                     }
 
-                    $userShippingAddress->is_current = $isCurrent;
+                    $userShippingAddress->is_current = true;
                 }
             }
 
             $userShippingAddress->user()->associate($user);
 
             $userShippingAddress->save();
+
+            Log::info($userShippingAddress);
 
             $json = array("status" => "200",
                 "message" => "success",
