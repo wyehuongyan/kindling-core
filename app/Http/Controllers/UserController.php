@@ -4,6 +4,8 @@ use App\Models\Shopper;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Hash;
 
 class UserController extends Controller {
     public function users(Request $request) {
@@ -62,5 +64,106 @@ class UserController extends Controller {
         })->get();
 
         return response()->json($following)->setCallback($request->input('callback'));
+    }
+
+    // Update Profile
+    public function updateProfile(Request $request) {
+        // Validate the user input
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:30',
+            'description' => 'max:255',
+        ]);
+
+        if ($validator->fails()) {
+            $error = array(
+                "status" => "400",
+                "message" => "error",
+                "data" => $validator->messages()
+            );
+
+            return response()->json($error)->setCallback($request->input('callback'));
+        } else {
+            // Pass
+            $user= $request->user();
+            $name = $request->get("name");
+            $description = $request->get("description");
+
+            try {
+                $user->name = $name;
+                $user->description = $description;
+                $user->save();
+
+                $success = array(
+                    "status" => "200",
+                    "message" => "success",
+                    "data" => $user
+                );
+
+            } catch (\Exception $e) {
+                $json = array(
+                    "status" => "500",
+                    "message" => "exception",
+                    "exception" => $e->getMessage()
+                );
+            }
+
+            return response()->json($success)->setCallback($request->input('callback'));
+        }
+    }
+
+    // Update Password
+    public function updatePassword(Request $request) {
+        // Validate the user input
+        $validator = Validator::make($request->all(), [
+            'current_password' => 'required',
+            'new_password' => 'required|confirmed|min:6',
+        ]);
+
+        if ($validator->fails()) {
+            $error = array(
+                "status" => "400",
+                "message" => "error",
+                "data" => $validator->messages()
+            );
+
+            return response()->json($error)->setCallback($request->input('callback'));
+
+        } else {
+            // Pass
+            $user= $request->user();
+            $currentPassword = $request->get("current_password");
+            $newPassword = $request->get("new_password");
+            $match = Hash::check($currentPassword, $user->password);
+
+            try {
+
+                if ($match) {
+                    $user->password = bcrypt($newPassword);
+                    $user->save();
+
+                    $success = array(
+                        "status" => "200",
+                        "message" => "success",
+                        "data" => array("match" => $match)
+                    );
+
+                } else {
+                    $success = array(
+                        "status" => "200",
+                        "message" => "fail",
+                        "data" => array("match" => $match)
+                    );
+                }
+
+            } catch (\Exception $e) {
+                $json = array(
+                    "status" => "500",
+                    "message" => "exception",
+                    "exception" => $e->getMessage()
+                );
+            }
+
+            return response()->json($success)->setCallback($request->input('callback'));
+        }
     }
 }
