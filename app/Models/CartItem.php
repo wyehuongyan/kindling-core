@@ -29,6 +29,10 @@ class CartItem extends Model {
         return $this->belongsTo('App\Models\DeliveryOption');
     }
 
+    public function shopOrder() {
+        return $this->belongsTo('App\Models\ShopOrder');
+    }
+
     public function scopeSearch($query, $search_fields) {
         if (isset($search_fields['id']) && is_numeric($search_fields['id'])) {
             return $query->where('id', '=', $search_fields['id']);

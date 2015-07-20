@@ -22,10 +22,10 @@ class VerifyCsrfCustom extends \Illuminate\Foundation\Http\Middleware\VerifyCsrf
         'delivery/options',
         'delivery/option/*',
         'shipping/address/*',
+        'cart/*',
         'cart/item/*',
-        'cart',
-        'billing/payments',
-        'billing/payment/*',
+        'billing/*',
+        'order/*',
     ];
 
     /**

@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder {
         $this->call('PieceBrandTableSeeder');
         $this->call('OutfitCategoryTableSeeder');
         $this->call('OutfitAndPieceTableSeeder');
+        $this->call('OrderStatusTableSeeder');
 	}
 
 }

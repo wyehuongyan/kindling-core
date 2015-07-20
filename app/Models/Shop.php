@@ -10,8 +10,4 @@ class Shop extends User {
     public function owner() {
         return $this->belongsTo('App\Models\User', 'user_id');
     }
-
-    public function deliveryOptions() {
-        return $this->hasMany('App\Models\DeliveryOptions', 'user_id');
-    }
 }

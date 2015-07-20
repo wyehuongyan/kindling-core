@@ -86,7 +86,7 @@ class DeliveryController extends Controller {
     public function userShippingAddresses(Request $request) {
         $user = $request->user();
 
-        $userShippingAddresses = $user->shoppable->shippingAddresses()->orderBy('is_current', 'desc')->get();
+        $userShippingAddresses = $user->shippingAddresses()->orderBy('is_current', 'desc')->get();
 
         return response()->json($userShippingAddresses)->setCallback($request->input('callback'));
     }
@@ -141,7 +141,7 @@ class DeliveryController extends Controller {
             if(isset($isCurrent)) {
                 if ($isCurrent) {
                     // set all other shipping addresses to be not current
-                    $userShippingAddresses = $user->shoppable->shippingAddresses()->get();
+                    $userShippingAddresses = $user->shippingAddresses()->get();
 
                     foreach($userShippingAddresses as $shippingAddress){
                         $shippingAddress->is_current = false;
@@ -207,7 +207,7 @@ class DeliveryController extends Controller {
             if(isset($isCurrent)) {
                 if ($isCurrent) {
                     // set all other shipping addresses to be not current
-                    $userShippingAddresses = $user->shoppable->shippingAddresses()->get();
+                    $userShippingAddresses = $user->shippingAddresses()->get();
 
                     foreach($userShippingAddresses as $shippingAddress){
                         $shippingAddress->is_current = false;
@@ -246,7 +246,7 @@ class DeliveryController extends Controller {
         if($userShippingAddress->user->id == $request->get("owner_id")) {
             if($userShippingAddress->is_current) {
                 // set the immediate successor to be current
-                $userShippingAddresses = $user->shoppable->shippingAddresses()->get();
+                $userShippingAddresses = $user->shippingAddresses()->get();
 
                 foreach($userShippingAddresses as $shippingAddress) {
                     if(!$shippingAddress->is_current) {

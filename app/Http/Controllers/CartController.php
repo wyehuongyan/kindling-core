@@ -7,7 +7,6 @@ use App\Models\Cart;
 use App\Models\User;
 use App\Models\Piece;
 use App\Models\Outfit;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller {
@@ -137,8 +136,78 @@ class CartController extends Controller {
     public function cart(Request $request) {
         $cart = Auth::user()->cart;
 
-        $cartItems = $cart->with('cartItems.outfit', 'cartItems.piece', 'cartItems.seller', 'cartItems.deliveryOption')->first();
+        if(isset($cart)) {
+            $cartItems = $cart->with('cartItems.outfit', 'cartItems.piece', 'cartItems.seller', 'cartItems.deliveryOption')->first();
+        }
 
         return response()->json($cartItems)->setCallback($request->input('callback'));
+    }
+
+    public function updateCart(Request $request, Cart $cart) {
+        try {
+            $itemsPrice = $request->get("items_price");
+            $shippingRate = $request->get("shipping_rate");
+            $totalPrice = $request->get("total_price");
+
+            $cart->items_price = $itemsPrice;
+            $cart->shipping_rate = $shippingRate;
+            $cart->total_price = $totalPrice;
+
+            $cart->save();
+
+            $json = array("status" => "200",
+                "message" => "success",
+                "cart_item" => $cart
+            );
+        } catch (\Exception $e) {
+            $json = array("status" => "500",
+                "message" => "exception",
+                "exception" => $e->getMessage()
+            );
+        }
+
+        return response()->json($json)->setCallback($request->input('callback'));
+    }
+
+    public function verifyStock(Request $request) {
+        // for each cart item check if stock is still available
+        // return a json of "insufficient_stock" if some items are unavailable
+        $insufficientStock = new \stdClass();
+        $insufficient = false;
+        $cart = Auth::user()->cart;
+
+        $cartItems = $cart->cartItems;
+
+        foreach($cartItems as $cartItem) {
+            $piece = $cartItem->piece;
+            $quantity = json_decode($piece->quantity);
+
+            foreach($quantity as $key => $value) {
+                if($cartItem->size == $key) {
+                    // verify stock
+                    if($cartItem->quantity > $value) {
+                        // low stock
+                        $insufficientStock->cart_item = $cartItem;
+                        $insufficientStock->quantity_ordered = $cartItem->quantity;
+                        $insufficientStock->quantity_left = $value;
+
+                        $insufficient = true;
+                    }
+                }
+            }
+        }
+
+        if($insufficient) {
+            $json = array("status" => "200",
+                "message" => "success",
+                "insufficient_stock" => $insufficientStock
+            );
+        } else {
+            $json = array("status" => "200",
+                "message" => "success"
+            );
+        }
+
+        return response()->json($json)->setCallback($request->input('callback'));
     }
 }

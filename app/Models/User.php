@@ -33,10 +33,14 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 *
 	 * @var array
 	 */
-	protected $hidden = ['password', 'remember_token', 'firebase_token', 'suspended_at', 'deleted_at'];
+	protected $hidden = ['password', 'remember_token', 'firebase_token', 'braintree_cust_id', 'suspended_at', 'deleted_at'];
 
     public function cart() {
         return $this->hasOne('App\Models\Cart');
+    }
+
+    public function points() {
+        return $this->hasOne('App\Models\UserPoints');
     }
 
     public function outfits() {
@@ -69,8 +73,24 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $this->morphTo();
     }
 
+    public function deliveryOptions() {
+        return $this->hasMany('App\Models\DeliveryOptions');
+    }
+
+    public function shippingAddresses() {
+        return $this->hasMany('App\Models\UserShippingAddress');
+    }
+
     public function owns() {
         return $this->hasMany('App\Models\Shop');
+    }
+
+    public function orders() {
+        return $this->hasMany('App\Models\UserOrder');
+    }
+
+    public function shopOrders() {
+        return $this->hasMany('App\Models\ShopOrder');
     }
 
     public function scopeSearch($query, $search_fields) {

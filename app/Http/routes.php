@@ -78,15 +78,29 @@ Route::group(['middleware' => 'auth'], function() {
     Route::delete('shipping/address/{userShippingAddress}', 'DeliveryController@deleteShippingAddress');
 
     // cart
-    Route::post('cart/item/add', 'CartController@addCartItem');
     Route::get('cart', 'CartController@cart');
+    Route::post('cart/update/{cart}', 'CartController@updateCart');
+    Route::post('cart/item/add', 'CartController@addCartItem');
     Route::post('cart/item/edit/{cartItem}', 'CartController@updateCartItem');
     Route::delete('cart/item/{cartItem}', 'CartController@deleteCartItem');
+    Route::get('cart/verify', 'CartController@verifyStock');
+
+    // points
+    Route::get('user/points', 'PointsController@userPoints');
+    Route::post('user/points/add', 'PointsController@addUserPoints');
+    Route::post('user/points/deduct', 'PointsController@deductUserPoints');
+    Route::post('user/points/edit', 'PointsController@updateUserPoints');
 
     // payments
     Route::get('billing/payments', 'PaymentController@userPaymentMethods');
     Route::get('billing/payment', 'PaymentController@userPaymentMethod');
     Route::post('billing/payment/create', 'PaymentController@createPaymentMethod');
+    Route::post('billing/transaction/create', 'PaymentController@createTransaction');
+
+    // orders
+    Route::get('orders', 'OrderController@userOrders');
+    Route::get('order/statuses', 'OrderController@orderStatuses');
+    Route::post('order/create', 'OrderController@createOrder');
 
     // firebase token
     Route::get('auth/firebase/token', 'Auth\AuthController@generateFireBaseToken');

@@ -7,6 +7,7 @@ use Log;
 use Braintree_Customer;
 use Braintree_Configuration;
 use Braintree_Test_Nonces;
+use Braintree_Transaction;
 
 class PaymentController extends Controller {
     public function userPaymentMethods(Request $request) {
@@ -66,8 +67,9 @@ class PaymentController extends Controller {
                     $user->save();
 
                 } else {
+                    $errorString = 'Braintree Error: ';
+
                     foreach($result->errors->deepAll() AS $error) {
-                        $errorString = 'Braintree Error: ';
                         $errorString .= $error->code . ": " . $error->message . "\r";
 
                         Log::info($error->code . ": " . $error->message . "\r\n");
@@ -89,8 +91,6 @@ class PaymentController extends Controller {
                 ]);
 
                 if($result->success) {
-                    Log::info("BT create new payment method success");
-
                     // set token for payment method
                     $userPaymentMethod->token = $result->paymentMethod->token;
                     $userPaymentMethod->redacted_card_num = $result->paymentMethod->last4;
@@ -123,8 +123,6 @@ class PaymentController extends Controller {
                     "user_payment_method" => $userPaymentMethod
                 );
 
-                Log::info("User payment method created successfully");
-
             } else {
                 foreach($result->errors->deepAll() AS $error) {
                     $errorString = 'Braintree Error: ';
@@ -133,6 +131,135 @@ class PaymentController extends Controller {
 
                 throw new \Exception($errorString);
             }
+        } catch (\Exception $e) {
+            $json = array("status" => "500",
+                "message" => "exception",
+                "exception" => $e->getMessage()
+            );
+        }
+
+        return response()->json($json)->setCallback($request->input('callback'));
+    }
+
+    public function createTransaction(Request $request) {
+        try {
+            $user = $request->user();
+            $amount = $request->get("amount");
+
+            if(isset($user)) {
+                // braintree cust id
+                $braintree_cust_id = $user->braintree_cust_id;
+            }
+
+            // set up braintree environment (looks like this always has to be done)
+            Braintree_Configuration::environment(Config::get('app.braintree_environment'));
+            Braintree_Configuration::merchantId(Config::get('app.braintree_merchantid'));
+            Braintree_Configuration::publicKey(Config::get('app.braintree_public_key'));
+            Braintree_Configuration::privateKey(Config::get('app.braintree_private_key'));
+
+            $result = Braintree_Transaction::sale(
+                [
+                    'customerId' => $braintree_cust_id,
+                    'amount' => $amount,
+                    'options' => [
+                        'submitForSettlement' => true
+                    ]
+                ]
+            );
+
+            if($result->success) {
+                // check status
+                $transaction = $result->transaction;
+                $status = $transaction->status;
+
+                $statusCode = "";
+                $statusText = "";
+
+                switch($status) {
+                    case "authorization_expired":
+                        $statusCode .= $transaction->processorResponseCode;
+                        $statusText .= $transaction->processorResponseText . " Additional: " . $transaction->additionalProcessorResponse;
+                        break;
+
+                    case "authorizing":
+                        $statusCode .= $transaction->processorResponseCode;
+                        $statusText .= $transaction->processorResponseText . " Additional: " . $transaction->additionalProcessorResponse;
+                        break;
+
+                    case "settlement_pending":
+                        $statusCode .= $transaction->processorResponseCode;
+                        $statusText .= $transaction->processorResponseText . " Additional: " . $transaction->additionalProcessorResponse;
+                        break;
+
+                    case "settlement_confirmed":
+                        $statusCode .= $transaction->processorResponseCode;
+                        $statusText .= $transaction->processorResponseText . " Additional: " . $transaction->additionalProcessorResponse;
+                        break;
+
+                    case "settlement_declined":
+                        $statusCode .= $transaction->processorSettlementResponseCode;
+                        $statusText .= $transaction->processorSettlementResponseText;
+                        break;
+
+                    case "failed":
+                        $statusCode .= $transaction->processorResponseCode;
+                        $statusText .= $transaction->processorResponseText . " Additional: " . $transaction->additionalProcessorResponse;
+                        break;
+
+                    case "gateway_rejected":
+                        $statusCode .= "nil";
+                        $statusText .= $transaction->gatewayRejectionReason;
+                        break;
+
+                    case "processor_declined":
+                        $statusCode .= $transaction->processorResponseCode;
+                        $statusText .= $transaction->processorResponseText . " Additional: " . $transaction->additionalProcessorResponse;
+                        break;
+
+                    case "settled":
+                        $statusCode .= $transaction->processorResponseCode;
+                        $statusText .= $transaction->processorResponseText . " Additional: " . $transaction->additionalProcessorResponse;
+                        break;
+
+                    case "settling":
+                        $statusCode .= $transaction->processorResponseCode;
+                        $statusText .= $transaction->processorResponseText . " Additional: " . $transaction->additionalProcessorResponse;
+                        break;
+
+                    case "voided":
+                        $statusCode .= $transaction->processorResponseCode;
+                        $statusText .= $transaction->processorResponseText . " Additional: " . $transaction->additionalProcessorResponse;
+                        break;
+
+                    case "authorized":
+                    case "submitted_for_settlement":
+                        // success
+                        $statusCode .= $transaction->processorResponseCode;
+                        $statusText .= $transaction->processorResponseText . " Additional: " . $transaction->additionalProcessorResponse;
+                        break;
+
+                    default:
+                        $statusCode .= $transaction->processorResponseCode;
+                        $statusText .= $transaction->processorResponseText . " Additional: " . $transaction->additionalProcessorResponse;
+                }
+
+                $json = array("status" => "200",
+                    "BT_transaction_id" => $transaction->id,
+                    "BT_status" => $status,
+                    "BT_code" => $statusCode,
+                    "BT_text" => $statusText
+                );
+
+            } else {
+                $errorString = 'Braintree Error: ';
+
+                foreach($result->errors->deepAll() AS $error) {
+                    $errorString .= $error->code . ": " . $error->message . "\r";
+                }
+
+                throw new \Exception($errorString);
+            }
+
         } catch (\Exception $e) {
             $json = array("status" => "500",
                 "message" => "exception",

@@ -10,8 +10,4 @@ class Shopper extends User {
     public function gender() {
         return $this->belongsTo('App\Models\ShopperGender');
     }
-
-    public function shippingAddresses() {
-        return $this->hasMany('App\Models\UserShippingAddress', 'user_id');
-    }
 }

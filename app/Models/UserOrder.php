@@ -3,18 +3,22 @@
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class DeliveryOption extends Model {
+class UserOrder extends Model {
     use SoftDeletes;
 
-    protected $table = 'delivery_options';
+    protected $table = 'user_orders';
     protected $dates = ['deleted_at'];
-
-    public function shopOrders() {
-        return $this->hasMany('App\Models\ShopOrder');
-    }
 
     public function user() {
         return $this->belongsTo('App\Models\User');
+    }
+
+    public function orderStatus() {
+        return $this->belongsTo('App\Models\OrderStatus');
+    }
+
+    public function shopOrders() {
+        return $this->hasMany('App\Models\ShopOrder');
     }
 
     public function scopeSearch($query, $search_fields) {
@@ -23,9 +27,6 @@ class DeliveryOption extends Model {
         }
         if (isset($search_fields['user_id']) && is_numeric($search_fields['user_id'])) {
             $query->where('user_id', '=', $search_fields['user_id']);
-        }
-        if (isset($search_fields['name'])) {
-            $query->where('name', 'like', '%' . $search_fields['name'] . '%');
         }
         return $query;
     }

@@ -8,6 +8,7 @@ class UserPaymentMethod extends Model {
 
     protected $table = 'user_payment_methods';
     protected $dates = ['deleted_at'];
+    protected $hidden = ['token', 'deleted_at'];
 
     public function user() {
         return $this->belongsTo('App\Models\User');
