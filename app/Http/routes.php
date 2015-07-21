@@ -109,4 +109,8 @@ Route::group(['middleware' => 'auth'], function() {
 
     // braintree token
     Route::get('auth/braintree/token', 'Auth\AuthController@generateBraintreeToken');
+
+    // edit profile
+    Route::post('update/profile', 'UserController@updateProfile');
+    Route::post('update/password', 'UserController@updatePassword');
 });
