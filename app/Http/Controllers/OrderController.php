@@ -7,7 +7,6 @@ use App\Models\ShopOrder;
 use App\Models\UserOrder;
 use App\Models\OrderStatus;
 use App\Models\UserPaymentMethod;
-use App\Models\UserPoints;
 use App\Models\UserShippingAddress;
 use Hashids\Hashids;
 use Illuminate\Http\Request;
@@ -20,25 +19,39 @@ use Log;
 class OrderController extends Controller {
 
     public function orderStatuses(Request $request) {
-        $orderStatuses = OrderStatus::all();
+        $user = $request->user();
+
+        $permittedOrderStatuses = $user->shoppable->order_statuses;
+
+        $orderStatuses = OrderStatus::find($permittedOrderStatuses);
 
         return response()->json($orderStatuses)->setCallback($request->input('callback'));
     }
 
     public function userOrders(Request $request) {
         $user = $request->user();
+        $orderStatusIds = $request->get("order_status_ids");
 
-        $query = $user->orders()->with("shopOrders.user", "shopOrders.buyer", "shopOrders.shippingAddress", "shopOrders.orderStatus", "shopOrders.deliveryOption", "shopOrders.cartItems.piece", "user")->orderBy('created_at', 'desc');
+        $query = $user->orders()->with("shopOrders", "user")->whereIn("order_status_id", $orderStatusIds)->orderBy('created_at', 'desc');
+        //$query = $user->orders()->with("shopOrders", "user")->orderBy('created_at', 'desc');
 
         $orders = $query->paginate(15);
 
         return response()->json($orders)->setCallback($request->input('callback'));
     }
 
-    public function shopOrders(Request $request) {
-        $user = $request->user();
+    public function userShopOrders(Request $request) {
+        $shopOrderIds = $request->get("shop_order_ids");
 
-        $query = $user->shopOrders()->with("user", "buyer", "shippingAddress", "orderStatus", "deliveryOption", "cartItems.piece")->orderBy('created_at', 'desc');
+        $userShopOrders = ShopOrder::whereIn('id', $shopOrderIds)->with("user", "buyer", "shippingAddress", "orderStatus", "deliveryOption", "cartItems.piece")->paginate(15);
+
+        return response()->json($userShopOrders)->setCallback($request->input('callback'));
+    }
+
+    public function shopOrders(Request $request) {
+        $shop = $request->user();
+
+        $query = $shop->shopOrders()->with("user", "buyer", "shippingAddress", "orderStatus", "deliveryOption", "cartItems.piece")->orderBy('created_at', 'desc');
 
         $orders = $query->paginate(15);
 

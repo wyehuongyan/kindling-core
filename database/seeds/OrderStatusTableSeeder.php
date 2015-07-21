@@ -29,7 +29,7 @@ class OrderStatusTableSeeder extends Seeder {
 
         // 4
         $delivered = new OrderStatus();
-        $delivered->name = "Shipping Delivered";
+        $delivered->name = "Shipping Received";
         $delivered->save();
 
         // error
@@ -47,6 +47,11 @@ class OrderStatusTableSeeder extends Seeder {
         // 7
         $orderCancelled = new OrderStatus();
         $orderCancelled->name = "Cancelled";
+        $orderCancelled->save();
+
+        // 8
+        $orderCancelled = new OrderStatus();
+        $orderCancelled->name = "Request to Cancel";
         $orderCancelled->save();
     }
 }

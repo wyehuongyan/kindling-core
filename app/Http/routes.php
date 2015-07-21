@@ -98,8 +98,9 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('billing/transaction/create', 'PaymentController@createTransaction');
 
     // orders
-    Route::get('orders/user', 'OrderController@userOrders');
-    Route::get('orders/shop', 'OrderController@shopOrders');
+    Route::post('orders/user', 'OrderController@userOrders');
+    Route::post('orders/user/shop', 'OrderController@userShopOrders');
+    Route::post('orders/shop', 'OrderController@shopOrders');
     Route::get('order/statuses', 'OrderController@orderStatuses');
     Route::post('order/create', 'OrderController@createOrder');
 

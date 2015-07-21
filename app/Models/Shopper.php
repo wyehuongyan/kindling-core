@@ -2,6 +2,7 @@
 
 class Shopper extends User {
     protected $table = 'shoppers';
+    protected $appends = array('order_statuses');
 
     public function user() {
         return $this->morphOne('App\Models\User', 'shoppable');
@@ -9,5 +10,12 @@ class Shopper extends User {
 
     public function gender() {
         return $this->belongsTo('App\Models\ShopperGender');
+    }
+
+    public function getOrderStatusesAttribute() {
+        // 4: Shipping Received
+        // 8: Request to Cancel
+
+        return array(4, 8);
     }
 }
