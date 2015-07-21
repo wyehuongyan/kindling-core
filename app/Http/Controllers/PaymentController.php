@@ -176,71 +176,66 @@ class PaymentController extends Controller {
                 $statusText = "";
 
                 switch($status) {
-                    case "authorization_expired":
+                    case Braintree_Transaction::AUTHORIZATION_EXPIRED:
                         $statusCode .= $transaction->processorResponseCode;
-                        $statusText .= $transaction->processorResponseText . " Additional: " . $transaction->additionalProcessorResponse;
+                        $statusText .= $transaction->processorResponseText . "\nAdditional: " . $transaction->additionalProcessorResponse;
                         break;
 
-                    case "authorizing":
+                    case Braintree_Transaction::AUTHORIZING:
                         $statusCode .= $transaction->processorResponseCode;
-                        $statusText .= $transaction->processorResponseText . " Additional: " . $transaction->additionalProcessorResponse;
+                        $statusText .= $transaction->processorResponseText . "\nAdditional: " . $transaction->additionalProcessorResponse;
                         break;
 
-                    case "settlement_pending":
+                    case Braintree_Transaction::SETTLEMENT_PENDING: // only for paypal
                         $statusCode .= $transaction->processorResponseCode;
-                        $statusText .= $transaction->processorResponseText . " Additional: " . $transaction->additionalProcessorResponse;
+                        $statusText .= $transaction->processorResponseText . "\nAdditional: " . $transaction->additionalProcessorResponse;
                         break;
 
-                    case "settlement_confirmed":
-                        $statusCode .= $transaction->processorResponseCode;
-                        $statusText .= $transaction->processorResponseText . " Additional: " . $transaction->additionalProcessorResponse;
-                        break;
-
-                    case "settlement_declined":
+                    case Braintree_Transaction::SETTLEMENT_DECLINED:
                         $statusCode .= $transaction->processorSettlementResponseCode;
                         $statusText .= $transaction->processorSettlementResponseText;
                         break;
 
-                    case "failed":
+                    case Braintree_Transaction::FAILED:
                         $statusCode .= $transaction->processorResponseCode;
-                        $statusText .= $transaction->processorResponseText . " Additional: " . $transaction->additionalProcessorResponse;
+                        $statusText .= $transaction->processorResponseText . "\nAdditional: " . $transaction->additionalProcessorResponse;
                         break;
 
-                    case "gateway_rejected":
+                    case Braintree_Transaction::GATEWAY_REJECTED:
                         $statusCode .= "nil";
                         $statusText .= $transaction->gatewayRejectionReason;
                         break;
 
-                    case "processor_declined":
+                    case Braintree_Transaction::PROCESSOR_DECLINED:
                         $statusCode .= $transaction->processorResponseCode;
-                        $statusText .= $transaction->processorResponseText . " Additional: " . $transaction->additionalProcessorResponse;
+                        $statusText .= $transaction->processorResponseText . "\nAdditional: " . $transaction->additionalProcessorResponse;
                         break;
 
-                    case "settled":
+                    case Braintree_Transaction::SETTLED:
                         $statusCode .= $transaction->processorResponseCode;
-                        $statusText .= $transaction->processorResponseText . " Additional: " . $transaction->additionalProcessorResponse;
+                        $statusText .= $transaction->processorResponseText . "\nAdditional: " . $transaction->additionalProcessorResponse;
                         break;
 
-                    case "settling":
+                    case Braintree_Transaction::SETTLING:
                         $statusCode .= $transaction->processorResponseCode;
-                        $statusText .= $transaction->processorResponseText . " Additional: " . $transaction->additionalProcessorResponse;
+                        $statusText .= $transaction->processorResponseText . "\nAdditional: " . $transaction->additionalProcessorResponse;
                         break;
 
-                    case "voided":
+                    case Braintree_Transaction::VOIDED:
                         $statusCode .= $transaction->processorResponseCode;
-                        $statusText .= $transaction->processorResponseText . " Additional: " . $transaction->additionalProcessorResponse;
+                        $statusText .= $transaction->processorResponseText . "\nAdditional: " . $transaction->additionalProcessorResponse;
                         break;
 
-                    case "authorized":
-                    case "submitted_for_settlement":
+                    case Braintree_Transaction::AUTHORIZED:
+                    case Braintree_Transaction::SUBMITTED_FOR_SETTLEMENT:
                         // success
                         $statusCode .= $transaction->processorResponseCode;
-                        $statusText .= $transaction->processorResponseText . " Additional: " . $transaction->additionalProcessorResponse;
+                        $statusText .= $transaction->processorResponseText . "\nAdditional: " . $transaction->additionalProcessorResponse;
                         break;
 
                     default:
                         $statusCode .= $transaction->processorResponseCode;
-                        $statusText .= $transaction->processorResponseText . " Additional: " . $transaction->additionalProcessorResponse;
+                        $statusText .= $transaction->processorResponseText . "\nAdditional: " . $transaction->additionalProcessorResponse;
                 }
 
                 $json = array("status" => "200",

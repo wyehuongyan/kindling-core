@@ -1,5 +1,6 @@
 <?php namespace App\Http\Controllers;
 
+use App\Models\Cart;
 use App\Models\DeliveryOption;
 use App\Models\User;
 use App\Models\ShopOrder;
@@ -27,7 +28,19 @@ class OrderController extends Controller {
     public function userOrders(Request $request) {
         $user = $request->user();
 
-        $orders = $user->orders()->with("shopOrders.user", "shopOrders.buyer", "shopOrders.shippingAddress", "shopOrders.orderStatus", "shopOrders.deliveryOption", "shopOrders.cartItems.piece", "user")->paginate(15);
+        $query = $user->orders()->with("shopOrders.user", "shopOrders.buyer", "shopOrders.shippingAddress", "shopOrders.orderStatus", "shopOrders.deliveryOption", "shopOrders.cartItems.piece", "user")->orderBy('created_at', 'desc');
+
+        $orders = $query->paginate(15);
+
+        return response()->json($orders)->setCallback($request->input('callback'));
+    }
+
+    public function shopOrders(Request $request) {
+        $user = $request->user();
+
+        $query = $user->shopOrders()->with("user", "buyer", "shippingAddress", "orderStatus", "deliveryOption", "cartItems.piece")->orderBy('created_at', 'desc');
+
+        $orders = $query->paginate(15);
 
         return response()->json($orders)->setCallback($request->input('callback'));
     }
@@ -68,9 +81,9 @@ class OrderController extends Controller {
             $userOrder->braintree_transaction_id = $transactionId;
             $userOrder->total_points = $totalPoints;
 
-            $userPoints = $user->points;
+            /*$userPoints = $user->points;
 
-            /*// create user points
+            // create user points
             if(!isset($userPoints)) {
                 $userPoints = new UserPoints();
                 $userPoints->user()->associate($user);
@@ -92,13 +105,103 @@ class OrderController extends Controller {
             // // to determine the status, retrieve the braintree transaction
             $transaction = Braintree_Transaction::find($transactionId);
 
-            if($transaction->status == Braintree_Transaction::SUBMITTED_FOR_SETTLEMENT || $transaction->status == Braintree_Transaction::AUTHORIZED) {
-                // status OK
-                $userOrder->orderStatus()->associate(OrderStatus::find(1));
-            } else {
-                // other non-OK statuses
-                $userOrder->orderStatus()->associate(OrderStatus::find(6));
+            $status = $transaction->status;
+            $statusCode = "";
+            $statusText = "";
+
+            switch($status) {
+                case Braintree_Transaction::AUTHORIZATION_EXPIRED:
+                    $statusCode .= $transaction->processorResponseCode;
+                    $statusText .= $transaction->processorResponseText . " Additional: " . $transaction->additionalProcessorResponse;
+                    break;
+
+                case Braintree_Transaction::AUTHORIZING:
+                    // order status id 1: Processing
+                    $userOrder->orderStatus()->associate(OrderStatus::find(1));
+
+                    $statusCode .= $transaction->processorResponseCode;
+                    $statusText .= $transaction->processorResponseText . "\nAdditional: " . $transaction->additionalProcessorResponse;
+                    break;
+
+                case Braintree_Transaction::SETTLEMENT_PENDING: // only for paypal
+                    $statusCode .= $transaction->processorResponseCode;
+                    $statusText .= $transaction->processorResponseText . "\nAdditional: " . $transaction->additionalProcessorResponse;
+                    break;
+
+                case Braintree_Transaction::SETTLEMENT_DECLINED:
+                    // order status id 5: Payment Failed
+                    $userOrder->orderStatus()->associate(OrderStatus::find(5));
+
+                    $statusCode .= $transaction->processorSettlementResponseCode;
+                    $statusText .= $transaction->processorSettlementResponseText;
+                    break;
+
+                case Braintree_Transaction::FAILED:
+                    // order status id 5: Payment Failed
+                    $userOrder->orderStatus()->associate(OrderStatus::find(5));
+
+                    $statusCode .= $transaction->processorResponseCode;
+                    $statusText .= $transaction->processorResponseText . "\nAdditional: " . $transaction->additionalProcessorResponse;
+                    break;
+
+                case Braintree_Transaction::GATEWAY_REJECTED:
+                    // order status id 5: Payment Failed
+                    $userOrder->orderStatus()->associate(OrderStatus::find(5));
+
+                    $statusCode .= "nil";
+                    $statusText .= $transaction->gatewayRejectionReason;
+                    break;
+
+                case Braintree_Transaction::PROCESSOR_DECLINED:
+                    // order status id 5: Payment Failed
+                    $userOrder->orderStatus()->associate(OrderStatus::find(5));
+
+                    $statusCode .= $transaction->processorResponseCode;
+                    $statusText .= $transaction->processorResponseText . "\nAdditional: " . $transaction->additionalProcessorResponse;
+                    break;
+
+                case Braintree_Transaction::SETTLED:
+                    // order status id 2: Shipping Requested
+                    $userOrder->orderStatus()->associate(OrderStatus::find(2));
+
+                    $statusCode .= $transaction->processorResponseCode;
+                    $statusText .= $transaction->processorResponseText . "\nAdditional: " . $transaction->additionalProcessorResponse;
+                    break;
+
+                case Braintree_Transaction::SETTLING:
+                    // order status id 2: Shipping Requested
+                    $userOrder->orderStatus()->associate(OrderStatus::find(2));
+
+                    $statusCode .= $transaction->processorResponseCode;
+                    $statusText .= $transaction->processorResponseText . "\nAdditional: " . $transaction->additionalProcessorResponse;
+                    break;
+
+                case Braintree_Transaction::VOIDED:
+                    // order status id 7: Cancelled
+                    $userOrder->orderStatus()->associate(OrderStatus::find(7));
+
+                    $statusCode .= $transaction->processorResponseCode;
+                    $statusText .= $transaction->processorResponseText . "\nAdditional: " . $transaction->additionalProcessorResponse;
+                    break;
+
+                case Braintree_Transaction::AUTHORIZED:
+                case Braintree_Transaction::SUBMITTED_FOR_SETTLEMENT:
+                    // success
+                    // order status id 2: Shipping Requested
+                    $userOrder->orderStatus()->associate(OrderStatus::find(2));
+
+                    $statusCode .= $transaction->processorResponseCode;
+                    $statusText .= $transaction->processorResponseText . "\nAdditional: " . $transaction->additionalProcessorResponse;
+                    break;
+
+                default:
+                    $statusCode .= $transaction->processorResponseCode;
+                    $statusText .= $transaction->processorResponseText . "\nAdditional: " . $transaction->additionalProcessorResponse;
             }
+
+            $userOrder->braintree_payment_status = $status;
+            $userOrder->braintree_payment_status_code = $statusCode;
+            $userOrder->braintree_payment_status_text = $statusText;
 
             $userOrder->save();
 
@@ -150,6 +253,10 @@ class OrderController extends Controller {
 
             // finally, give user a new cart
             // // old cart must be maintained for recording purpose
+            $user->cart->delete();
+            $newCart = new Cart();
+            $newCart->user()->associate($user);
+            $newCart->save();
 
             $json = array("status" => "200",
                 "message" => "success"
