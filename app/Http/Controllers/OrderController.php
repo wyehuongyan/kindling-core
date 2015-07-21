@@ -33,7 +33,6 @@ class OrderController extends Controller {
         $orderStatusIds = $request->get("order_status_ids");
 
         $query = $user->orders()->with("shopOrders", "user")->whereIn("order_status_id", $orderStatusIds)->orderBy('created_at', 'desc');
-        //$query = $user->orders()->with("shopOrders", "user")->orderBy('created_at', 'desc');
 
         $orders = $query->paginate(15);
 
@@ -50,8 +49,9 @@ class OrderController extends Controller {
 
     public function shopOrders(Request $request) {
         $shop = $request->user();
-
-        $query = $shop->shopOrders()->with("user", "buyer", "shippingAddress", "orderStatus", "deliveryOption", "cartItems.piece")->orderBy('created_at', 'desc');
+        $orderStatusIds = $request->get("order_status_ids");
+        
+        $query = $shop->shopOrders()->with("user", "buyer", "shippingAddress", "orderStatus", "deliveryOption", "cartItems.piece")->whereIn("order_status_id", $orderStatusIds)->orderBy('created_at', 'desc');
 
         $orders = $query->paginate(15);
 
