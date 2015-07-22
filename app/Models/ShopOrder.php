@@ -74,6 +74,9 @@ class ShopOrder extends Model {
         if (isset($search_fields['user_id']) && is_numeric($search_fields['user_id'])) {
             $query->where('user_id', '=', $search_fields['user_id']);
         }
+        if (isset($search_fields['buyer_id']) && is_numeric($search_fields['buyer_id'])) {
+            $query->where('buyer_id', '=', $search_fields['buyer_id']);
+        }
         return $query;
     }
 }

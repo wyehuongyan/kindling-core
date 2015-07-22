@@ -40,18 +40,32 @@ class OrderController extends Controller {
     }
 
     public function userShopOrders(Request $request) {
-        $shopOrderIds = $request->get("shop_order_ids");
+        $input = $request->all();
 
-        $userShopOrders = ShopOrder::whereIn('id', $shopOrderIds)->with("user", "buyer", "shippingAddress", "orderStatus", "deliveryOption", "cartItems.piece")->paginate(15);
+        $query = ShopOrder::search($input)->with("user", "buyer", "shippingAddress", "orderStatus", "deliveryOption", "cartItems.piece");
 
-        return response()->json($userShopOrders)->setCallback($request->input('callback'));
+        $userShopOrders = $query->paginate()->toJson();
+        $userTotalSpending = $query->sum("total_price");
+
+        $json = array("status" => "200",
+            "message" => "success",
+            "total_spending" => $userTotalSpending,
+            "user_shop_orders" => $userShopOrders
+        );
+
+        return response()->json($json)->setCallback($request->input('callback'));
     }
 
     public function shopOrders(Request $request) {
         $shop = $request->user();
         $orderStatusIds = $request->get("order_status_ids");
-        
-        $query = $shop->shopOrders()->with("user", "buyer", "shippingAddress", "orderStatus", "deliveryOption", "cartItems.piece")->whereIn("order_status_id", $orderStatusIds)->orderBy('created_at', 'desc');
+        $shopOrderIds = $request->get("shop_order_ids");
+
+        if(isset($orderStatusIds)) {
+            $query = $shop->shopOrders()->with("user", "buyer", "shippingAddress", "orderStatus", "deliveryOption", "cartItems.piece")->whereIn("order_status_id", $orderStatusIds)->orderBy('created_at', 'desc');
+        } else if (isset($shopOrderIds)) {
+            $query = ShopOrder::whereIn('id', $shopOrderIds)->with("user", "buyer", "shippingAddress", "orderStatus", "deliveryOption", "cartItems.piece");
+        }
 
         $orders = $query->paginate(15);
 
