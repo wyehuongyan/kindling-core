@@ -31,6 +31,8 @@ class RouteServiceProvider extends ServiceProvider {
         $router->model('deliveryOption', 'App\Models\DeliveryOption');
         $router->model('cart', 'App\Models\Cart');
         $router->model('cartItem', 'App\Models\CartItem');
+        $router->model('shopOrder', 'App\Models\ShopOrder');
+        $router->model('userOrder', 'App\Models\UserOrder');
         $router->model('userShippingAddress', 'App\Models\UserShippingAddress');
 	}
 

@@ -19,7 +19,7 @@ use Log;
 class OrderController extends Controller {
 
     public function orderStatuses(Request $request) {
-        $user = $request->user();
+        $user = Auth::user();
 
         $permittedOrderStatuses = $user->shoppable->order_statuses;
 
@@ -29,7 +29,7 @@ class OrderController extends Controller {
     }
 
     public function userOrders(Request $request) {
-        $user = $request->user();
+        $user = Auth::user();
         $orderStatusIds = $request->get("order_status_ids");
 
         $query = $user->orders()->with("shopOrders", "user")->whereIn("order_status_id", $orderStatusIds)->orderBy('created_at', 'desc');
@@ -37,6 +37,16 @@ class OrderController extends Controller {
         $orders = $query->paginate(15);
 
         return response()->json($orders)->setCallback($request->input('callback'));
+    }
+
+    public function userOrder(Request $request) {
+        $userOrderId = $request->get("user_order_id");
+
+        $userOrder = UserOrder::find($userOrderId)->with(array("shopOrders" => function($query) {
+                $query->with("user", "orderStatus");
+            }))->first();
+
+        return response()->json($userOrder)->setCallback($request->input('callback'));
     }
 
     public function userShopOrders(Request $request) {
@@ -57,7 +67,7 @@ class OrderController extends Controller {
     }
 
     public function shopOrders(Request $request) {
-        $shop = $request->user();
+        $shop = Auth::user();
         $orderStatusIds = $request->get("order_status_ids");
         $shopOrderIds = $request->get("shop_order_ids");
 
@@ -70,6 +80,39 @@ class OrderController extends Controller {
         $orders = $query->paginate(15);
 
         return response()->json($orders)->setCallback($request->input('callback'));
+    }
+
+    public function updateShopOrder(Request $request, ShopOrder $shopOrder) {
+        try {
+            $newOrderStatusId = $request->get("order_status_id");
+            $newOrderStatus = OrderStatus::find($newOrderStatusId);
+
+            $shopOrder->orderStatus()->associate($newOrderStatus);
+            $shopOrder->save();
+
+            // check if userOrder's shopOrders have all changed to the new status
+            //// take the min id of all shop orders
+            $userOrder = $shopOrder->userOrder;
+
+            $minOrderStatusId = $userOrder->shopOrders->min('order_status_id');
+            $minOrderStatus = OrderStatus::find($minOrderStatusId);
+
+            $userOrder->orderStatus()->associate($minOrderStatus);
+            $userOrder->save();
+
+            $json = array("status" => "200",
+                "message" => "success",
+                "order_status" => $newOrderStatus
+            );
+
+        } catch (\Exception $e) {
+            $json = array("status" => "500",
+                "message" => "exception",
+                "exception" => $e->getMessage()
+            );
+        }
+
+        return response()->json($json)->setCallback($request->input('callback'));
     }
 
     public function createOrder(Request $request) {
@@ -286,7 +329,8 @@ class OrderController extends Controller {
             $newCart->save();
 
             $json = array("status" => "200",
-                "message" => "success"
+                "message" => "success",
+                "user_order_id" => $userOrder->id
             );
 
         } catch (\Exception $e) {

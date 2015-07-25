@@ -100,7 +100,9 @@ Route::group(['middleware' => 'auth'], function() {
     // orders
     Route::post('orders/user', 'OrderController@userOrders');
     Route::post('orders/user/shop', 'OrderController@userShopOrders');
+    Route::post('order/user', 'OrderController@userOrder');
     Route::post('orders/shop', 'OrderController@shopOrders');
+    Route::post('order/shop/{shopOrder}', 'OrderController@updateShopOrder');
     Route::get('order/statuses', 'OrderController@orderStatuses');
     Route::post('order/create', 'OrderController@createOrder');
 

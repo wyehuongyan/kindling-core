@@ -45,13 +45,13 @@ class OrderStatusTableSeeder extends Seeder {
         $shippingDelayed->save();
 
         // 7
-        $orderCancelled = new OrderStatus();
-        $orderCancelled->name = "Cancelled";
-        $orderCancelled->save();
+        $requestCancel = new OrderStatus();
+        $requestCancel->name = "Request to Cancel";
+        $requestCancel->save();
 
         // 8
         $orderCancelled = new OrderStatus();
-        $orderCancelled->name = "Request to Cancel";
+        $orderCancelled->name = "Cancelled";
         $orderCancelled->save();
     }
 }

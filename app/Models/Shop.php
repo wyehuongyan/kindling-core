@@ -15,8 +15,8 @@ class Shop extends User {
     public function getOrderStatusesAttribute() {
         // 3: Shipping Posted
         // 6: Shipping Delayed
-        // 7: Cancelled
+        // 8: Cancelled
 
-        return array(3, 6, 7);
+        return array(3, 6, 8);
     }
 }
