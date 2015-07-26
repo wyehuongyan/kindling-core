@@ -176,6 +176,11 @@ return [
 		'App\Providers\EventServiceProvider',
 		'App\Providers\RouteServiceProvider',
 
+        /*
+		 * Custom Providers...
+		 */
+        'Davibennun\LaravelPushNotification\LaravelPushNotificationServiceProvider'
+
 	],
 
 	/*
@@ -224,6 +229,10 @@ return [
 		'Validator' => 'Illuminate\Support\Facades\Validator',
 		'View'      => 'Illuminate\Support\Facades\View',
 
+        /*
+		 * Custom Aliases...
+		 */
+        'PushNotification' => 'Davibennun\LaravelPushNotification\Facades\PushNotification',
 	],
 
 ];
