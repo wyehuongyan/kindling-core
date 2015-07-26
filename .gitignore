@@ -1,7 +1,7 @@
 /vendor
 /node_modules
 .env
-.pem
+*.pem
 composer.lock
 .DS_Store
 Thumbs.db
