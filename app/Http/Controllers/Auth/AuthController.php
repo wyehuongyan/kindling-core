@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Validator;
+use Log;
 use App\Models\User;
 use App\Models\Shopper;
 use Services_FirebaseTokenGenerator;
@@ -146,6 +147,32 @@ class AuthController extends Controller {
                 "message" => "success",
                 "token" => $clientToken
             );
+        } catch (\Exception $e) {
+            $json = array("status" => "500",
+                "message" => "exception",
+                "exception" => $e->getMessage()
+            );
+        }
+
+        return response()->json($json)->setCallback($request->input('callback'));
+    }
+
+    // APNS
+    public function updateAPNSDeviceToken(Request $request) {
+        try {
+            $deviceToken = $request->get("device_token");
+
+            $user = Auth::user();
+
+            $user->device_token = $deviceToken;
+            $user->save();
+
+            $json = array(
+                "status" => "200",
+                "message" => "success",
+                "user" => $user
+            );
+
         } catch (\Exception $e) {
             $json = array("status" => "500",
                 "message" => "exception",

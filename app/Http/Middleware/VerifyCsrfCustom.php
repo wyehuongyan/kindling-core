@@ -10,6 +10,9 @@ class VerifyCsrfCustom extends \Illuminate\Foundation\Http\Middleware\VerifyCsrf
     protected $routes = [
         'auth/register',
         'auth/login',
+        'auth/apns/*',
+        'queue/receive',
+        'queue/notification/*',
         'user/*',
         'users',
         'outfit/*',

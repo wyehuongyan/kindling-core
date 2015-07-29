@@ -112,7 +112,14 @@ Route::group(['middleware' => 'auth'], function() {
     // braintree token
     Route::get('auth/braintree/token', 'Auth\AuthController@generateBraintreeToken');
 
+    // APNS
+    Route::post('auth/apns/token', 'Auth\AuthController@updateAPNSDeviceToken');
+
     // edit profile
     Route::post('update/profile', 'UserController@updateProfile');
     Route::post('update/password', 'UserController@updatePassword');
 });
+
+// queue
+Route::post('queue/receive', 'QueueController@receiveJob');
+Route::post('queue/notification/send', 'QueueController@sendPushNotification');
