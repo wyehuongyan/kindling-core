@@ -39,7 +39,7 @@ class MailController extends Controller {
 
             $error = array(
                 "status" => "500",
-                "message" => "exception"
+                "message" => $e->getMessage()
             );
 
             return response()->json($error)->setCallback($request->input('callback'));
@@ -49,62 +49,40 @@ class MailController extends Controller {
     }
 
     public function feedback(Request $request) {
-
-        $user = $request->user();
-        $content = $request->get("content");
-        $support_name = "Team Sprubix";
-
         try {
-            $mandrill = new Mandrill(env('MANDRILL_KEY'));
+            $user = $request->user();
+            $queueName = "email_feedback";
 
-            $message = array(
-                'html' => str_replace("\n", "<br />", $content),
-                'text' => $content,
-                'subject' => "Feedback from " . $user->username,
-                'from_email' => $user->email,
-                'from_name' => $user->username,
-                'to' => array(
-                    array(
-                        'email' => env('MANDRILL_SPRUBIX_SUPPORT'),
-                        'name' => $support_name,
-                        'type' => 'to'
-                    )
+            $ironmq = new IronMQ();
+
+            $params = array(
+                "push_type" => "multicast",
+                "retries" => 5,
+                "subscribers" => array(
+                    array("url" => env("NGROK_URL") . "/queue/receive")
                 ),
-                'headers' => array('Reply-To' => $user->email),
-                'tags' => array('feedback'),
-                'subaccount' => $user->id
+                "error_queue" => $queueName . "_errors"
             );
 
-            $result = $mandrill->messages->send($message);
-            $status = $result[0]['status'];
+            $ironmq->updateQueue($queueName, $params);
 
-            if ($status == "sent") {
-                $success = array(
-                    "status" => "200",
-                    "message" => "success"
-                );
-            } else {
-                $success = array(
-                    "status" => "200",
-                    "message" => "fail"
-                );
-            }
+            $this->dispatchFrom('App\Jobs\SendFeedbackEmail', $request, [
+                'user' => $user,
+                'queueName' => $queueName
+            ]);
 
-        } catch(Mandrill_Error $e) {
-            // Mandrill errors are thrown as exceptions
-            //echo 'A mandrill error occurred: ' . get_class($e) . ' - ' . $e->getMessage();
-            // A mandrill error occurred: Mandrill_Unknown_Subaccount - No subaccount exists with the id 'customer-123'
-            //throw $e;
-
-            $error = array(
-                "status" => "500",
-                "message" => "exception"
+            $json = array("status" => "200",
+                "message" => "success"
             );
 
-            return response()->json($error)->setCallback($request->input('callback'));
+        } catch (\Exception $e) {
+            $json = array("status" => "500",
+                "message" => "exception",
+                "exception" => $e->getMessage()
+            );
         }
 
-        return response()->json($success)->setCallback($request->input('callback'));
+        return response()->json($json)->setCallback($request->input('callback'));
     }
 
 }

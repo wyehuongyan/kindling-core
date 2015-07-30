@@ -119,6 +119,7 @@ Route::group(['middleware' => 'auth'], function() {
 
     // APNS
     Route::post('auth/apns/token', 'Auth\AuthController@updateAPNSDeviceToken');
+    Route::post('notification/send', 'NotificationController@sendPushNotification');
 
     // edit profile
     Route::post('update/profile', 'UserController@updateProfile');
@@ -130,4 +131,3 @@ Route::group(['middleware' => 'auth'], function() {
 
 // queue
 Route::post('queue/receive', 'QueueController@receiveJob');
-Route::post('queue/notification/send', 'QueueController@sendPushNotification');

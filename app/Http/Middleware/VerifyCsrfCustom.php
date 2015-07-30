@@ -12,7 +12,7 @@ class VerifyCsrfCustom extends \Illuminate\Foundation\Http\Middleware\VerifyCsrf
         'auth/login',
         'auth/apns/*',
         'queue/receive',
-        'queue/notification/*',
+        'notification/*',
         'user/*',
         'users',
         'outfit/*',
