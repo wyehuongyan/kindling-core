@@ -129,5 +129,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('mail/feedback', 'MailController@feedback');
 });
 
+/////////////////////////////
+/////////* Queue *///////////
+/////////////////////////////
 // queue
 Route::post('queue/receive', 'QueueController@receiveJob');

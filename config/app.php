@@ -30,6 +30,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Application Storage domains
+    |--------------------------------------------------------------------------
+    |
+    | Specify different storage domains for your assets.
+    |
+    */
+
+    'storage' => array(
+        "s3" => "sprubixtest"
+    ),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application KeyCDN domains
     |--------------------------------------------------------------------------
     |
@@ -179,7 +192,8 @@ return [
         /*
 		 * Custom Providers...
 		 */
-        'Davibennun\LaravelPushNotification\LaravelPushNotificationServiceProvider'
+        'Davibennun\LaravelPushNotification\LaravelPushNotificationServiceProvider',
+        'App\Providers\CloudStorageServiceProvider',
 
 	],
 
@@ -233,6 +247,7 @@ return [
 		 * Custom Aliases...
 		 */
         'PushNotification' => 'Davibennun\LaravelPushNotification\Facades\PushNotification',
+        'CloudStorage' => 'App\Facades\CloudStorage',
 	],
 
 ];

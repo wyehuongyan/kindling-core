@@ -1,10 +1,10 @@
 <?php namespace App\Http\Controllers;
 
-use App\Models\Shopper;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Facades\CloudStorage;
 use Hash;
 
 class UserController extends Controller {
@@ -84,19 +84,41 @@ class UserController extends Controller {
             return response()->json($error)->setCallback($request->input('callback'));
         } else {
             // Pass
-            $user= $request->user();
+            $authUser = Auth::user();
+
+            $user = User::find($authUser->id)->with('shoppable')->first();
             $name = $request->get("name");
             $description = $request->get("description");
 
             try {
                 $user->name = $name;
                 $user->description = $description;
+
+                // profile image
+                if ($request->hasFile("profile")) {
+                    $file_name_time = $user->id . "_profile_" . time() . ".jpg";
+                    $file_path = storage_path() . "/uploads/" . $file_name_time;
+
+                    $containerPath = "/users/" . $user->id;
+
+                    $user->image = CloudStorage::putObject($request->file("profile"), "750", $file_path, $containerPath, $file_name_time);
+                }
+
+                if ($request->hasFile("cover")) {
+                    $file_name_time = $user->id . "_cover_" . time() . ".jpg";
+                    $file_path = storage_path() . "/uploads/" . $file_name_time;
+
+                    $containerPath = "/users/" . $user->id;
+
+                    $user->cover = CloudStorage::putObject($request->file("cover"), "750", $file_path, $containerPath, $file_name_time);
+                }
+
                 $user->save();
 
-                $success = array(
+                $json = array(
                     "status" => "200",
                     "message" => "success",
-                    "data" => $user
+                    "user" => $user
                 );
 
             } catch (\Exception $e) {
@@ -107,7 +129,7 @@ class UserController extends Controller {
                 );
             }
 
-            return response()->json($success)->setCallback($request->input('callback'));
+            return response()->json($json)->setCallback($request->input('callback'));
         }
     }
 
