@@ -38,6 +38,20 @@ class PieceController extends Controller {
         return response()->json($pieces)->setCallback($request->input('callback'));
     }
 
+    public function peoplePieces(Request $request) {
+        // return pieces of promoted/popular users
+
+        $peopleIds = ["4", "1", "3", "2"];
+
+        $people = User::whereIn('id', $peopleIds)->orderByRaw('FIELD(`id`, '.implode(',', $peopleIds).')')->get()->map(function($people) {
+            $people->pieces = $people->pieces()->take(6)->get();
+
+            return $people;
+        });
+
+        return response()->json($people)->setCallback($request->input('callback'));
+    }
+
     public function pieceOutfits(Request $request, Piece $piece) {
         // return outfits that this piece belongs to
 

@@ -8,10 +8,24 @@ class OutfitController extends Controller {
     public function outfits(Request $request) {
         $input = $request->all();
 
-        $query = Outfit::search($input)->with('user', 'inspiredBy')->with(array('pieces' => function($query) {
-                $query->withTrashed()->with('user', 'category', 'brand');
-            }));
-        $outfits = $query->paginate(15);
+        $lastOutfitId = $request->get("last_outfit_id");
+
+        if($lastOutfitId) {
+            $lastOutfit = Outfit::find($lastOutfitId);
+
+            $query = Outfit::search($input)->where('created_at', '<', $lastOutfit->created_at)->with('user', 'inspiredBy')->with(array('pieces' => function($query) {
+                    $query->withTrashed()->with('user', 'category', 'brand');
+                }))->orderBy('created_at', 'desc');
+
+            $outfits = $query->take(15)->get();
+
+        } else {
+            $query = Outfit::search($input)->with('user', 'inspiredBy')->with(array('pieces' => function($query) {
+                    $query->withTrashed()->with('user', 'category', 'brand');
+                }))->orderBy('created_at', 'desc');
+
+            $outfits = $query->paginate(15);
+        }
 
         return response()->json($outfits)->setCallback($request->input('callback'));
     }

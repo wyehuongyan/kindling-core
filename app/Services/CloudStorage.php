@@ -7,8 +7,7 @@ use Imagick;
 
 class CloudStorage {
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->bucket = Config::get('app.storage.s3');
 
         $this->client = S3Client::factory(array(
