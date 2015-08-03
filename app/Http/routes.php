@@ -32,11 +32,6 @@ Route::controller('password', 'Auth\PasswordController');
 Route::post('users', 'UserController@users');
 Route::get('user', 'UserController@user');
 
-/////////////////////////
-/* Mandrill subaccount */
-/////////////////////////
-Route::post('mail/subaccount/create', 'MailController@createSubaccount');
-
 /////////////////////////////
 /* User Pieces and Outfits */
 /////////////////////////////
@@ -127,6 +122,7 @@ Route::group(['middleware' => 'auth'], function() {
 
     // mail
     Route::post('mail/feedback', 'MailController@feedback');
+    Route::post('mail/welcome', 'MailController@orders');
 });
 
 /////////////////////////////

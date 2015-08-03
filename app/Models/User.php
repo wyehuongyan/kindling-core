@@ -33,7 +33,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 *
 	 * @var array
 	 */
-	protected $hidden = ['password', 'remember_token', 'firebase_token', 'braintree_cust_id', 'suspended_at', 'deleted_at'];
+	protected $hidden = ['password', 'remember_token', 'firebase_token', 'braintree_cust_id', 'mandrill_subaccount_id', 'suspended_at', 'deleted_at'];
 
     public function cart() {
         return $this->hasOne('App\Models\Cart');
