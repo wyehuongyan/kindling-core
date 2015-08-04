@@ -1469,6 +1469,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1->images = json_encode($media);
         $outfit_1->height = "1636";
         $outfit_1->width = "750";
+        $outfit_1->purchasable = true;
         $outfit_1->user()->associate($user);
         $outfit_1->save();
 

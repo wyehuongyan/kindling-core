@@ -336,6 +336,7 @@ class MediaController extends Controller {
 
                     if(isset($piece_data["quantity"])) {
                         $new_piece->quantity = json_encode($piece_data["quantity"]);
+                        $new_outfit->purchasable = true;
                     }
 
                     $new_piece->price = $piece_data["price"];
@@ -376,6 +377,8 @@ class MediaController extends Controller {
 
                     $new_outfit->pieces()->save($new_piece); // add piece to outfit
                 }
+
+                $new_outfit->save();
 
                 return response()->json($new_outfit)->setCallback($request->input('callback'));
             } else {
@@ -437,7 +440,13 @@ class MediaController extends Controller {
                 foreach ($pieces as $piece) {
                     // many to many assignment
                     $new_outfit->pieces()->save($piece);
+
+                    if (isset($piece->quantity)) {
+                        $new_outfit->purchasable = true;
+                    }
                 }
+
+                $new_outfit->save();
 
             } else {
                 throw new Exception("No files were uploaded");
