@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Piece;
 use App\Models\PieceCategory;
@@ -41,10 +42,12 @@ class PieceController extends Controller {
     public function peoplePieces(Request $request) {
         // return pieces of promoted/popular users
 
+        $user = Auth::User();
         $peopleIds = ["4", "1", "3", "2"];
 
-        $people = User::whereIn('id', $peopleIds)->orderByRaw('FIELD(`id`, '.implode(',', $peopleIds).')')->get()->map(function($people) {
+        $people = User::whereIn('id', $peopleIds)->orderByRaw('FIELD(`id`, '.implode(',', $peopleIds).')')->get()->map(function($people) use ($user) {
             $people->pieces = $people->pieces()->take(6)->get();
+            $people->followed = $people->followers->contains($user->id);
 
             return $people;
         });

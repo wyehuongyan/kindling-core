@@ -21,6 +21,56 @@ class UserController extends Controller {
         return response()->json(Auth::user())->setCallback($request->input('callback'));
     }
 
+    public function followUser(Request $request) {
+        $user = Auth::user();
+
+        $followUser = User::find($request->get("follow_user_id"));
+
+        try {
+            if (!$followUser->followers->contains($user->id)) {
+                $user->following()->save($followUser);
+            }
+
+            $json = array("status" => "200",
+                "message" => "success",
+                "following" => $user->following
+            );
+
+        } catch (\Exception $e) {
+            $json = array("status" => "500",
+                "message" => "exception",
+                "exception" => $e->getMessage()
+            );
+        }
+
+        return response()->json($json)->setCallback($request->input('callback'));
+    }
+
+    public function unFollowUser(Request $request) {
+        $user = Auth::user();
+
+        $unFollowUser = User::find($request->get("unfollow_user_id"));
+
+        try {
+            if ($unFollowUser->followers->contains($user->id)) {
+                $user->following()->detach($unFollowUser);
+            }
+
+            $json = array("status" => "200",
+                "message" => "success",
+                "following" => $user->following
+            );
+
+        } catch (\Exception $e) {
+            $json = array("status" => "500",
+                "message" => "exception",
+                "exception" => $e->getMessage()
+            );
+        }
+
+        return response()->json($json)->setCallback($request->input('callback'));
+    }
+
     public function followedUser(Request $request) {
         $input = $request->all();
         $targetUser = User::preciseSearch($input)->select('id')->first();
