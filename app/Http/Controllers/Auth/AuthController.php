@@ -86,6 +86,7 @@ class AuthController extends Controller {
             $user->name = $request['username'];
             $user->email = $request['email'];
             $user->password = bcrypt($request['password']);
+            $user->image = cdn("/users/0_default_profile_placeholder.jpg");
 
             $user->save();
 

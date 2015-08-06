@@ -138,11 +138,13 @@ class UserController extends Controller {
 
             $user = User::find($authUser->id)->with('shoppable')->first();
             $name = $request->get("name");
-            $description = $request->get("description");
+
+            $description = new \stdClass();
+            $description->description = $request->get("description");
 
             try {
                 $user->name = $name;
-                $user->description = $description;
+                $user->description = json_encode($description);
 
                 // profile image
                 if ($request->hasFile("profile")) {

@@ -172,7 +172,7 @@ class CartController extends Controller {
     public function verifyStock(Request $request) {
         // for each cart item check if stock is still available
         // return a json of "insufficient_stock" if some items are unavailable
-        $insufficientStock = new \stdClass();
+        $insufficientStocks = array();
         $insufficient = false;
         $cart = Auth::user()->cart;
 
@@ -187,11 +187,15 @@ class CartController extends Controller {
                     // verify stock
                     if($cartItem->quantity > $value) {
                         // low stock
+                        $insufficientStock = new \stdClass();
                         $insufficientStock->cart_item = $cartItem;
+                        $insufficientStock->cart_item_name = $piece->name;
+                        $insufficientStock->size_ordered = $key;
                         $insufficientStock->quantity_ordered = $cartItem->quantity;
                         $insufficientStock->quantity_left = $value;
 
                         $insufficient = true;
+                        $insufficientStocks[] = $insufficientStock;
                     }
                 }
             }
@@ -200,7 +204,7 @@ class CartController extends Controller {
         if($insufficient) {
             $json = array("status" => "200",
                 "message" => "success",
-                "insufficient_stock" => $insufficientStock
+                "insufficient_stocks" => $insufficientStocks
             );
         } else {
             $json = array("status" => "200",

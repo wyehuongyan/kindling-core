@@ -13,6 +13,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	use Authenticatable, CanResetPassword;
 
     protected $dates = ['deleted_at'];
+    protected $appends = array('num_outfits', 'num_followers', 'num_following');
 
 	/**
 	 * The database table used by the model.
@@ -33,7 +34,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 *
 	 * @var array
 	 */
-	protected $hidden = ['password', 'remember_token', 'firebase_token', 'braintree_cust_id', 'mandrill_subaccount_id', 'suspended_at', 'deleted_at'];
+	protected $hidden = ['password', 'device_token', 'remember_token', 'firebase_token', 'braintree_cust_id', 'mandrill_subaccount_id', 'suspended_at', 'deleted_at'];
 
     public function cart() {
         return $this->hasOne('App\Models\Cart');
@@ -118,5 +119,18 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
             return $query->where('email', '=', $search_fields['email']);
         }
         return $query;
+    }
+
+    // appended attributes
+    public function getNumOutfitsAttribute() {
+        return $this->outfits()->count();
+    }
+
+    public function getNumFollowersAttribute() {
+        return $this->followers()->count();
+    }
+
+    public function getNumFollowingAttribute(){
+        return $this->following()->count();
     }
 }

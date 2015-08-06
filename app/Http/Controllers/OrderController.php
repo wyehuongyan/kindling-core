@@ -317,6 +317,17 @@ class OrderController extends Controller {
                         // match
                         $cartItem->shopOrder()->associate($shopOrder);
                         $cartItem->save();
+
+                        // deduct shop's stock quantity
+                        $piece = $cartItem->piece;
+                        $quantity = json_decode($piece->quantity);
+
+                        $orderedSize = $cartItem->size;
+                        $newQuantity = (int)$quantity->$orderedSize - $cartItem->quantity;
+                        $quantity->$orderedSize = "$newQuantity";
+
+                        $piece->quantity = json_encode($quantity);
+                        $piece->save();
                     }
                 }
             }
