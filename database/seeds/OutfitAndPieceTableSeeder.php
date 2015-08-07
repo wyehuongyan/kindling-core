@@ -15,9 +15,9 @@ class OutfitAndPieceTableSeeder extends Seeder {
     public function run()
     {
         // empty 3 tables
-        DB::table('pieces')->delete();
-        DB::table('outfits')->delete();
-        DB::table('pieces_outfits')->delete();
+        DB::table('pieces')->truncate();
+        DB::table('outfits')->truncate();
+        DB::table('pieces_outfits')->truncate();
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////

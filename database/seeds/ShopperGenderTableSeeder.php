@@ -8,7 +8,7 @@ class ShopperGenderTableSeeder extends Seeder {
     public function run()
     {
         // empty the shopper gender table first
-        DB::table('shopper_gender')->delete();
+        DB::table('shopper_gender')->truncate();
 
         $male = new ShopperGender();
         $male->gender = "Male";

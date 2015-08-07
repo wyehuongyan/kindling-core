@@ -9,7 +9,7 @@ class ShopTableSeeder extends Seeder {
     public function run()
     {
         // empty the shops table first
-        DB::table('shops')->delete();
+        DB::table('shops')->truncate();
 
         // cameron owns sprubix shop
         $owner = User::find(1);
