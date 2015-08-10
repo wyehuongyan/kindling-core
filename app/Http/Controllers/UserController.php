@@ -107,7 +107,7 @@ class UserController extends Controller {
         // retrieves the list of users that are following you, i.e. your followers
         $user = Auth::user();
 
-        $followers = $user->followers()->paginate(15);
+        $followers = $user->followers()->where('follower_id', '!=', $user->id)->paginate(15);
 
         return response()->json($followers)->setCallback($request->input('callback'));
     }
@@ -123,7 +123,7 @@ class UserController extends Controller {
                 $query->where('username', 'like', '%' . $initials . '%')->orWhere('name', 'like', '%' . $initials . '%');
             })->get();
         } else {
-            $following = $user->following()->paginate(15);
+            $following = $user->following()->where('following_id', '!=', $user->id)->paginate(15);
         }
 
         return response()->json($following)->setCallback($request->input('callback'));
