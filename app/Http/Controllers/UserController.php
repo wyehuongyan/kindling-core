@@ -103,13 +103,17 @@ class UserController extends Controller {
         return response()->json($jsonResponse)->setCallback($request->input('callback'));
     }
 
-    public function followedUsers(Request $request) {
-        // retrieves the list of users that are following you, i.e. your followers
-        $user = Auth::user();
-
+    public function userFollowers(Request $request, User $user) {
+        // retrieves the list of users that are following this user, i.e. this user's followers
         $followers = $user->followers()->where('follower_id', '!=', $user->id)->paginate(15);
 
         return response()->json($followers)->setCallback($request->input('callback'));
+    }
+
+    public function userFollowing(Request $request, User $user) {
+        $following = $user->following()->where('following_id', '!=', $user->id)->paginate(15);
+
+        return response()->json($following)->setCallback($request->input('callback'));
     }
 
     public function followingUsers(Request $request) {
@@ -122,8 +126,6 @@ class UserController extends Controller {
             $following = $user->following()->where(function($query) use ($initials) {
                 $query->where('username', 'like', '%' . $initials . '%')->orWhere('name', 'like', '%' . $initials . '%');
             })->get();
-        } else {
-            $following = $user->following()->where('following_id', '!=', $user->id)->paginate(15);
         }
 
         return response()->json($following)->setCallback($request->input('callback'));

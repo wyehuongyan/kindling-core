@@ -128,15 +128,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     public function getNumFollowersAttribute() {
-        $user = Auth::user();
-
-        return $this->followers()->where('follower_id', '!=', $user->id)->count();
+        return $this->followers()->where('follower_id', '!=', $this->id)->count();
     }
 
     public function getNumFollowingAttribute(){
-        $user = Auth::user();
-
-        return $this->following()->where('following_id', '!=', $user->id)->count();
+        return $this->following()->where('following_id', '!=', $this->id)->count();
     }
 
     public function getFollowedAttribute() {
