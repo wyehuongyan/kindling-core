@@ -339,6 +339,9 @@ class OrderController extends Controller {
             $newCart->user()->associate($user);
             $newCart->save();
 
+            // send mandrill order email
+            $this->sendOrderConfirmationEmail($userOrder->id);
+
             $json = array("status" => "200",
                 "message" => "success",
                 "user_order_id" => $userOrder->id
@@ -352,5 +355,25 @@ class OrderController extends Controller {
         }
 
         return response()->json($json)->setCallback($request->input('callback'));
+    }
+
+    private function sendOrderConfirmationEmail($userOrderId) {
+        $queueName = "email_confirmation";
+
+        $ironmq = new IronMQ();
+
+        $params = array(
+            "push_type" => "multicast",
+            "retries" => 5,
+            "subscribers" => array(
+                array("url" => env("NGROK_URL") . "/queue/receive")
+            ),
+            "error_queue" => $queueName . "_errors"
+        );
+
+        $ironmq->updateQueue($queueName, $params);
+
+        $job = (new SendOrderConfirmationEmail($userOrderId));
+        $this->dispatch($job);
     }
 }

@@ -48,15 +48,5 @@ class OrderStatusTableSeeder extends Seeder {
         $orderCancelled = new OrderStatus();
         $orderCancelled->name = "Cancelled";
         $orderCancelled->save();
-
-        // 8 (not available to user)
-        $requestRefund = new OrderStatus();
-        $requestRefund->name = "Request for Refund";
-        $requestRefund->save();
-
-        // 9 (not available to user)
-        $orderRefunded = new OrderStatus();
-        $orderRefunded->name = "Refunded";
-        $orderRefunded->save();
     }
 }

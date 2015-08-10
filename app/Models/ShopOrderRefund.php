@@ -14,6 +14,10 @@ class ShopOrderRefunds extends Model {
         return $this->belongsTo('App\Models\ShopOrder');
     }
 
+    public function refundStatus() {
+        return $this->belongsTo('App\Models\RefundStatus', 'refund_status_id');
+    }
+
     public function getCreatedAtCustomFormatAttribute()
     {
         if($this->created_at->isToday())
