@@ -8,7 +8,7 @@ class FollowTableSeeder extends Seeder {
     public function run()
     {
         // empty the follows table first
-        DB::table('follows')->delete();
+        DB::table('follows')->truncate();
 
         // retrieve user 1 (jasmine)
         $user_1 = User::find(1);

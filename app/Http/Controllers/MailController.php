@@ -3,14 +3,14 @@
 use Illuminate\Http\Request;
 use Mandrill;
 use App\Models\User;
-use Carbon\Carbon;
+use IronMQ\IronMQ;
 use Log;
 
 class MailController extends Controller {
 
     public function feedback(Request $request) {
         try {
-            $user = $request->user();
+            $user = User::find($request->user()->id);
             $queueName = "email_feedback";
 
             $ironmq = new IronMQ();

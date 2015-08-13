@@ -8,7 +8,7 @@ class OutfitCategoryTableSeeder extends Seeder {
     public function run()
     {
         // empty the outfit category table first
-        DB::table('outfit_categories')->delete();
+        DB::table('outfit_categories')->truncate();
 
         $category_1 = new OutfitCategory(); // 1
         $category_1->name = "Back to School";

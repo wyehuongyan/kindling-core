@@ -8,7 +8,7 @@ class PieceCategoryTableSeeder extends Seeder {
     public function run()
     {
         // empty the piece category table first
-        DB::table('piece_categories')->delete();
+        DB::table('piece_categories')->truncate();
 
         $category_1 = new PieceCategory(); // 1
         $category_1->name = "Accessory";

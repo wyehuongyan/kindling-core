@@ -40,8 +40,6 @@ class SendPushNotification extends Job implements SelfHandling, ShouldQueue
         // send a test apns
         if(isset($this->user->device_token)) {
             PushNotification::app("sprubixIOS")->to($this->user->device_token)->send($this->message);
-
-            Log::info("Job handle: sent APNS. Did you receive it?");
         }
     }
 }

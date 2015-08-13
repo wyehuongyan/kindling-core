@@ -103,15 +103,30 @@ class UserController extends Controller {
         return response()->json($jsonResponse)->setCallback($request->input('callback'));
     }
 
+    public function userFollowers(Request $request, User $user) {
+        // retrieves the list of users that are following this user, i.e. this user's followers
+        $followers = $user->followers()->where('follower_id', '!=', $user->id)->paginate(15);
+
+        return response()->json($followers)->setCallback($request->input('callback'));
+    }
+
+    public function userFollowing(Request $request, User $user) {
+        $following = $user->following()->where('following_id', '!=', $user->id)->paginate(15);
+
+        return response()->json($following)->setCallback($request->input('callback'));
+    }
+
     public function followingUsers(Request $request) {
         // retrieves the list of users you are following, with conditions
         // // used for autocomplete in comments when @username handles are used
         $initials = $request->get("initials"); // this will be used to match username or name
         $user = Auth::user();
 
-        $following = $user->following()->where(function($query) use ($initials) {
-            $query->where('username', 'like', '%' . $initials . '%')->orWhere('name', 'like', '%' . $initials . '%');
-        })->get();
+        if(isset($initials)) {
+            $following = $user->following()->where(function($query) use ($initials) {
+                $query->where('username', 'like', '%' . $initials . '%')->orWhere('name', 'like', '%' . $initials . '%');
+            })->get();
+        }
 
         return response()->json($following)->setCallback($request->input('callback'));
     }

@@ -65,6 +65,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('user/following', 'UserController@followingUsers');
     Route::post('user/follow', 'UserController@followUser');
     Route::post('user/unfollow', 'UserController@unFollowUser');
+    Route::get('user/{user}/followers', 'UserController@userFollowers');
+    Route::get('user/{user}/following', 'UserController@userFollowing');
 
     // delivery
     // // delivery options

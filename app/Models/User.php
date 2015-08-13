@@ -1,6 +1,7 @@
 <?php namespace App\Models;
 
 use Illuminate\Auth\Authenticatable;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -13,7 +14,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	use Authenticatable, CanResetPassword;
 
     protected $dates = ['deleted_at'];
-    protected $appends = array('num_outfits', 'num_followers', 'num_following');
+    protected $appends = array('num_outfits', 'num_followers', 'num_following', 'followed');
 
 	/**
 	 * The database table used by the model.
@@ -127,10 +128,16 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     public function getNumFollowersAttribute() {
-        return $this->followers()->count();
+        return $this->followers()->where('follower_id', '!=', $this->id)->count();
     }
 
     public function getNumFollowingAttribute(){
-        return $this->following()->count();
+        return $this->following()->where('following_id', '!=', $this->id)->count();
+    }
+
+    public function getFollowedAttribute() {
+        $user = Auth::user();
+
+        return $this->followers()->get()->contains($user->id);
     }
 }

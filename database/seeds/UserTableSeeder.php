@@ -10,8 +10,8 @@ class UserTableSeeder extends Seeder {
     public function run()
     {
         // empty the users table first
-        DB::table('users')->delete();
-        DB::table('shoppers')->delete();
+        DB::table('users')->truncate();
+        DB::table('shoppers')->truncate();
 
         // user 1
         $user_1 = new User();

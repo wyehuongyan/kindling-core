@@ -8,7 +8,7 @@ class PieceBrandTableSeeder extends Seeder {
     public function run()
     {
         // empty the piece brand table first
-        DB::table('piece_brands')->delete();
+        DB::table('piece_brands')->truncate();
 
         $brand_1 = new PieceBrand(); // 1
         $brand_1->name = "Chanel";

@@ -26,6 +26,10 @@ class ShopOrder extends Model {
         return $this->belongsTo('App\Models\OrderStatus', 'order_status_id');
     }
 
+    public function shopOrderRefund() {
+        return $this->hasOne('App\Models\ShopOrderRefund');
+    }
+
     public function deliveryOption() {
         return $this->belongsTo('App\Models\DeliveryOption');
     }

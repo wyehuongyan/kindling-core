@@ -8,11 +8,11 @@ class OrderStatusTableSeeder extends Seeder {
     public function run()
     {
         // empty the order status table first
-        DB::table('order_statuses')->delete();
+        DB::table('order_statuses')->truncate();
 
         // success
 
-        // 1
+        // 1 (not available to user)
         $processing = new OrderStatus();
         $processing->name = "Processing";
         $processing->save();
@@ -34,7 +34,7 @@ class OrderStatusTableSeeder extends Seeder {
 
         // error
 
-        // 5
+        // 5 (not available to user)
         $paymentFailed = new OrderStatus();
         $paymentFailed->name = "Payment Failed";
         $paymentFailed->save();
@@ -44,12 +44,7 @@ class OrderStatusTableSeeder extends Seeder {
         $shippingDelayed->name = "Shipping Delayed";
         $shippingDelayed->save();
 
-        // 7
-        $requestCancel = new OrderStatus();
-        $requestCancel->name = "Request to Cancel";
-        $requestCancel->save();
-
-        // 8
+        // 7 (not available to user)
         $orderCancelled = new OrderStatus();
         $orderCancelled->name = "Cancelled";
         $orderCancelled->save();

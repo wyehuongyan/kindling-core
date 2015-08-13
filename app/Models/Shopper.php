@@ -14,8 +14,7 @@ class Shopper extends User {
 
     public function getOrderStatusesAttribute() {
         // 4: Shipping Received
-        // 7: Request to Cancel
 
-        return array(4, 7);
+        return array(4);
     }
 }
