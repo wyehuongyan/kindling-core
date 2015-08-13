@@ -126,6 +126,9 @@ Route::group(['middleware' => 'auth'], function() {
     // mail
     Route::post('mail/feedback', 'MailController@feedback');
     Route::post('mail/welcome', 'MailController@orders');
+
+    // dashboard
+    Route::post('dashboard/report', 'DashboardController@report');
 });
 
 /////////////////////////////
