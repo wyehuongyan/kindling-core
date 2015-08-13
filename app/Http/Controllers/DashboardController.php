@@ -82,8 +82,8 @@ class DashboardController extends Controller {
 
         // orders by status
         $activeStatus = array(1, 2, 6);
-        $fulfilledStatus = array(3, 4, 7);
-        $cancelledStatus = array(5, 8);
+        $fulfilledStatus = array(3, 4);
+        $cancelledStatus = array(5, 7);
 
         $activeOrders = $shop->shopOrders()->whereIn('order_status_id',$activeStatus)->get()->count();
         $fulfilledOrders = $shop->shopOrders()->whereIn('order_status_id',$fulfilledStatus)->get()->count();
