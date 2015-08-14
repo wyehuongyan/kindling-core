@@ -43,6 +43,9 @@ class CartItem extends Model {
         if (isset($search_fields['piece_id']) && is_numeric($search_fields['piece_id'])) {
             $query->where('piece_id', '=', $search_fields['piece_id']);
         }
+        if (isset($search_fields['seller_id']) && is_numeric($search_fields['piece_id'])) {
+            $query->where('seller_id', '=', $search_fields['seller_id']);
+        }
         return $query;
     }
 }

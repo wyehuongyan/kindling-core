@@ -111,6 +111,11 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('order/statuses', 'OrderController@orderStatuses');
     Route::post('order/create', 'OrderController@createOrder');
 
+    // refunds
+    Route::post('order/shop/{shopOrder}/refund/create', 'RefundController@createRefund');
+    Route::post('order/shop/{shopOrder}/refund/update', 'RefundController@updateRefund');
+    Route::get('user/refunds', 'RefundController@userRefunds');
+
     // firebase token
     Route::get('auth/firebase/token', 'Auth\AuthController@generateFireBaseToken');
 

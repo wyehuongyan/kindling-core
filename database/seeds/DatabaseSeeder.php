@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder {
         $this->call('OutfitCategoryTableSeeder');
         $this->call('OutfitAndPieceTableSeeder');
         $this->call('OrderStatusTableSeeder');
+        $this->call('RefundStatusTableSeeder');
 	}
 
 }

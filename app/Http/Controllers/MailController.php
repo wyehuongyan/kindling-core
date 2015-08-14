@@ -1,9 +1,9 @@
 <?php namespace App\Http\Controllers;
 
+use App\Facades\SprubixQueue;
 use Illuminate\Http\Request;
 use Mandrill;
 use App\Models\User;
-use IronMQ\IronMQ;
 use Log;
 
 class MailController extends Controller {
@@ -11,25 +11,8 @@ class MailController extends Controller {
     public function feedback(Request $request) {
         try {
             $user = User::find($request->user()->id);
-            $queueName = "email_feedback";
 
-            $ironmq = new IronMQ();
-
-            $params = array(
-                "push_type" => "multicast",
-                "retries" => 5,
-                "subscribers" => array(
-                    array("url" => env("NGROK_URL") . "/queue/receive")
-                ),
-                "error_queue" => $queueName . "_errors"
-            );
-
-            $ironmq->updateQueue($queueName, $params);
-
-            $this->dispatchFrom('App\Jobs\SendFeedbackEmail', $request, [
-                'user' => $user,
-                'queueName' => $queueName
-            ]);
+            SprubixQueue::queueFeedbackEmail($request, $user);
 
             $json = array("status" => "200",
                 "message" => "success"

@@ -1,5 +1,6 @@
 <?php namespace App\Http\Controllers;
 
+use App\Facades\SprubixQueue;
 use App\Models\Cart;
 use App\Models\DeliveryOption;
 use App\Models\User;
@@ -72,9 +73,9 @@ class OrderController extends Controller {
         $shopOrderIds = $request->get("shop_order_ids");
 
         if(isset($orderStatusIds)) {
-            $query = $shop->shopOrders()->with("user", "buyer", "shippingAddress", "orderStatus", "deliveryOption", "cartItems.piece")->whereIn("order_status_id", $orderStatusIds)->orderBy('created_at', 'desc');
+            $query = $shop->shopOrders()->with("user", "buyer", "shopOrderRefund.refundStatus","shippingAddress", "orderStatus", "deliveryOption", "cartItems.piece")->whereIn("order_status_id", $orderStatusIds)->orderBy('created_at', 'desc');
         } else if (isset($shopOrderIds)) {
-            $query = ShopOrder::whereIn('id', $shopOrderIds)->with("user", "buyer", "shippingAddress", "orderStatus", "deliveryOption", "cartItems.piece");
+            $query = ShopOrder::whereIn('id', $shopOrderIds)->with("user", "buyer", "shopOrderRefund.refundStatus", "shippingAddress", "orderStatus", "deliveryOption", "cartItems.piece");
         }
 
         $orders = $query->paginate(15);
@@ -340,7 +341,7 @@ class OrderController extends Controller {
             $newCart->save();
 
             // send mandrill order email
-            $this->sendOrderConfirmationEmail($userOrder->id);
+            SprubixQueue::queueOrderConfirmationEmail($userOrder->id);
 
             $json = array("status" => "200",
                 "message" => "success",
@@ -355,25 +356,5 @@ class OrderController extends Controller {
         }
 
         return response()->json($json)->setCallback($request->input('callback'));
-    }
-
-    private function sendOrderConfirmationEmail($userOrderId) {
-        $queueName = "email_confirmation";
-
-        $ironmq = new IronMQ();
-
-        $params = array(
-            "push_type" => "multicast",
-            "retries" => 5,
-            "subscribers" => array(
-                array("url" => env("NGROK_URL") . "/queue/receive")
-            ),
-            "error_queue" => $queueName . "_errors"
-        );
-
-        $ironmq->updateQueue($queueName, $params);
-
-        $job = (new SendOrderConfirmationEmail($userOrderId));
-        $this->dispatch($job);
     }
 }

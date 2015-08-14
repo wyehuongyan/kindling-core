@@ -195,6 +195,7 @@ return [
         'Davibennun\LaravelPushNotification\LaravelPushNotificationServiceProvider',
         'App\Providers\CloudStorageServiceProvider',
         'App\Providers\SprubixMailServiceProvider',
+        'App\Providers\SprubixQueueServiceProvider',
 
 	],
 
@@ -250,6 +251,7 @@ return [
         'PushNotification' => 'Davibennun\LaravelPushNotification\Facades\PushNotification',
         'CloudStorage' => 'App\Facades\CloudStorage',
         'SprubixMail' => 'App\Facades\SprubixMail',
+        'SprubixQueue' => 'App\Facades\SprubixQueue',
 	],
 
 ];
