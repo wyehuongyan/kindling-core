@@ -1,5 +1,7 @@
 <?php namespace App\Services;
 
+use App\Jobs\SendOrderConfirmationEmail;
+use App\Jobs\SendPushNotification;
 use App\Models\User;
 use IronMQ\IronMQ;
 use Illuminate\Http\Request;
@@ -9,7 +11,7 @@ class SprubixQueue {
         $this->ironMQ = new IronMQ();
     }
 
-    public function queuePushNotification(Request $request, User $user) {
+    public function queuePushNotification(User $user, $message) {
         $queueName = "push_notifications";
 
         $params = array(
@@ -23,10 +25,8 @@ class SprubixQueue {
 
         $this->ironMQ->updateQueue($queueName, $params);
 
-        $this->dispatchFrom('App\Jobs\SendPushNotification', $request, [
-            'user' => $user,
-            'queueName' => $queueName
-        ]);
+        $job = (new SendPushNotification($user, $message, $queueName));
+        $this->dispatch($job);
     }
 
     public function queueFeedbackEmail(Request $request, User $user) {
@@ -53,6 +53,10 @@ class SprubixQueue {
 
     }
 
+    public function queueRefundedEmail() {
+
+    }
+
     public function queueOrderConfirmationEmail($userOrderId) {
         $queueName = "email_confirmation";
 
@@ -67,7 +71,7 @@ class SprubixQueue {
 
         $this->ironMQ->updateQueue($queueName, $params);
 
-        $job = (new SendOrderConfirmationEmail($userOrderId));
+        $job = (new SendOrderConfirmationEmail($userOrderId, $queueName));
         $this->dispatch($job);
     }
 }

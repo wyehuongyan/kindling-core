@@ -30,6 +30,7 @@ class VerifyCsrfCustom extends \Illuminate\Foundation\Http\Middleware\VerifyCsrf
         'billing/*',
         'order/*',
         'orders/*',
+        'refund/*',
         'update/profile',
         'update/password',
         'mail/feedback',

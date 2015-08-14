@@ -73,9 +73,9 @@ class OrderController extends Controller {
         $shopOrderIds = $request->get("shop_order_ids");
 
         if(isset($orderStatusIds)) {
-            $query = $shop->shopOrders()->with("user", "buyer", "shopOrderRefund.refundStatus","shippingAddress", "orderStatus", "deliveryOption", "cartItems.piece")->whereIn("order_status_id", $orderStatusIds)->orderBy('created_at', 'desc');
+            $query = $shop->shopOrders()->with("user", "buyer", "shopOrderRefunds.refundStatus", "shopOrderRefunds.user", "shopOrderRefunds.user", "shippingAddress", "orderStatus", "deliveryOption", "cartItems.piece")->whereIn("order_status_id", $orderStatusIds)->orderBy('created_at', 'desc');
         } else if (isset($shopOrderIds)) {
-            $query = ShopOrder::whereIn('id', $shopOrderIds)->with("user", "buyer", "shopOrderRefund.refundStatus", "shippingAddress", "orderStatus", "deliveryOption", "cartItems.piece");
+            $query = ShopOrder::whereIn('id', $shopOrderIds)->with("user", "buyer", "shopOrderRefunds.refundStatus", "shopOrderRefunds.user", "shippingAddress", "orderStatus", "deliveryOption", "cartItems.piece");
         }
 
         $orders = $query->paginate(15);
@@ -295,6 +295,7 @@ class OrderController extends Controller {
                 $shopOrder->items_price = $itemsPrice;
                 $shopOrder->shipping_rate = $shippingRate;
                 $shopOrder->total_price = $sellerTotalPrice;
+                $shopOrder->refundable_amount = $sellerTotalPrice;
 
                 $shopOrder->user()->associate(User::find($sellerId));
                 $shopOrder->buyer()->associate($user);
