@@ -18,10 +18,10 @@ class RefundController extends Controller {
 
         if ($user->shoppable instanceof Shop) {
             // shop
-            $shopOrderRefunds = ShopOrderRefund::search(array("user_id" => $user->id))->with('user')->paginate(15);
+            $shopOrderRefunds = ShopOrderRefund::search(array("user_id" => $user->id))->with('user', 'refundStatus', 'shopOrder.cartItems.piece')->paginate(15);
         } else {
             // shopper
-            $shopOrderRefunds = ShopOrderRefund::search(array("buyer_id" => $user->id))->with('user')->paginate(15);
+            $shopOrderRefunds = ShopOrderRefund::search(array("buyer_id" => $user->id))->with('user', 'refundStatus', 'shopOrder.cartItems.piece')->paginate(15);
         }
 
         return response()->json($shopOrderRefunds)->setCallback($request->input('callback'));
@@ -100,7 +100,7 @@ class RefundController extends Controller {
 
                                 if ($result->success) {
                                     // success
-                                    $shopOrderRefund->refundStatus()->associate(RefundStatus::find(2));
+                                    $shopOrderRefund->refundStatus()->associate(RefundStatus::find(3));
                                     $shopOrderRefund->shopOrder()->associate($shopOrder);
                                     $shopOrderRefund->save();
 
