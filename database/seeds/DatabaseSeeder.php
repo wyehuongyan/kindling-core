@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder {
         DB::statement("SET foreign_key_checks = 0");
 		Model::unguard();
 
-        $this->call('ShopperGenderTableSeeder');
+        $this->call('UserGenderTableSeeder');
         $this->call('UserTableSeeder');
         $this->call('ShopTableSeeder');
         $this->call('FollowTableSeeder');

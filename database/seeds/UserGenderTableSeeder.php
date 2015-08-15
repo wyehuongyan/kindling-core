@@ -1,24 +1,24 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Models\ShopperGender;
+use App\Models\UserGender;
 
-class ShopperGenderTableSeeder extends Seeder {
+class UserGenderTableSeeder extends Seeder {
 
     public function run()
     {
         // empty the shopper gender table first
-        DB::table('shopper_gender')->truncate();
+        DB::table('user_gender')->truncate();
 
-        $male = new ShopperGender();
+        $male = new UserGender();
         $male->gender = "Male";
         $male->save();
 
-        $female = new ShopperGender();
+        $female = new UserGender();
         $female->gender = "Female";
         $female->save();
 
-        $other = new ShopperGender();
+        $other = new UserGender();
         $other->gender = "Other";
         $other->save();
     }

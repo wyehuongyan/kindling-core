@@ -103,6 +103,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('billing/transaction/create', 'PaymentController@createTransaction');
 
     // orders
+    Route::post('order/shop/refunds', 'RefundController@shopOrderRefunds');
     Route::post('orders/user', 'OrderController@userOrders');
     Route::post('orders/user/shop', 'OrderController@userShopOrders');
     Route::post('order/user', 'OrderController@userOrder');
@@ -112,8 +113,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('order/create', 'OrderController@createOrder');
 
     // refunds
-    Route::post('order/shop/{shopOrder}/refund/create', 'RefundController@createRefund');
-    Route::post('order/shop/{shopOrder}/refund/update', 'RefundController@updateRefund');
+    Route::post('refund/create', 'RefundController@createRefund');
+    Route::post('refund/{shopOrderRefund}/approve', 'RefundController@approveRefund');
     Route::get('user/refunds', 'RefundController@userRefunds');
 
     // firebase token

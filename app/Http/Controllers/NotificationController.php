@@ -9,8 +9,9 @@ class NotificationController extends Controller {
         try {
             // $request must contain 'message' param
             $user = User::find($request->get("recipient_id"));
+            $message = $request->get("message");
 
-            SprubixQueue::queuePushNotification($request, $user);
+            SprubixQueue::queuePushNotification($user, $message);
 
             $json = array("status" => "200",
                 "message" => "success"

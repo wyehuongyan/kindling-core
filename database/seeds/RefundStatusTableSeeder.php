@@ -18,14 +18,18 @@ class RefundStatusTableSeeder extends Seeder {
         $refundRequested->save();
 
         // 2
-        $refundProcessing = new RefundStatus();
-        $refundProcessing->name = "Refund Processing";
-        $refundProcessing->save();
+        // // when transaction isn't settling or settled,
+        // // but is authorized/submitted for settlement.
+        $requestQueued = new RefundStatus();
+        $requestQueued->name = "Request Queued";
+        $requestQueued->save();
 
         // 3
-        $refunded = new RefundStatus();
-        $refunded->name = "Refunded";
-        $refunded->save();
+        // // when shop approves the refund,
+        // // refund goes into a submitted for settlement
+        $refundApproved = new RefundStatus();
+        $refundApproved->name = "Refund Approved";
+        $refundApproved->save();
 
         // 4
         $refundCancelled = new RefundStatus();

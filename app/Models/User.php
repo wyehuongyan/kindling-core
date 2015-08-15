@@ -37,6 +37,10 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 */
 	protected $hidden = ['password', 'device_token', 'remember_token', 'firebase_token', 'braintree_cust_id', 'mandrill_subaccount_id', 'suspended_at', 'deleted_at'];
 
+    public function userInfo() {
+        return $this->hasOne('App\Models\UserInfo');
+    }
+
     public function cart() {
         return $this->hasOne('App\Models\Cart');
     }
