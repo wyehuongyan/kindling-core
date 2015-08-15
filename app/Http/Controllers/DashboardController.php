@@ -5,9 +5,14 @@ use App\Models\ShopOrder;
 use Illuminate\Http\Request;
 use Auth;
 use Carbon\Carbon;
+use Log;
 
 class DashboardController extends Controller {
 
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
     public function report(Request $request) {
         $shop = Auth::user();
         $currentTime = Carbon::parse($request->get("currentTime"));
@@ -51,14 +56,20 @@ class DashboardController extends Controller {
         // get popular items
         $cartItems = CartItem::whereIn('shop_order_id',$shopOrdersId)->get();
 
-        $pieceId = array();
+        $pieceIdQuantity = array();
 
         foreach ($cartItems as $item) {
-            array_push($pieceId, $item['piece_id']);
+            // create pieceId as key of array, init to = 0
+            if (!array_key_exists($item['piece_id'], $pieceIdQuantity)) {
+                $pieceIdQuantity[$item['piece_id']] = 0;
+            }
+            // add quantity
+            $pieceIdQuantity[$item['piece_id']] += $item['quantity'];
         }
 
-        $rankedPieces = array_count_values($pieceId);
-        arsort($rankedPieces);
+        // sort by values
+        arsort($pieceIdQuantity);
+        $rankedPieces = $pieceIdQuantity;
 
         // number of popular items to get
         $numItems = 5;
@@ -69,10 +80,11 @@ class DashboardController extends Controller {
         $popularPiecesData = array();
 
         foreach ($popularPieces as $piece) {
-            $thumbnail = explode("thumbnail",explode(",",$piece["images"])[1])[1];
-            $thumbnailUrl = str_replace(array("\":\"","\"","\\/"), array("","","/"), $thumbnail);
+
+            $images = json_decode($piece["images"], true);
+            $thumbnail = $images["images"][0]["thumbnail"];
+            $piece["images"] = $thumbnail;
             $pieceData["id"] = $piece["id"];
-            $piece["images"] = $thumbnailUrl;
             $piece["sold"] = $rankedPieces[$piece["id"]];
             array_push($popularPiecesData,$piece["attributes"]);
         }
@@ -115,6 +127,5 @@ class DashboardController extends Controller {
             return 0;
         }
         return (($pieceA["sold"] > $pieceB["sold"])) ? -1 : 1;
-
     }
 }
