@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers;
 
 use App\Facades\SprubixQueue;
+use Hashids\Hashids;
 use App\Models\CartItem;
 use App\Models\RefundStatus;
 use App\Models\Shop;
@@ -51,8 +52,6 @@ class RefundController extends Controller {
 
             } else {
                 $shopOrderRefund = new ShopOrderRefund();
-                $hashids = new Hashids("shop_order_refunds", 8, "ABCDEF1234567890");
-                $shopOrderRefund->uid = $hashids->encode($shopOrderRefund->id);
                 $shopOrderRefund->refund_amount = $refundAmount;
                 $shopOrderRefund->refund_reason = $refundReason;
                 $shopOrderRefund->user()->associate($shopOrder->user);
@@ -62,6 +61,10 @@ class RefundController extends Controller {
                     // refund status id 1: Request for refund
                     $shopOrderRefund->refundStatus()->associate(RefundStatus::find(1));
                     $shopOrderRefund->shopOrder()->associate($shopOrder);
+                    $shopOrderRefund->save();
+
+                    $hashids = new Hashids("refunds", 8, "ABCDEF1234567890");
+                    $shopOrderRefund->uid = $hashids->encode($shopOrderRefund->id);
                     $shopOrderRefund->save();
 
                     // // set the RETURN amount on refunded cart item
@@ -84,7 +87,8 @@ class RefundController extends Controller {
                     //SprubixQueue::queueRefundRequestEmail();
 
                 } else {
-                    $json = $this->refund($shopOrder, $shopOrderRefund, $request, $refundAmount);
+                    $returnCartItems = $request->get("return_cart_items");
+                    $json = $this->refund($shopOrder, $shopOrderRefund, $returnCartItems, $refundAmount);
                 }
             }
         }  catch (\Exception $e) {
@@ -98,12 +102,29 @@ class RefundController extends Controller {
     }
 
     public function approveRefund(Request $request, ShopOrderRefund $shopOrderRefund) {
-        // have to move RETURN quantity over to RETURNED
+        try {
+            $shopOrder = $shopOrderRefund->shopOrder;
+            $refundAmount = $request->get("refund_amount");
 
-        // this function is called when shop approve the refund request
+            if ($refundAmount > $shopOrder->refundable_amount) {
+                // when refund price exceeds total refundable amount
+                throw new \Exception("Refund Failed. The refund amount is greater than the total refundable amount.");
+            } else {
+                // approve refund
+                $returnCartItems = $request->get("return_cart_items");
+                $json = $this->refund($shopOrder, $shopOrderRefund, $returnCartItems, $refundAmount);
+            }
+        } catch (\Exception $e) {
+            $json = array("status" => "500",
+                "message" => "exception",
+                "exception" => $e->getMessage()
+            );
+        }
+
+        return response()->json($json)->setCallback($request->input('callback'));
     }
 
-    private function refund($shopOrder, $shopOrderRefund, $request, $refundAmount) {
+    private function refund($shopOrder, $shopOrderRefund, $returnCartItems, $refundAmount) {
         // Braintree refund
         // // to determine the status, retrieve the braintree transaction
         $userOrder = $shopOrder->userOrder;
@@ -126,24 +147,32 @@ class RefundController extends Controller {
                 $result = Braintree_Transaction::refund($transactionId, $refundAmount);
 
                 if ($result->success) {
+                    $transaction = $result->transaction;
+
                     // success
                     // refund status id 3: Refunded
                     $shopOrderRefund->refundStatus()->associate(RefundStatus::find(3));
                     $shopOrderRefund->shopOrder()->associate($shopOrder);
+                    $shopOrderRefund->braintree_transaction_id = $transaction->id;
+                    $shopOrderRefund->save();
+
+                    $hashids = new Hashids("refunds", 8, "ABCDEF1234567890");
+                    $shopOrderRefund->uid = $hashids->encode($shopOrderRefund->id);
                     $shopOrderRefund->save();
 
                     // // set the RETURNED (not RETURN) amount on refunded cart item
-                    $returnCartItems = $request->get("return_cart_items");
-
                     foreach($returnCartItems as $cartId => $returnAmount) {
-                        $cartItem = CartItem::find($cartId);
-
-                        $cartItem->returned = $returnAmount;
-                        $cartItem->save();
+                        if ($returnAmount > 0) {
+                            $cartItem = CartItem::find($cartId);
+                            $cartItem->returned = $cartItem->returned + $returnAmount;
+                            $cartItem->return = 0;
+                            $cartItem->save();
+                        }
                     }
 
                     // // set the shop order refunded_amount and refundable_amount
                     $totalRefundedAmount = $shopOrder->refunded_amount + $refundAmount;
+
                     $shopOrder->refunded_amount = $totalRefundedAmount;
                     $shopOrder->refundable_amount = $shopOrder->total_price - $totalRefundedAmount;
                     $shopOrder->save();
@@ -178,8 +207,10 @@ class RefundController extends Controller {
                 // not yet settled
                 // // send to IronMQ with delay of two days
 
-                // refund status id 2: Refund Processing
-                // send refund processing push notification and email to shop and shopper
+                // refund status id 2: Request Queued
+                $shopOrderRefund->refundStatus()->associate(RefundStatus::find(2));
+
+                // send requestQueued push notification and email to shop and shopper
 
                 // $json = array();
 
