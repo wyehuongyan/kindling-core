@@ -5,8 +5,12 @@ use App\Jobs\SendPushNotification;
 use App\Models\User;
 use IronMQ\IronMQ;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 
 class SprubixQueue {
+
+    use DispatchesJobs;
+
     public function __construct() {
         $this->ironMQ = new IronMQ();
     }

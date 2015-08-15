@@ -55,7 +55,8 @@ class SprubixMail {
         }
     }
 
-    public function sendOrderConfirmation(User $recipient) {
+    public function sendOrderConfirmation(/*User $recipient*/) {
+        /*
         try {
             $recipient_email = "onishinobimusha@hotmail.com";
             $recipient_name = "Shion";
@@ -125,6 +126,7 @@ class SprubixMail {
             // A mandrill error occurred: Mandrill_Unknown_Subaccount - No subaccount exists with the id 'customer-123'
             throw $e;
         }
+        */
     }
 
     public function sendOrderUpdate() {

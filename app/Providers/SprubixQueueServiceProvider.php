@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Services\SprubixQueue;
 use Illuminate\Support\ServiceProvider;
 
 class SprubixQueueServiceProvider extends ServiceProvider
@@ -25,7 +26,7 @@ class SprubixQueueServiceProvider extends ServiceProvider
     {
         //
         $this->app->singleton('sprubixQueue', function ($app) {
-            return new SprubixMail();
+            return new SprubixQueue();
         });
     }
 }

@@ -135,6 +135,7 @@ class CartController extends Controller {
     // Cart
     public function cart(Request $request) {
         $cart = Auth::user()->cart;
+        $cartItems = new \stdClass();
 
         if(isset($cart)) {
             $cartItems = $cart->with('cartItems.outfit', 'cartItems.piece', 'cartItems.seller', 'cartItems.deliveryOption')->first();
