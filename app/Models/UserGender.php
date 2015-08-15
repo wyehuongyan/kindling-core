@@ -8,8 +8,4 @@ class UserGender extends Model {
 
     protected $table = 'user_gender';
     protected $dates = ['deleted_at'];
-
-    public function users() {
-        $this->hasMany('App\Models\User');
-    }
 }
