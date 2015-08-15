@@ -2,8 +2,9 @@
 
 use Illuminate\Database\Seeder;
 use App\Models\User;
+use App\Models\UserInfo;
 use App\Models\Shopper;
-use App\Models\ShopperGender;
+use App\Models\UserGender;
 
 class UserTableSeeder extends Seeder {
 
@@ -12,6 +13,7 @@ class UserTableSeeder extends Seeder {
         // empty the users table first
         DB::table('users')->truncate();
         DB::table('shoppers')->truncate();
+        DB::table('user_info')->truncate();
 
         // user 1
         $user_1 = new User();
@@ -25,11 +27,16 @@ class UserTableSeeder extends Seeder {
 
         // // polymorphic shopper 1
         $shopper_1 = new Shopper();
-        $shopper_1->first_name = "Cameron";
         $shopper_1->save();
-        $shopper_1->gender()->associate(ShopperGender::find(2));
         $shopper_1->user()->save($user_1);
         $shopper_1->save();
+
+        // // user 1 info
+        $user_info_1 = new UserInfo();
+        $user_info_1->first_name = "Cameron";
+        $user_info_1->gender()->associate(UserGender::find(2));
+        $user_info_1->user()->associate($user_1);
+        $user_info_1->save();
 
         // user 2
         $user_2 = new User();
@@ -43,11 +50,16 @@ class UserTableSeeder extends Seeder {
 
         // // polymorphic shopper 2
         $shopper_2 = new Shopper();
-        $shopper_2->first_name = "TingZhi";
         $shopper_2->save();
-        $shopper_2->gender()->associate(ShopperGender::find(2));
         $shopper_2->user()->save($user_2);
         $shopper_2->save();
+
+        // // user 2 info
+        $user_info_2 = new UserInfo();
+        $user_info_2->first_name = "TingZhi";
+        $user_info_2->gender()->associate(UserGender::find(2));
+        $user_info_2->user()->associate($user_2);
+        $user_info_2->save();
 
         // user 3
         $user_3 = new User();
@@ -61,11 +73,16 @@ class UserTableSeeder extends Seeder {
 
         // // polymorphic shopper 3
         $shopper_3 = new Shopper();
-        $shopper_3->first_name = "Cecilia";
         $shopper_3->save();
-        $shopper_3->gender()->associate(ShopperGender::find(2));
         $shopper_3->user()->save($user_3);
         $shopper_3->save();
+
+        // // user 3 info
+        $user_info_3 = new UserInfo();
+        $user_info_3->first_name = "Cecilia";
+        $user_info_3->gender()->associate(UserGender::find(2));
+        $user_info_3->user()->associate($user_3);
+        $user_info_3->save();
     }
 
 }
