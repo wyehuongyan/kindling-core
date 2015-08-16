@@ -13,6 +13,8 @@ class SendOrderConfirmationEmail extends Job implements SelfHandling, ShouldQueu
 {
     use InteractsWithQueue, SerializesModels;
 
+    protected $userOrderId;
+
     /**
      * Create a new job instance.
      *
