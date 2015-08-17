@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\UserGender;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
@@ -8,6 +9,7 @@ use Validator;
 use Log;
 use App\Models\User;
 use App\Models\Shopper;
+use App\Models\UserInfo;
 use Services_FirebaseTokenGenerator;
 use Braintree_ClientToken;
 use Braintree_Configuration;
@@ -52,7 +54,6 @@ class AuthController extends Controller {
 
     public function authenticateFacebook(Request $request) {
         $currentFacebookId = $request->get("facebook_id");
-        Log::Info($currentFacebookId);
 
         $user = User::where('facebook_account_id',$currentFacebookId)->first();
 
@@ -91,39 +92,6 @@ class AuthController extends Controller {
 
             return response()->json($success)->setCallback($request->input('callback'));
         }
-
-        /*
-        if($request->has('email')) {
-            $loginAttr = "email";
-        } else {
-            $loginAttr = "username";
-        }
-
-        if (Auth::attempt($request->only($loginAttr, 'password')))
-        {
-            // success, login
-            $trimLoginAttr = preg_replace('/\s+/', '', $request->input($loginAttr));
-
-            $user = User::search(array($loginAttr => $trimLoginAttr))->with('shoppable')->first();
-
-            $success = array(
-                "status" => "200",
-                "message" => "success",
-                "data" => $user
-            );
-
-            return response()->json($success)->setCallback($request->input('callback'));
-        } else {
-            // failed to login
-            $error = array(
-                "status" => "400",
-                "message" => "error",
-                "data" => "failed to login, please try again."
-            );
-
-            return response()->json($error)->setCallback($request->input('callback'));
-        }
-        */
     }
 
     public function checkLoggedIn(Request $request) {
@@ -177,14 +145,31 @@ class AuthController extends Controller {
 
             $shopper->save();
 
+            $user_info = new UserInfo();
+
+            if($request['first_name'] != "") {
+                $user_info->first_name = $request['first_name'];
+            }
+
+            if($request['last_name'] != "") {
+                $user_info->last_name = $request['last_name'];
+            }
+
+            if($request['gender'] != "") {
+                $genderId = UserGender::where('gender',ucfirst($request['gender']))->first();
+                $user_info->gender()->associate(UserGender::find($genderId->id));
+            }
+
+            $user_info->user()->associate($user);
+            $user_info->save();
+
             $success = array(
                 "status" => "200",
                 "message" => "success",
                 "data" => $user
             );
 
-            return response()->json($success)
-                ->setCallback($request->input('callback'));
+            return response()->json($success)->setCallback($request->input('callback'));
         }
 
     }
