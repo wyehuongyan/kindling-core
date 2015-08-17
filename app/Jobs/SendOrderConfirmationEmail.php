@@ -3,7 +3,9 @@
 namespace App\Jobs;
 
 use App\Jobs\Job;
+use Log;
 use App\Models\UserOrder;
+use App\Facades\SprubixMail;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
@@ -12,6 +14,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 class SendOrderConfirmationEmail extends Job implements SelfHandling, ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
+
+    protected $userOrderId;
 
     /**
      * Create a new job instance.
@@ -33,15 +37,15 @@ class SendOrderConfirmationEmail extends Job implements SelfHandling, ShouldQueu
     public function handle()
     {
         //
-        $userOrder = UserOrder::find($this->userOrderId)->with(array("shopOrders" => function($query) {
-            $query->with("user", "orderStatus");
-        }))->first();
+        $userOrder = UserOrder::find($this->userOrderId);
 
         if(isset($userOrder)) {
+            $user = $userOrder->user;
+
             // if no mandrill subaccount, create it
-            if (!isset($this->user->mandrill_subaccount_id)) {
-                $id = $this->user->id;
-                $name = $this->user->username;
+            if (!isset($user->mandrill_subaccount_id)) {
+                $id = $user->id;
+                $name = $user->username;
                 $notes = 'Signed up on ' . Carbon::now();
 
                 $result = SprubixMail::addSubAccount($id, $name, $notes);
@@ -49,11 +53,11 @@ class SendOrderConfirmationEmail extends Job implements SelfHandling, ShouldQueu
 
                 // account created
                 if ($status == "active") {
-                    $this->user->mandrill_subaccount_id = $id;
-                    $this->user->save();
+                    $user->mandrill_subaccount_id = $id;
+                    $user->save();
 
                     // send order confirmation email
-                    SprubixMail::sendOrderConfirmation();
+                    SprubixMail::sendOrderConfirmation($user, $userOrder);
                 } else {
                     // some error occured
                     // log to sentry, subaccount not created
@@ -61,7 +65,7 @@ class SendOrderConfirmationEmail extends Job implements SelfHandling, ShouldQueu
 
             } else {
                 // send order confirmation email directly if subaccount exist
-                SprubixMail::sendOrderConfirmation();
+                SprubixMail::sendOrderConfirmation($user, $userOrder);
             }
         } else {
             // User Order cannot be found, log to sentry

@@ -152,6 +152,9 @@ class OrderController extends Controller {
             $userOrder->braintree_transaction_id = $transactionId;
             $userOrder->total_points = $totalPoints;
 
+            $userOrder->shippingAddress()->associate(UserShippingAddress::find($shippingAddressId));
+            $userOrder->paymentMethod()->associate(UserPaymentMethod::find($paymentMethodId));
+
             /*$userPoints = $user->points;
 
             // create user points

@@ -18,6 +18,14 @@ class UserOrder extends Model {
         return $this->belongsTo('App\Models\OrderStatus');
     }
 
+    public function shippingAddress() {
+        return $this->belongsTo('App\Models\UserShippingAddress', 'user_shipping_address_id');
+    }
+
+    public function paymentMethod() {
+        return $this->belongsTo('App\Models\UserPaymentMethod', 'user_payment_method_id');
+    }
+
     public function shopOrders() {
         return $this->hasMany('App\Models\ShopOrder');
     }
