@@ -3,11 +3,13 @@
 use Mandrill;
 use Mandrill_Error;
 use App\Models\User;
+use Log;
 
 class SprubixMail {
 
     public function __construct() {
-        $this->mandrill = new Mandrill(env('MANDRILL_TEST_KEY'));
+        //$this->mandrill = new Mandrill(env('MANDRILL_TEST_KEY'));
+        $this->mandrill = new Mandrill(env('MANDRILL_KEY'));
     }
 
     public function sendFeedback(User $user, $content) {
@@ -55,67 +57,145 @@ class SprubixMail {
         }
     }
 
-    public function sendOrderConfirmation(/*User $recipient*/) {
-        /*
+    public function sendOrderConfirmation(User $recipient, $userOrder) {
         try {
-            $recipient_email = "onishinobimusha@hotmail.com";
-            $recipient_name = "Shion";
-            $orderlist = array (
-                array (
-                    'name' => 'White Skirt',
-                    'price' => '$10'
-                ),
-                array (
-                    'name' => 'Pink Top',
-                    'price' => '$20'
-                ),
-                array (
-                    'name' => 'Black Hat',
-                    'price' => '$30'
-                ));
+            // user order
+            $recipientEmail = $recipient->email;
+            $recipientInfo = $recipient->userInfo;
+            $recipientName = $recipientInfo->first_name;
+            $recipientMandrillSubaccountId = $recipient->mandrill_subaccount_id;
+
+            if(!isset($recipientName) || $recipientName == "") {
+                $recipientName = $recipient->username;
+            }
+
+            $userOrderUID = $userOrder->uid;
+            $userOrderTotal = $userOrder->total_price;
+
+            // // user payment method
+            $paymentMethod = $userOrder->paymentMethod;
+            $paymentMethodName = $paymentMethod->card_type . " ending with " . $paymentMethod->redacted_card_num;
+
+            // // user shipping address
+            $shippingAddress = $userOrder->shippingAddress;
+
+            $shippingAddressHTML = $shippingAddress->address_1 . "<br>";
+
+            if(isset($shippingAddress->address_2) && $shippingAddress->address_2 != "") {
+                $shippingAddressHTML .= $shippingAddress->address_2 . "<br>";
+            }
+
+            $shippingAddressHTML .= $shippingAddress->city . "<br>";
+            $shippingAddressHTML .= $shippingAddress->state . "<br>";
+            $shippingAddressHTML .= $shippingAddress->country . "<br>";
+            $shippingAddressHTML .= $shippingAddress->postal_code;
+
+            // shop orders
+            $shopOrders = $userOrder->shopOrders;
+
+            // // format shop orders for handlebars display
+            $formattedShopOrders = array();
+
+            foreach($shopOrders as $shopOrder) {
+                $formattedShopOrder = new \stdClass();
+
+                $formattedShopOrder->uid = $shopOrder->uid;
+                $formattedShopOrder->items_price = $shopOrder->items_price;
+                $formattedShopOrder->shipping_rate = $shopOrder->shipping_rate;
+
+                // // delivery info
+                $deliveryOption = $shopOrder->deliveryOption;
+                $formattedShopOrder->shipping_method = $deliveryOption->name;
+
+                // // cart items
+                $cartItems = $shopOrder->cartItems;
+                $formattedCartItems = array();
+
+                foreach($cartItems as $cartItem) {
+                    $formattedCartItem = new \stdClass();
+
+                    $piece = $cartItem->piece;
+                    $pieceImages = json_decode($piece->images);
+                    $formattedCartItem->image = $pieceImages->cover;
+                    $formattedCartItem->name = $piece->name;
+                    $formattedCartItem->size = $cartItem->size;
+                    $formattedCartItem->quantity = $cartItem->quantity;
+                    $formattedCartItem->price = $piece->price;
+
+                    $formattedCartItems[] = $formattedCartItem;
+                }
+
+                $formattedShopOrder->cart_items = $formattedCartItems;
+
+                // // seller info
+                $seller = $shopOrder->user;
+
+                $formattedShopOrder->seller_image = $seller->image;
+                $formattedShopOrder->seller_name = $seller->name;
+                $formattedShopOrder->seller_username = $seller->username;
+                $formattedShopOrder->seller_email = $seller->email;
+
+                $formattedShopOrders[] = $formattedShopOrder;
+            }
 
             // template slug name in Mandrill
-            $template_name = 'ordertest';
+            $template_name = 'transactional-order-confirmation';
             $template_content = array();
             $message = array(
-                'subject' => 'Thanks for Ordering!',
-                'from_email' => 'support@sprubix.com',
+                'subject' => "Order Confirmation #" . $userOrderUID,
+                'from_email' => 'order-confirmation@sprubix.com',
                 'from_name' => 'Team Sprubix',
                 'to' => array(
                     array(
-                        'email' => $recipient_email,
-                        'name' => $recipient_name,
+                        'email' => $recipientEmail,
+                        'name' => $recipientName,
                         'type' => 'to'
                     )
                 ),
-                'headers' => array('Reply-To' => 'sales@sprubix.com'),
+                'headers' => array('Reply-To' => 'no-reply@sprubix.com'),
                 "auto_text" => true,
                 "inline_css" => true,
                 'merge' => true,
                 'merge_language' => 'handlebars',
-                'global_merge_vars' => array(
+                "global_merge_vars" => array(
                     array(
-                        'name' => 'company',
-                        'content' => 'Sprubix'
+                        'name' => 'order_query_email',
+                        'content' => 'support@sprubix.com'
                     )
                 ),
                 'merge_vars' => array(
                     array(
-                        'rcpt' => $recipient_email,
+                        'rcpt' => $recipientEmail,
                         'vars' => array(
                             array(
-                                'name' => 'farewell',
-                                'content' => $recipient_name
+                                'name' => 'user_order_uid',
+                                'content' => $userOrderUID
                             ),
                             array(
-                                'name' => 'orders',
-                                'content' => $orderlist
+                                'name' => 'shipping_address',
+                                'content' => $shippingAddressHTML
+                            ),
+                            array(
+                                'name' => 'user_order_total',
+                                'content' => $userOrderTotal
+                            ),
+                            array(
+                                'name' => 'recipient_name',
+                                'content' => $recipientName
+                            ),
+                            array(
+                                'name' => 'payment_method',
+                                'content' => $paymentMethodName
+                            ),
+                            array(
+                                'name' => 'shop_orders',
+                                'content' => $formattedShopOrders
                             )
                         )
                     )
                 ),
                 'tags' => array('welcome'),
-                'subaccount' => '1'
+                'subaccount' => $recipientMandrillSubaccountId
             );
 
             $result = $this->mandrill->messages->sendTemplate($template_name, $template_content, $message);
@@ -126,7 +206,6 @@ class SprubixMail {
             // A mandrill error occurred: Mandrill_Unknown_Subaccount - No subaccount exists with the id 'customer-123'
             throw $e;
         }
-        */
     }
 
     public function sendOrderUpdate() {
