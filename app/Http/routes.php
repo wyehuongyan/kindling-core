@@ -23,6 +23,7 @@ Route::get('aws', ['middleware' => 'auth', 'uses' => 'WelcomeController@aws']);
 /////////////////////////////////
 Route::post('auth/register', 'Auth\AuthController@register');
 Route::post('auth/login', 'Auth\AuthController@authenticate');
+Route::post('auth/login/facebook', 'Auth\AuthController@authenticateFacebook');
 Route::get('auth/check', 'Auth\AuthController@checkLoggedIn');
 Route::controller('password', 'Auth\PasswordController');
 

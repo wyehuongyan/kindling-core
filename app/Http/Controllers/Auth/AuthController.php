@@ -50,6 +50,82 @@ class AuthController extends Controller {
         }
     }
 
+    public function authenticateFacebook(Request $request) {
+        $currentFacebookId = $request->get("facebook_id");
+        Log::Info($currentFacebookId);
+
+        $user = User::where('facebook_account_id',$currentFacebookId)->first();
+
+        // facebook_id exist
+        if ($user != null) {
+            try {
+                Auth::loginUsingId($user->id, true);
+
+                //log in successful
+                $success = array(
+                    "status" => "200",
+                    "message" => "success",
+                    "data" => $user
+                );
+
+                return response()->json($success)->setCallback($request->input('callback'));
+
+            } catch (\Exception $e) {
+                // failed to login
+                $error = array(
+                    "status" => "400",
+                    "message" => "error",
+                    "data" => "failed to login, please try again."
+                );
+
+                return response()->json($error)->setCallback($request->input('callback'));
+            }
+        }
+        // new user logged in via facebook
+        else {
+            $success = array(
+                "status" => "200",
+                "message" => "failed",
+                "data" => "facebook id does not exist."
+            );
+
+            return response()->json($success)->setCallback($request->input('callback'));
+        }
+
+        /*
+        if($request->has('email')) {
+            $loginAttr = "email";
+        } else {
+            $loginAttr = "username";
+        }
+
+        if (Auth::attempt($request->only($loginAttr, 'password')))
+        {
+            // success, login
+            $trimLoginAttr = preg_replace('/\s+/', '', $request->input($loginAttr));
+
+            $user = User::search(array($loginAttr => $trimLoginAttr))->with('shoppable')->first();
+
+            $success = array(
+                "status" => "200",
+                "message" => "success",
+                "data" => $user
+            );
+
+            return response()->json($success)->setCallback($request->input('callback'));
+        } else {
+            // failed to login
+            $error = array(
+                "status" => "400",
+                "message" => "error",
+                "data" => "failed to login, please try again."
+            );
+
+            return response()->json($error)->setCallback($request->input('callback'));
+        }
+        */
+    }
+
     public function checkLoggedIn(Request $request) {
         if(Auth::check()) {
             return response()->json(array("status" => "logged in", "user" => Auth::user()))
@@ -87,6 +163,11 @@ class AuthController extends Controller {
             $user->email = $request['email'];
             $user->password = bcrypt($request['password']);
             $user->image = cdn("/users/0_default_profile_placeholder.jpg");
+
+            // for FB login
+            if($request['facebook_id'] != "") {
+                $user->facebook_account_id = $request['facebook_id'];
+            }
 
             $user->save();
 
