@@ -2,6 +2,7 @@
 
 use App\Jobs\SendOrderConfirmationEmail;
 use App\Jobs\SendPushNotification;
+use App\Models\ShopOrder;
 use App\Models\User;
 use IronMQ\IronMQ;
 use Illuminate\Http\Request;
@@ -62,7 +63,7 @@ class SprubixQueue {
     }
 
     public function queueOrderConfirmationEmail($userOrderId) {
-        $queueName = "email_confirmation";
+        $queueName = "email_order_confirmation";
 
         $params = array(
             "push_type" => "multicast",
@@ -76,6 +77,24 @@ class SprubixQueue {
         $this->ironMQ->updateQueue($queueName, $params);
 
         $job = (new SendOrderConfirmationEmail($userOrderId, $queueName));
+        $this->dispatch($job);
+    }
+
+    public function queueShopOrderUpdateEmail(ShopOrder $shopOrder) {
+        $queueName = "email_order_update";
+
+        $params = array(
+            "push_type" => "multicast",
+            "retries" => 5,
+            "subscribers" => array(
+                array("url" => env("NGROK_URL") . "/queue/receive")
+            ),
+            "error_queue" => $queueName . "_errors"
+        );
+
+        $this->ironMQ->updateQueue($queueName, $params);
+
+        $job = (new SendShopOrderUpdateEmail($shopOrder, $queueName));
         $this->dispatch($job);
     }
 }

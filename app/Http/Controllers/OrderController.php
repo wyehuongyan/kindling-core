@@ -91,6 +91,9 @@ class OrderController extends Controller {
             $shopOrder->orderStatus()->associate($newOrderStatus);
             $shopOrder->save();
 
+            // send mandrill shop order update email
+            SprubixQueue::queueShopOrderUpdateEmail($shopOrder);
+
             // check if userOrder's shopOrders have all changed to the new status
             //// take the min id of all shop orders
             $userOrder = $shopOrder->userOrder;

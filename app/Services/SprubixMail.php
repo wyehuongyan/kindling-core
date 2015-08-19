@@ -1,5 +1,6 @@
 <?php namespace App\Services;
 
+use App\Models\ShopOrder;
 use Mandrill;
 use Mandrill_Error;
 use App\Models\User;
@@ -131,7 +132,6 @@ class SprubixMail {
 
                 // // seller info
                 $seller = $shopOrder->user;
-
                 $formattedShopOrder->seller_image = $seller->image;
                 $formattedShopOrder->seller_name = $seller->name;
                 $formattedShopOrder->seller_username = $seller->username;
@@ -346,8 +346,161 @@ class SprubixMail {
         $result = $this->mandrill->messages->sendTemplate($template_name, $template_content, $message);
     }
 
-    public function sendOrderUpdate() {
+    public function sendShopOrderUpdate(ShopOrder $shopOrder) {
+        $shopOrderUID = $shopOrder->uid;
+        $itemsPrice = $shopOrder->items_price;
+        $shippingRate = $shopOrder->shipping_rate;
+        $shopOrderTotal = $shopOrder->total_price;
 
+        // // buyer
+        $buyer = $shopOrder->buyer;
+        $buyerImage = $buyer->image;
+        $buyerEmail = $buyer->email;
+        $buyerName = $buyer->name;
+        $buyerUsername = $buyer->username;
+
+        // // seller info
+        $seller = $shopOrder->user;
+        $sellerImage = $seller->image;
+        $sellerEmail = $seller->email;
+        $sellerName = $seller->name;
+        $sellerUsername = $seller->username;
+
+        // // delivery info
+        $deliveryOption = $shopOrder->deliveryOption;
+        $shippingMethod = $deliveryOption->name;
+
+        // // cart items
+        $cartItems = $shopOrder->cartItems;
+        $formattedCartItems = array();
+
+        foreach($cartItems as $cartItem) {
+            $formattedCartItem = new \stdClass();
+
+            $piece = $cartItem->piece;
+            $pieceImages = json_decode($piece->images);
+            $formattedCartItem->image = $pieceImages->cover;
+            $formattedCartItem->name = $piece->name;
+            $formattedCartItem->size = $cartItem->size;
+            $formattedCartItem->quantity = $cartItem->quantity;
+            $formattedCartItem->price = $piece->price;
+
+            $formattedCartItems[] = $formattedCartItem;
+        }
+
+        // // if no mandrill subaccount, create it
+        if (!isset($buyer->mandrill_subaccount_id)) {
+            $id = $buyer->id;
+            $name = $buyer->username;
+            $notes = 'Signed up on ' . Carbon::now();
+
+            $result = $this->addSubAccount($id, $name, $notes);
+            $status = $result['status'];
+
+            // account created
+            if ($status == "active") {
+                $buyer->mandrill_subaccount_id = $id;
+                $buyer->save();
+            }
+        }
+
+        // buyer mandrill subaccount id
+        $buyerMandrillSubaccountId = $buyer->mandrill_subaccount_id;
+
+        // perform different actions at different stages
+        $orderStatus = $shopOrder->orderStatus;
+
+        switch ($orderStatus->id) {
+            case 3:
+                // Shipping Posted
+                // template slug name in Mandrill
+                $template_name = 'transactional-shipping-confirmation';
+
+                $message = array(
+                    'subject' => "Order Update #" . $shopOrderUID,
+                    'from_email' => 'order-update-shipped@sprubix.com',
+                    'from_name' => 'Team Sprubix',
+                    'to' => array(
+                        array(
+                            'email' => $buyerEmail,
+                            'name' => $buyerName,
+                            'type' => 'to'
+                        )
+                    ),
+                    'headers' => array('Reply-To' => 'no-reply@sprubix.com'),
+                    "auto_text" => true,
+                    "inline_css" => true,
+                    'merge' => true,
+                    'merge_language' => 'handlebars',
+                    "global_merge_vars" => array(
+                        array(
+                            'name' => 'order_query_email',
+                            'content' => 'support@sprubix.com'
+                        )
+                    ),
+                    'merge_vars' => array(
+                        array(
+                            'rcpt' => $buyerEmail,
+                            'vars' => array(
+                                array(
+                                    'name' => 'shop_order_uid',
+                                    'content' => $shopOrderUID
+                                ),
+                                array(
+                                    'name' => 'shipping_method',
+                                    'content' => $shippingMethod
+                                ),
+                                array(
+                                    'name' => 'items_price',
+                                    'content' => $itemsPrice
+                                ),
+                                array(
+                                    'name' => 'shipping_rate',
+                                    'content' => $shippingRate
+                                ),
+                                array(
+                                    'name' => 'shop_order_total',
+                                    'content' => $shopOrderTotal
+                                ),
+                                array(
+                                    'name' => 'seller_email',
+                                    'content' => $sellerEmail
+                                ),
+                                array(
+                                    'name' => 'seller_name',
+                                    'content' => $sellerName
+                                ),
+                                array(
+                                    'name' => 'seller_image',
+                                    'content' => $sellerImage
+                                ),
+                                array(
+                                    'name' => 'buyer_name',
+                                    'content' => $buyerName
+                                ),
+                                array(
+                                    'name' => 'cart_items',
+                                    'content' => $formattedCartItems
+                                )
+                            )
+                        )
+                    ),
+                    'tags' => array('order-update-shipped'),
+                    'subaccount' => $buyerMandrillSubaccountId
+                );
+
+                break;
+            case 4:
+                // Shipping Received
+                break;
+            case 6:
+                // Shipping Delayed
+                break;
+        }
+
+        $template_content = array();
+
+        $result = $this->mandrill->messages->sendTemplate($template_name, $template_content, $message);
     }
 
     public function addSubAccount($id, $name, $notes) {
