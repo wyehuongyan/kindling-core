@@ -4,6 +4,7 @@ use Mandrill;
 use Mandrill_Error;
 use App\Models\User;
 use Log;
+use Carbon\Carbon;
 
 class SprubixMail {
 
@@ -102,6 +103,7 @@ class SprubixMail {
                 $formattedShopOrder->uid = $shopOrder->uid;
                 $formattedShopOrder->items_price = $shopOrder->items_price;
                 $formattedShopOrder->shipping_rate = $shopOrder->shipping_rate;
+                $formattedShopOrder->total_price = $shopOrder->total_price;
 
                 // // delivery info
                 $deliveryOption = $shopOrder->deliveryOption;
@@ -135,7 +137,40 @@ class SprubixMail {
                 $formattedShopOrder->seller_username = $seller->username;
                 $formattedShopOrder->seller_email = $seller->email;
 
+                // // buyer info
+                $buyer = $shopOrder->buyer;
+                $formattedShopOrder->buyer_image = $buyer->image;
+                $formattedShopOrder->buyer_name = $buyer->name;
+                $formattedShopOrder->buyer_username = $buyer->username;
+                $formattedShopOrder->buyer_email = $buyer->email;
+
                 $formattedShopOrders[] = $formattedShopOrder;
+
+                // send order confirmation to shop
+                // // if no mandrill subaccount, create it
+                if (!isset($seller->mandrill_subaccount_id)) {
+                    $id = $seller->id;
+                    $name = $seller->username;
+                    $notes = 'Signed up on ' . Carbon::now();
+
+                    $result = $this->addSubAccount($id, $name, $notes);
+                    $status = $result['status'];
+
+                    // account created
+                    if ($status == "active") {
+                        $seller->mandrill_subaccount_id = $id;
+                        $seller->save();
+
+                        // send order confirmation to shop
+                        $this->sendOrderConfirmationShop($formattedShopOrder, $seller, $shopOrder->id);
+                    } else {
+                        // some error occured
+                        // log to sentry, subaccount not created
+                    }
+                } else {
+                    // send order confirmation to shop
+                    $this->sendOrderConfirmationShop($formattedShopOrder, $seller, $shopOrder->id);
+                }
             }
 
             // template slug name in Mandrill
@@ -194,7 +229,7 @@ class SprubixMail {
                         )
                     )
                 ),
-                'tags' => array('welcome'),
+                'tags' => array('order-confirmation'),
                 'subaccount' => $recipientMandrillSubaccountId
             );
 
@@ -202,10 +237,113 @@ class SprubixMail {
 
         } catch(Mandrill_Error $e) {
             // Mandrill errors are thrown as exceptions
-            echo 'A mandrill error occurred: ' . get_class($e) . ' - ' . $e->getMessage();
-            // A mandrill error occurred: Mandrill_Unknown_Subaccount - No subaccount exists with the id 'customer-123'
-            throw $e;
+            Log::error($e->getMessage()); // log to sentry
         }
+    }
+
+    public function sendOrderConfirmationShop($formattedShopOrder, $seller, $shopOrderId) {
+        // send email to shop
+        $shopOrderUID = $formattedShopOrder->uid;
+        $sellerName = $formattedShopOrder->seller_name;
+        $sellerEmail = $formattedShopOrder->seller_email;
+
+        $buyerImage = $formattedShopOrder->buyer_image;
+        $buyerName = $formattedShopOrder->buyer_name;
+        $buyerEmail = $formattedShopOrder->buyer_email;
+
+        $shopOrderTotal = $formattedShopOrder->total_price;
+        $shippingMethod = $formattedShopOrder->shipping_method;
+        $itemsPrice = $formattedShopOrder->items_price;
+        $shippingRate = $formattedShopOrder->shipping_rate;
+
+        $urlScheme = env('URL_SCHEME') . "/order/shop/" . $shopOrderId;
+
+        $formattedCartItems = $formattedShopOrder->cart_items;
+
+        // seller mandrill subaccount id
+        $sellerMandrillSubaccountId = $seller->mandrill_subaccount_id;
+
+        // template slug name in Mandrill
+        $template_name = 'transactional-order-confirmation-shop';
+        $template_content = array();
+        $message = array(
+            'subject' => "Order Confirmation #" . $shopOrderUID,
+            'from_email' => 'customer-order-confirmation@sprubix.com',
+            'from_name' => 'Team Sprubix',
+            'to' => array(
+                array(
+                    'email' => $sellerEmail,
+                    'name' => $sellerName,
+                    'type' => 'to'
+                )
+            ),
+            'headers' => array('Reply-To' => 'no-reply@sprubix.com'),
+            "auto_text" => true,
+            "inline_css" => true,
+            'merge' => true,
+            'merge_language' => 'handlebars',
+            "global_merge_vars" => array(
+                array(
+                    'name' => 'order_query_email',
+                    'content' => 'support@sprubix.com'
+                )
+            ),
+            'merge_vars' => array(
+                array(
+                    'rcpt' => $sellerEmail,
+                    'vars' => array(
+                        array(
+                            'name' => 'shop_order_uid',
+                            'content' => $shopOrderUID
+                        ),
+                        array(
+                            'name' => 'shipping_method',
+                            'content' => $shippingMethod
+                        ),
+                        array(
+                            'name' => 'items_price',
+                            'content' => $itemsPrice
+                        ),
+                        array(
+                            'name' => 'shipping_rate',
+                            'content' => $shippingRate
+                        ),
+                        array(
+                            'name' => 'shop_order_total',
+                            'content' => $shopOrderTotal
+                        ),
+                        array(
+                            'name' => 'seller_name',
+                            'content' => $sellerName
+                        ),
+                        array(
+                            'name' => 'buyer_image',
+                            'content' => $buyerImage
+                        ),
+                        array(
+                            'name' => 'buyer_name',
+                            'content' => $buyerName
+                        ),
+                        array(
+                            'name' => 'buyer_email',
+                            'content' => $buyerEmail
+                        ),
+                        array(
+                            'name' => 'cart_items',
+                            'content' => $formattedCartItems
+                        ),
+                        array(
+                            'name' => 'view_order_url',
+                            'content' => $urlScheme
+                        ),
+                    )
+                )
+            ),
+            'tags' => array('customer-order-confirmation'),
+            'subaccount' => $sellerMandrillSubaccountId
+        );
+
+        $result = $this->mandrill->messages->sendTemplate($template_name, $template_content, $message);
     }
 
     public function sendOrderUpdate() {
