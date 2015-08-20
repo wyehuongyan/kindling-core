@@ -592,7 +592,7 @@ class SprubixMail {
             $template_name = 'transactional-order-refund';
 
             $message = array(
-                'subject' => "Shop Order Refund #" . $shopOrderUID,
+                'subject' => "Refund Request Shop Order #" . $shopOrderUID,
                 'from_email' => 'order-refund-requested@sprubix.com',
                 'from_name' => 'Team Sprubix',
                 'to' => array(
@@ -758,7 +758,7 @@ class SprubixMail {
             $template_name = 'transactional-order-refund';
 
             $message = array(
-                'subject' => "Shop Order Refund #" . $shopOrderUID,
+                'subject' => "Refund Approval Shop Order #" . $shopOrderUID,
                 'from_email' => 'order-refund-approved@sprubix.com',
                 'from_name' => 'Team Sprubix',
                 'to' => array(
