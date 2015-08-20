@@ -2,7 +2,11 @@
 
 use App\Jobs\SendOrderConfirmationEmail;
 use App\Jobs\SendPushNotification;
+use App\Jobs\SendShopOrderRefundApprovedEmail;
+use App\Jobs\SendShopOrderRefundRequestEmail;
+use App\Jobs\SendShopOrderUpdateEmail;
 use App\Models\ShopOrder;
+use App\Models\ShopOrderRefund;
 use App\Models\User;
 use IronMQ\IronMQ;
 use Illuminate\Http\Request;
@@ -54,12 +58,40 @@ class SprubixQueue {
         ]);
     }
 
-    public function queueRefundRequestEmail() {
+    public function queueRefundRequestEmail(ShopOrderRefund $shopOrderRefund) {
+        $queueName = "email_order_refund";
 
+        $params = array(
+            "push_type" => "multicast",
+            "retries" => 5,
+            "subscribers" => array(
+                array("url" => env("NGROK_URL") . "/queue/receive")
+            ),
+            "error_queue" => $queueName . "_errors"
+        );
+
+        $this->ironMQ->updateQueue($queueName, $params);
+
+        $job = (new SendShopOrderRefundRequestEmail($shopOrderRefund, $queueName));
+        $this->dispatch($job);
     }
 
-    public function queueRefundedEmail() {
+    public function queueRefundApprovedEmail(ShopOrderRefund $shopOrderRefund) {
+        $queueName = "email_order_refund";
 
+        $params = array(
+            "push_type" => "multicast",
+            "retries" => 5,
+            "subscribers" => array(
+                array("url" => env("NGROK_URL") . "/queue/receive")
+            ),
+            "error_queue" => $queueName . "_errors"
+        );
+
+        $this->ironMQ->updateQueue($queueName, $params);
+
+        $job = (new SendShopOrderRefundApprovedEmail($shopOrderRefund, $queueName));
+        $this->dispatch($job);
     }
 
     public function queueOrderConfirmationEmail($userOrderId) {

@@ -31,11 +31,15 @@ class RefundController extends Controller {
     }
 
     public function shopOrderRefunds(Request $request) {
-        $shopOrderId = $request->get("shop_order_id");
-
-        $shopOrderRefunds = ShopOrderRefund::search(array("shop_order_id" => $shopOrderId))->with('user', 'refundStatus', 'shopOrder.cartItems.piece')->orderBy('created_at', 'desc')->paginate(15);
+        $shopOrderRefunds = ShopOrderRefund::search($request->all())->with('user', 'refundStatus', 'shopOrder.cartItems.piece')->orderBy('created_at', 'desc')->paginate(15);
 
         return response()->json($shopOrderRefunds)->setCallback($request->input('callback'));
+    }
+
+    public function shopOrderRefund(Request $request, ShopOrderRefund $shopOrderRefund) {
+        $shopOrderRefund = ShopOrderRefund::find($shopOrderRefund->id)->with('user', 'refundStatus', 'shopOrder.cartItems.piece')->orderBy('created_at', 'desc')->first();
+
+        return response()->json($shopOrderRefund)->setCallback($request->input('callback'));
     }
 
     public function createRefund(Request $request) {
@@ -63,7 +67,7 @@ class RefundController extends Controller {
                     $shopOrderRefund->shopOrder()->associate($shopOrder);
                     $shopOrderRefund->save();
 
-                    $hashids = new Hashids("refunds", 8, "ABCDEF1234567890");
+                    $hashids = new Hashids("refunds", 10, "ABCDEF1234567890");
                     $shopOrderRefund->uid = $hashids->encode($shopOrderRefund->id);
                     $shopOrderRefund->save();
 
@@ -83,8 +87,9 @@ class RefundController extends Controller {
                     );
 
                     // send refund request push notification and email to shop and shopper
-                    //SprubixQueue::queuePushNotification($recipientUser, $message);
-                    //SprubixQueue::queueRefundRequestEmail();
+                    $message = $shopOrder->buyer->username . " has requested for a refund.";
+                    SprubixQueue::queuePushNotification($shopOrder->user, $message);
+                    SprubixQueue::queueRefundRequestEmail($shopOrderRefund);
 
                 } else {
                     $returnCartItems = $request->get("return_cart_items");
@@ -156,7 +161,7 @@ class RefundController extends Controller {
                     $shopOrderRefund->braintree_transaction_id = $transaction->id;
                     $shopOrderRefund->save();
 
-                    $hashids = new Hashids("refunds", 8, "ABCDEF1234567890");
+                    $hashids = new Hashids("refunds", 10, "ABCDEF1234567890");
                     $shopOrderRefund->uid = $hashids->encode($shopOrderRefund->id);
                     $shopOrderRefund->save();
 
@@ -177,10 +182,6 @@ class RefundController extends Controller {
                     $shopOrder->refundable_amount = $shopOrder->total_price - $totalRefundedAmount;
                     $shopOrder->save();
 
-                    // send refunded success push notification and email to shop and shopper
-                    //SprubixQueue::queuePushNotification($recipientUser, $message);
-                    //SprubixQueue::queueRefundedEmail();
-
                     $json = array("status" => "200",
                         "message" => "success",
                         "braintree_result" => array(
@@ -189,6 +190,11 @@ class RefundController extends Controller {
                         ),
                         "shop_order_refund" => $shopOrderRefund
                     );
+
+                    // send refund approved push notification and email to shop and shopper
+                    $message = $shopOrder->user->username . " has approved your refund request.";
+                    SprubixQueue::queuePushNotification($shopOrder->buyer, $message);
+                    SprubixQueue::queueRefundApprovedEmail($shopOrderRefund);
 
                 } else {
                     $refundTransactionStatus = $result->transaction->status;

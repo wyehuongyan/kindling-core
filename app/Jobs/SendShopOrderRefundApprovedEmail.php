@@ -5,28 +5,28 @@ namespace App\Jobs;
 use App\Jobs\Job;
 use Carbon\Carbon;
 use Log;
-use App\Models\ShopOrder;
 use App\Facades\SprubixMail;
+use App\Models\ShopOrderRefund;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class SendShopOrderUpdateEmail extends Job implements SelfHandling, ShouldQueue
+class SendShopOrderRefundApprovedEmail extends Job implements SelfHandling, ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 
-    protected $shopOrder;
+    protected $shopOrderRefund;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(ShopOrder $shopOrder, $queueName)
+    public function __construct(ShopOrderRefund $shopOrderRefund, $queueName)
     {
         //
-        $this->shopOrder = $shopOrder;
+        $this->shopOrderRefund = $shopOrderRefund;
         $this->onQueue($queueName);
     }
 
@@ -38,8 +38,8 @@ class SendShopOrderUpdateEmail extends Job implements SelfHandling, ShouldQueue
     public function handle()
     {
         //
-        if(isset($this->shopOrder)) {
-            $buyer = $this->shopOrder->buyer;
+        if(isset($this->shopOrderRefund)) {
+            $buyer = $this->shopOrderRefund->buyer;
 
             // if no mandrill subaccount, create it
             if (!isset($buyer->mandrill_subaccount_id)) {
@@ -55,19 +55,19 @@ class SendShopOrderUpdateEmail extends Job implements SelfHandling, ShouldQueue
                     $buyer->mandrill_subaccount_id = $id;
                     $buyer->save();
 
-                    // send shop order update email
-                    SprubixMail::sendShopOrderUpdate($buyer, $this->shopOrder);
+                    // send shop order refund approved email
+                    SprubixMail::sendShopOrderRefundApproved($buyer, $this->shopOrderRefund);
                 } else {
                     // some error occured
                     // log to sentry, subaccount not created
                 }
 
             } else {
-                // send shop order update email
-                SprubixMail::sendShopOrderUpdate($buyer, $this->shopOrder);
+                // send shop order refund approved email
+                SprubixMail::sendShopOrderRefundApproved($buyer, $this->shopOrderRefund);
             }
         } else {
-            // Shop Order cannot be found, log to sentry
+            // Shop Order Refund cannot be found, log to sentry
         }
     }
 }

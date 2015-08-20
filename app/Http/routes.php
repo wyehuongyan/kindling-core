@@ -114,6 +114,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('order/create', 'OrderController@createOrder');
 
     // refunds
+    Route::get('refund/{shopOrderRefund}', 'RefundController@shopOrderRefund');
     Route::post('refund/create', 'RefundController@createRefund');
     Route::post('refund/{shopOrderRefund}/approve', 'RefundController@approveRefund');
     Route::get('user/refunds', 'RefundController@userRefunds');

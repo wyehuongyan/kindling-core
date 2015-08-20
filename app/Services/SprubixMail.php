@@ -1,6 +1,7 @@
 <?php namespace App\Services;
 
 use App\Models\ShopOrder;
+use App\Models\ShopOrderRefund;
 use Mandrill;
 use Mandrill_Error;
 use App\Models\User;
@@ -346,14 +347,14 @@ class SprubixMail {
         $result = $this->mandrill->messages->sendTemplate($template_name, $template_content, $message);
     }
 
-    public function sendShopOrderUpdate(ShopOrder $shopOrder) {
+    public function sendShopOrderUpdate(User $buyer, ShopOrder $shopOrder) {
+        $userOrderUID = $shopOrder->userOrder->uid;
         $shopOrderUID = $shopOrder->uid;
         $itemsPrice = $shopOrder->items_price;
         $shippingRate = $shopOrder->shipping_rate;
         $shopOrderTotal = $shopOrder->total_price;
 
         // // buyer
-        $buyer = $shopOrder->buyer;
         $buyerImage = $buyer->image;
         $buyerEmail = $buyer->email;
         $buyerName = $buyer->name;
@@ -369,6 +370,20 @@ class SprubixMail {
         // // delivery info
         $deliveryOption = $shopOrder->deliveryOption;
         $shippingMethod = $deliveryOption->name;
+
+        // // user shipping address
+        $shippingAddress = $shopOrder->shippingAddress;
+
+        $shippingAddressHTML = $shippingAddress->address_1 . "<br>";
+
+        if(isset($shippingAddress->address_2) && $shippingAddress->address_2 != "") {
+            $shippingAddressHTML .= $shippingAddress->address_2 . "<br>";
+        }
+
+        $shippingAddressHTML .= $shippingAddress->city . "<br>";
+        $shippingAddressHTML .= $shippingAddress->state . "<br>";
+        $shippingAddressHTML .= $shippingAddress->country . "<br>";
+        $shippingAddressHTML .= $shippingAddress->postal_code;
 
         // // cart items
         $cartItems = $shopOrder->cartItems;
@@ -443,6 +458,14 @@ class SprubixMail {
                             'rcpt' => $buyerEmail,
                             'vars' => array(
                                 array(
+                                    'name' => 'user_order_uid',
+                                    'content' => $userOrderUID
+                                ),
+                                array(
+                                    'name' => 'shipping_address',
+                                    'content' => $shippingAddressHTML
+                                ),
+                                array(
                                     'name' => 'shop_order_uid',
                                     'content' => $shopOrderUID
                                 ),
@@ -489,6 +512,10 @@ class SprubixMail {
                     'subaccount' => $buyerMandrillSubaccountId
                 );
 
+                $template_content = array();
+
+                $result = $this->mandrill->messages->sendTemplate($template_name, $template_content, $message);
+
                 break;
             case 4:
                 // Shipping Received
@@ -497,10 +524,336 @@ class SprubixMail {
                 // Shipping Delayed
                 break;
         }
+    }
 
-        $template_content = array();
+    public function sendShopOrderRefundRequest(User $seller, ShopOrderRefund $shopOrderRefund) {
+        try {
+            // seller will receive the request
+            $sellerImage = $seller->image;
+            $sellerEmail = $seller->email;
+            $sellerName = $seller->name;
+            $sellerUsername = $seller->username;
 
-        $result = $this->mandrill->messages->sendTemplate($template_name, $template_content, $message);
+            // buyer
+            $buyer = $shopOrderRefund->buyer;
+            $buyerImage = $buyer->image;
+            $buyerEmail = $buyer->email;
+            $buyerName = $buyer->name;
+            $buyerUsername = $buyer->username;
+
+            $refundUID = $shopOrderRefund->uid;
+            $totalRefundAmount = $shopOrderRefund->refund_amount;
+
+            $shopOrder = $shopOrderRefund->shopOrder;
+            $shopOrderUID = $shopOrder->uid;
+            $itemsPrice = $shopOrder->items_price;
+            $shippingRate = $shopOrder->shipping_rate;
+
+            // // delivery info
+            $deliveryOption = $shopOrder->deliveryOption;
+            $shippingMethod = $deliveryOption->name;
+
+            // // payment method
+            $paymentMethod = $shopOrder->paymentMethod;
+            $paymentMethodName = $paymentMethod->card_type . " ending with " . $paymentMethod->redacted_card_num;
+
+            // refund items
+            $cartItems = $shopOrder->cartItems;
+            $refundItems = array();
+
+            foreach($cartItems as $cartItem) {
+                // // choose cart items that have non-zero 'return' property
+                if($cartItem->return != 0) {
+                    $refundItem = new \stdClass();
+
+                    $piece = $cartItem->piece;
+                    $pieceImages = json_decode($piece->images);
+                    $refundItem->image = $pieceImages->cover;
+
+                    $refundItem->name = $piece->name;
+                    $refundItem->size = $cartItem->size;
+                    $refundItem->quantity = $cartItem->quantity;
+                    $refundItem->price = $piece->price;
+                    $refundItem->return = $cartItem->return;
+
+                    $refundItems[] = $refundItem;
+                }
+            }
+
+            Log::info($refundItems);
+
+            // view refund url scheme
+            $urlScheme = env('URL_SCHEME') . "/refund/" . $shopOrderRefund->id;
+
+            // seller mandrill subaccount id
+            $sellerMandrillSubaccountId = $seller->mandrill_subaccount_id;
+
+            // template slug name in Mandrill
+            $template_name = 'transactional-order-refund';
+
+            $message = array(
+                'subject' => "Shop Order Refund #" . $shopOrderUID,
+                'from_email' => 'order-refund-requested@sprubix.com',
+                'from_name' => 'Team Sprubix',
+                'to' => array(
+                    array(
+                        'email' => $sellerEmail,
+                        'name' => $sellerName,
+                        'type' => 'to'
+                    )
+                ),
+                'headers' => array('Reply-To' => 'no-reply@sprubix.com'),
+                "auto_text" => true,
+                "inline_css" => true,
+                'merge' => true,
+                'merge_language' => 'handlebars',
+                "global_merge_vars" => array(
+                    array(
+                        'name' => 'refund_request',
+                        'content' => true
+                    ),
+                    array(
+                        'name' => 'order_query_email',
+                        'content' => 'support@sprubix.com'
+                    )
+                ),
+                'merge_vars' => array(
+                    array(
+                        'rcpt' => $sellerEmail,
+                        'vars' => array(
+                            array(
+                                'name' => 'refund_uid',
+                                'content' => $refundUID
+                            ),
+                            array(
+                                'name' => 'shop_order_uid',
+                                'content' => $shopOrderUID
+                            ),
+                            array(
+                                'name' => 'payment_method',
+                                'content' => $paymentMethodName
+                            ),
+                            array(
+                                'name' => 'shipping_method',
+                                'content' => $shippingMethod
+                            ),
+                            array(
+                                'name' => 'items_price',
+                                'content' => $itemsPrice
+                            ),
+                            array(
+                                'name' => 'shipping_rate',
+                                'content' => $shippingRate
+                            ),
+                            array(
+                                'name' => 'total_refund_amount',
+                                'content' => $totalRefundAmount
+                            ),
+                            array(
+                                'name' => 'seller_email',
+                                'content' => $sellerEmail
+                            ),
+                            array(
+                                'name' => 'seller_name',
+                                'content' => $sellerName
+                            ),
+                            array(
+                                'name' => 'buyer_image',
+                                'content' => $buyerImage
+                            ),
+                            array(
+                                'name' => 'buyer_email',
+                                'content' => $buyerEmail
+                            ),
+                            array(
+                                'name' => 'buyer_name',
+                                'content' => $buyerName
+                            ),
+                            array(
+                                'name' => 'refund_items',
+                                'content' => $refundItems
+                            ),
+                            array(
+                                'name' => 'view_refund_url',
+                                'content' => $urlScheme
+                            )
+                        )
+                    )
+                ),
+                'tags' => array('order-refund-requested'),
+                'subaccount' => $sellerMandrillSubaccountId
+            );
+
+            $template_content = array();
+
+            $result = $this->mandrill->messages->sendTemplate($template_name, $template_content, $message);
+
+        } catch(Mandrill_Error $e) {
+            // Mandrill errors are thrown as exceptions
+            Log::error($e->getMessage()); // log to sentry
+        }
+    }
+
+    public function sendShopOrderRefundApproved(User $buyer, ShopOrderRefund $shopOrderRefund) {
+        try {
+            $seller = $shopOrderRefund->user;
+            $sellerImage = $seller->image;
+            $sellerEmail = $seller->email;
+            $sellerName = $seller->name;
+            $sellerUsername = $seller->username;
+
+            $buyerImage = $buyer->image;
+            $buyerEmail = $buyer->email;
+            $buyerName = $buyer->name;
+            $buyerUsername = $buyer->username;
+
+            $refundUID = $shopOrderRefund->uid;
+            $totalRefundAmount = $shopOrderRefund->refund_amount;
+
+            $shopOrder = $shopOrderRefund->shopOrder;
+            $shopOrderUID = $shopOrder->uid;
+            $itemsPrice = $shopOrder->items_price;
+            $shippingRate = $shopOrder->shipping_rate;
+
+            // // delivery info
+            $deliveryOption = $shopOrder->deliveryOption;
+            $shippingMethod = $deliveryOption->name;
+
+            // // payment method
+            $paymentMethod = $shopOrder->paymentMethod;
+            $paymentMethodName = $paymentMethod->card_type . " ending with " . $paymentMethod->redacted_card_num;
+
+            // refunded items
+            $cartItems = $shopOrder->cartItems;
+            $refundedItems = array();
+
+            foreach($cartItems as $cartItem) {
+                // // choose cart items that have non-zero 'returned' property
+                if($cartItem->returned != 0) {
+                    $refundedItem = new \stdClass();
+
+                    $piece = $cartItem->piece;
+                    $pieceImages = json_decode($piece->images);
+                    $refundedItem->image = $pieceImages->cover;
+
+                    $refundedItem->name = $piece->name;
+                    $refundedItem->size = $cartItem->size;
+                    $refundedItem->quantity = $cartItem->quantity;
+                    $refundedItem->price = $piece->price;
+                    $refundedItem->returned = $cartItem->returned;
+
+                    $refundedItems[] = $refundedItem;
+                }
+            }
+
+            Log::info($refundedItems);
+
+            // view refund url scheme
+            $urlScheme = env('URL_SCHEME') . "/refund/" . $shopOrderRefund->id;
+
+            // buyer mandrill subaccount id
+            $buyerMandrillSubaccountId = $buyer->mandrill_subaccount_id;
+
+            // template slug name in Mandrill
+            $template_name = 'transactional-order-refund';
+
+            $message = array(
+                'subject' => "Shop Order Refund #" . $shopOrderUID,
+                'from_email' => 'order-refund-approved@sprubix.com',
+                'from_name' => 'Team Sprubix',
+                'to' => array(
+                    array(
+                        'email' => $buyerEmail,
+                        'name' => $buyerName,
+                        'type' => 'to'
+                    )
+                ),
+                'headers' => array('Reply-To' => 'no-reply@sprubix.com'),
+                "auto_text" => true,
+                "inline_css" => true,
+                'merge' => true,
+                'merge_language' => 'handlebars',
+                "global_merge_vars" => array(
+                    array(
+                        'name' => 'order_query_email',
+                        'content' => 'support@sprubix.com'
+                    )
+                ),
+                'merge_vars' => array(
+                    array(
+                        'rcpt' => $buyerEmail,
+                        'vars' => array(
+                            array(
+                                'name' => 'refund_uid',
+                                'content' => $refundUID
+                            ),
+                            array(
+                                'name' => 'shop_order_uid',
+                                'content' => $shopOrderUID
+                            ),
+                            array(
+                                'name' => 'payment_method',
+                                'content' => $paymentMethodName
+                            ),
+                            array(
+                                'name' => 'shipping_method',
+                                'content' => $shippingMethod
+                            ),
+                            array(
+                                'name' => 'items_price',
+                                'content' => $itemsPrice
+                            ),
+                            array(
+                                'name' => 'shipping_rate',
+                                'content' => $shippingRate
+                            ),
+                            array(
+                                'name' => 'total_refund_amount',
+                                'content' => $totalRefundAmount
+                            ),
+                            array(
+                                'name' => 'seller_image',
+                                'content' => $sellerImage
+                            ),
+                            array(
+                                'name' => 'seller_email',
+                                'content' => $sellerEmail
+                            ),
+                            array(
+                                'name' => 'seller_name',
+                                'content' => $sellerName
+                            ),
+                            array(
+                                'name' => 'buyer_email',
+                                'content' => $buyerEmail
+                            ),
+                            array(
+                                'name' => 'buyer_name',
+                                'content' => $buyerName
+                            ),
+                            array(
+                                'name' => 'refund_items',
+                                'content' => $refundedItems
+                            ),
+                            array(
+                                'name' => 'view_refund_url',
+                                'content' => $urlScheme
+                            )
+                        )
+                    )
+                ),
+                'tags' => array('order-refund-approved'),
+                'subaccount' => $buyerMandrillSubaccountId
+            );
+
+            $template_content = array();
+
+            $result = $this->mandrill->messages->sendTemplate($template_name, $template_content, $message);
+
+        } catch(Mandrill_Error $e) {
+            // Mandrill errors are thrown as exceptions
+            Log::error($e->getMessage()); // log to sentry
+        }
     }
 
     public function addSubAccount($id, $name, $notes) {

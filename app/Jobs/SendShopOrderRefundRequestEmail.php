@@ -5,28 +5,28 @@ namespace App\Jobs;
 use App\Jobs\Job;
 use Carbon\Carbon;
 use Log;
-use App\Models\ShopOrder;
 use App\Facades\SprubixMail;
+use App\Models\ShopOrderRefund;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class SendShopOrderUpdateEmail extends Job implements SelfHandling, ShouldQueue
+class SendShopOrderRefundRequestEmail extends Job implements SelfHandling, ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 
-    protected $shopOrder;
+    protected $shopOrderRefund;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(ShopOrder $shopOrder, $queueName)
+    public function __construct(ShopOrderRefund $shopOrderRefund, $queueName)
     {
         //
-        $this->shopOrder = $shopOrder;
+        $this->shopOrderRefund = $shopOrderRefund;
         $this->onQueue($queueName);
     }
 
@@ -38,13 +38,13 @@ class SendShopOrderUpdateEmail extends Job implements SelfHandling, ShouldQueue
     public function handle()
     {
         //
-        if(isset($this->shopOrder)) {
-            $buyer = $this->shopOrder->buyer;
+        if(isset($this->shopOrderRefund)) {
+            $seller = $this->shopOrderRefund->user;
 
             // if no mandrill subaccount, create it
-            if (!isset($buyer->mandrill_subaccount_id)) {
-                $id = $buyer->id;
-                $name = $buyer->username;
+            if (!isset($seller->mandrill_subaccount_id)) {
+                $id = $seller->id;
+                $name = $seller->username;
                 $notes = 'Signed up on ' . Carbon::now();
 
                 $result = SprubixMail::addSubAccount($id, $name, $notes);
@@ -52,22 +52,22 @@ class SendShopOrderUpdateEmail extends Job implements SelfHandling, ShouldQueue
 
                 // account created
                 if ($status == "active") {
-                    $buyer->mandrill_subaccount_id = $id;
-                    $buyer->save();
+                    $seller->mandrill_subaccount_id = $id;
+                    $seller->save();
 
-                    // send shop order update email
-                    SprubixMail::sendShopOrderUpdate($buyer, $this->shopOrder);
+                    // send shop order refund request email
+                    SprubixMail::sendShopOrderRefundRequest($seller, $this->shopOrderRefund);
                 } else {
                     // some error occured
                     // log to sentry, subaccount not created
                 }
 
             } else {
-                // send shop order update email
-                SprubixMail::sendShopOrderUpdate($buyer, $this->shopOrder);
+                // send shop order refund request email
+                SprubixMail::sendShopOrderRefundRequest($seller, $this->shopOrderRefund);
             }
         } else {
-            // Shop Order cannot be found, log to sentry
+            // Shop Order Refund cannot be found, log to sentry
         }
     }
 }

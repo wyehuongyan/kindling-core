@@ -283,7 +283,7 @@ class OrderController extends Controller {
             $userOrder->save();
 
             // generate user order uid
-            $hashids = new Hashids("user_orders", 8, "ABCDEF1234567890");
+            $hashids = new Hashids("user_orders", 10, "ABCDEF1234567890");
             $userOrder->uid = $hashids->encode($userOrder->id);
             $userOrder->save();
 
@@ -315,7 +315,7 @@ class OrderController extends Controller {
                 $shopOrder->save();
 
                 // generate user order uid
-                $hashids = new Hashids("shop_orders", 8, "ABCDEF1234567890");
+                $hashids = new Hashids("shop_orders", 10, "ABCDEF1234567890");
                 $shopOrder->uid = $hashids->encode($shopOrder->id);
                 $shopOrder->save();
 
