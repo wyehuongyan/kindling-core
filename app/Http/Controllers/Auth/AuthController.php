@@ -1,12 +1,15 @@
 <?php namespace App\Http\Controllers\Auth;
 
+use App\Facades\SprubixQueue;
 use App\Http\Controllers\Controller;
 use App\Models\UserGender;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Validator;
 use Log;
+use Hashids\Hashids;
 use App\Models\User;
 use App\Models\Shopper;
 use App\Models\UserInfo;
@@ -139,6 +142,11 @@ class AuthController extends Controller {
 
             $user->save();
 
+            $hashids = new Hashids("user_email_verification", 32, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890");
+            $user->verification_code = $hashids->encode($user->id);
+
+            $user->save();
+
             $shopper = new Shopper();
             $shopper->save();
             $shopper->user()->save($user);
@@ -169,9 +177,47 @@ class AuthController extends Controller {
                 "data" => $user
             );
 
+            SprubixQueue::queueVerificationEmail($user);
+
             return response()->json($success)->setCallback($request->input('callback'));
         }
 
+    }
+
+    // verification
+    public function verifyEmail(Request $request) {
+        $redirectURL = "https://sprubix.com/email-verified/";
+
+        $verification_code = $request->get("vc");
+        $user = User::find($request->get("id"));
+
+        if($user->verification_code == $verification_code) {
+            $user->verified_at = Carbon::now();
+            $user->save();
+
+            // send welcome email
+            SprubixQueue::queueWelcomeEmail($user);
+
+            // redirect to verified page
+            return redirect()->to($redirectURL);
+        } else {
+            // verification code does not match
+            // Log to sentry
+        }
+    }
+
+    public function testVerifyEmail(Request $request) {
+        $user = Auth::user();
+
+        SprubixQueue::queueVerificationEmail($user);
+
+        $success = array(
+            "status" => "200",
+            "message" => "success",
+            "data" => $user
+        );
+
+        return response()->json($success)->setCallback($request->input('callback'));
     }
 
     // Firebase methods

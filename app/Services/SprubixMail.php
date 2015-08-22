@@ -2,6 +2,7 @@
 
 use App\Models\ShopOrder;
 use App\Models\ShopOrderRefund;
+use Hashids\Hashids;
 use Mandrill;
 use Mandrill_Error;
 use App\Models\User;
@@ -13,6 +14,149 @@ class SprubixMail {
     public function __construct() {
         //$this->mandrill = new Mandrill(env('MANDRILL_TEST_KEY'));
         $this->mandrill = new Mandrill(env('MANDRILL_KEY'));
+    }
+
+    public function sendEmailVerification(User $user) {
+        try {
+            if(!isset($user->verification_code) || $user->verification_code == "") {
+                $hashids = new Hashids("user_email_verification", 32, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890");
+                $user->verification_code = $hashids->encode($user->id);
+
+                $user->save();
+            }
+
+            $recipientEmail = $user->email;
+            $recipientName = $user->username;
+            $verificationCode = $user->verification_code;
+            $verificationURL = "http://sprubix-wh.ngrok.io/~wyehuongyan/kindling-core/public/index.php" . "/auth/email/verify?id=" . $user->id . "&vc=" . $verificationCode;
+
+            // user mandrill subaccount id
+            $userMandrillSubaccountId = $user->mandrill_subaccount_id;
+
+            // template slug name in Mandrill
+            $template_name = 'onboarding-confirm-email-address';
+            $template_content = array();
+            $message = array(
+                'subject' => "Please verify your email with Sprubix",
+                'from_email' => 'email-verification@sprubix.com',
+                'from_name' => 'Team Sprubix',
+                'to' => array(
+                    array(
+                        'email' => $recipientEmail,
+                        'name' => $recipientName,
+                        'type' => 'to'
+                    )
+                ),
+                'headers' => array('Reply-To' => 'no-reply@sprubix.com'),
+                "auto_text" => true,
+                "inline_css" => true,
+                'merge' => true,
+                'merge_language' => 'handlebars',
+                "global_merge_vars" => array(
+                    array(
+                        'name' => 'order_query_email',
+                        'content' => 'support@sprubix.com'
+                    )
+                ),
+                'merge_vars' => array(
+                    array(
+                        'rcpt' => $recipientEmail,
+                        'vars' => array(
+                            array(
+                                'name' => 'user_name',
+                                'content' => $recipientName
+                            ),
+                            array(
+                                'name' => 'verification_url',
+                                'content' => $verificationURL
+                            )
+                        )
+                    )
+                ),
+                'tags' => array('email-verification'),
+                'subaccount' => $userMandrillSubaccountId
+            );
+
+            $result = $this->mandrill->messages->sendTemplate($template_name, $template_content, $message);
+
+        } catch (Mandrill_Error $e) {
+            // Mandrill errors are thrown as exceptions
+            $error = array(
+                "status" => "500",
+                "message" => $e->getMessage()
+            );
+
+            // handle error
+            Log::error($error); // log to sentry
+        }
+    }
+
+    public function sendWelcome(User $user) {
+        try {
+            $recipientEmail = $user->email;
+            $recipientName = $user->username;
+
+            $launchURL = env('URL_SCHEME');
+
+            // user mandrill subaccount id
+            $userMandrillSubaccountId = $user->mandrill_subaccount_id;
+
+            // template slug name in Mandrill
+            $template_name = 'onboarding-welcome-get-started';
+            $template_content = array();
+            $message = array(
+                'subject' => "Welcome to Sprubix",
+                'from_email' => 'welcome@sprubix.com',
+                'from_name' => 'Team Sprubix',
+                'to' => array(
+                    array(
+                        'email' => $recipientEmail,
+                        'name' => $recipientName,
+                        'type' => 'to'
+                    )
+                ),
+                'headers' => array('Reply-To' => 'no-reply@sprubix.com'),
+                "auto_text" => true,
+                "inline_css" => true,
+                'merge' => true,
+                'merge_language' => 'handlebars',
+                "global_merge_vars" => array(
+                    array(
+                        'name' => 'order_query_email',
+                        'content' => 'support@sprubix.com'
+                    )
+                ),
+                'merge_vars' => array(
+                    array(
+                        'rcpt' => $recipientEmail,
+                        'vars' => array(
+                            array(
+                                'name' => 'user_name',
+                                'content' => $recipientName
+                            ),
+                            array(
+                                'name' => 'launch_url',
+                                'content' => $launchURL
+                            )
+                        )
+                    )
+                ),
+                'tags' => array('email-verification'),
+                'subaccount' => $userMandrillSubaccountId
+            );
+
+            $result = $this->mandrill->messages->sendTemplate($template_name, $template_content, $message);
+
+        } catch (Mandrill_Error $e) {
+            // Mandrill errors are thrown as exceptions
+            $error = array(
+                "status" => "500",
+                "message" => $e->getMessage()
+            );
+
+            // handle error
+            Log::error($error); // log to sentry
+        }
     }
 
     public function sendFeedback(User $user, $content) {

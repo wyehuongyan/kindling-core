@@ -5,6 +5,8 @@ use App\Jobs\SendPushNotification;
 use App\Jobs\SendShopOrderRefundApprovedEmail;
 use App\Jobs\SendShopOrderRefundRequestEmail;
 use App\Jobs\SendShopOrderUpdateEmail;
+use App\Jobs\SendVerificationEmail;
+use App\Jobs\SendWelcomeEmail;
 use App\Models\ShopOrder;
 use App\Models\ShopOrderRefund;
 use App\Models\User;
@@ -35,6 +37,42 @@ class SprubixQueue {
         $this->ironMQ->updateQueue($queueName, $params);
 
         $job = (new SendPushNotification($user, $message, $queueName));
+        $this->dispatch($job);
+    }
+
+    public function queueVerificationEmail(User $user) {
+        $queueName = "email_verification";
+
+        $params = array(
+            "push_type" => "multicast",
+            "retries" => 5,
+            "subscribers" => array(
+                array("url" => env("NGROK_URL") . "/queue/receive")
+            ),
+            "error_queue" => $queueName . "_errors"
+        );
+
+        $this->ironMQ->updateQueue($queueName, $params);
+
+        $job = (new SendVerificationEmail($user, $queueName));
+        $this->dispatch($job);
+    }
+
+    public function queueWelcomeEmail(User $user) {
+        $queueName = "email_welcome";
+
+        $params = array(
+            "push_type" => "multicast",
+            "retries" => 5,
+            "subscribers" => array(
+                array("url" => env("NGROK_URL") . "/queue/receive")
+            ),
+            "error_queue" => $queueName . "_errors"
+        );
+
+        $this->ironMQ->updateQueue($queueName, $params);
+
+        $job = (new SendWelcomeEmail($user, $queueName));
         $this->dispatch($job);
     }
 
