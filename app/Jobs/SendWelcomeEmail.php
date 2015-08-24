@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Facades\SprubixMail;
 use App\Jobs\Job;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
