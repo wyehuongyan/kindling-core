@@ -8,7 +8,9 @@ use App\Models\ShopOrder;
 use App\Models\UserOrder;
 use App\Models\OrderStatus;
 use App\Models\UserPaymentMethod;
+use App\Models\UserPoints;
 use App\Models\UserShippingAddress;
+use Carbon\Carbon;
 use Hashids\Hashids;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -91,6 +93,27 @@ class OrderController extends Controller {
             $shopOrder->orderStatus()->associate($newOrderStatus);
             $shopOrder->save();
 
+            // allocate points if shopOrder has been received
+            if ($shopOrder->orderStatus->id == 4) {
+                // shipping received
+
+                $user = $shopOrder->buyer;
+                $userPoints = $user->points;
+                $userOrder = $shopOrder->userOrder;
+                $fraction = $shopOrder->total_price / $userOrder->total_price;
+
+                // create user points
+                if(!isset($userPoints)) {
+                    $userPoints = new UserPoints();
+                    $userPoints->user()->associate($user);
+                    $userPoints->save();
+                }
+
+                $userPoints->amount = $userPoints->amount + ($fraction * $userOrder->total_points);
+                $userPoints->expire_at = Carbon::now()->addMonth(3); // 3 months from now
+                $userPoints->save();
+            }
+
             // send mandrill shop order update email
             SprubixQueue::queueShopOrderUpdateEmail($shopOrder);
 
@@ -157,20 +180,6 @@ class OrderController extends Controller {
 
             $userOrder->shippingAddress()->associate(UserShippingAddress::find($shippingAddressId));
             $userOrder->paymentMethod()->associate(UserPaymentMethod::find($paymentMethodId));
-
-            /*$userPoints = $user->points;
-
-            // create user points
-            if(!isset($userPoints)) {
-                $userPoints = new UserPoints();
-                $userPoints->user()->associate($user);
-                $userPoints->save();
-            }
-
-            $userPoints->amount = $totalPoints;
-            $userPoints->expire_at = Carbon::now()->addMonth(3); // 3 months from now
-            $userPoints->save();*/
-
             $userOrder->user()->associate($user);
 
             // set up braintree environment (looks like this always has to be done)

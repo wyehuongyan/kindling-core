@@ -58,6 +58,8 @@ class Piece extends Model {
 
             $query->whereRaw("MATCH (name, description) AGAINST ('$fulltext')")->orWhereHas('category', function($query) use ($fulltext) {
                 $query->whereRaw("MATCH (name) AGAINST ('$fulltext')");
+            })->orWhereHas('brand', function($query) use ($fulltext) {
+                $query->whereRaw("MATCH (name) AGAINST ('$fulltext')");
             });
         }
         if (isset($search_fields['description'])) {
