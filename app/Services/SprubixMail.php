@@ -217,7 +217,9 @@ class SprubixMail {
             }
 
             $userOrderUID = $userOrder->uid;
-            $userOrderTotal = $userOrder->total_price;
+            $userOrderTotalPayable = $userOrder->total_payable_price;
+            $userOrderTotalDiscount = $userOrder->total_discount;
+            $userOrderPointsApplied = (int)$userOrder->points_applied;
 
             // // user payment method
             $paymentMethod = $userOrder->paymentMethod;
@@ -356,8 +358,16 @@ class SprubixMail {
                                 'content' => $shippingAddressHTML
                             ),
                             array(
-                                'name' => 'user_order_total',
-                                'content' => $userOrderTotal
+                                'name' => 'user_order_points_applied',
+                                'content' => $userOrderPointsApplied
+                            ),
+                            array(
+                                'name' => 'user_order_total_discount',
+                                'content' => $userOrderTotalDiscount
+                            ),
+                            array(
+                                'name' => 'user_order_total_payable',
+                                'content' => $userOrderTotalPayable
                             ),
                             array(
                                 'name' => 'recipient_name',

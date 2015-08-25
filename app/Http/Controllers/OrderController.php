@@ -45,7 +45,7 @@ class OrderController extends Controller {
     public function userOrder(Request $request) {
         $userOrderId = $request->get("user_order_id");
 
-        $userOrder = UserOrder::find($userOrderId)->with(array("shopOrders" => function($query) {
+        $userOrder = UserOrder::find($userOrderId)->with("shippingAddress")->with(array("shopOrders" => function($query) {
                 $query->with("user", "orderStatus");
             }))->first();
 
@@ -162,6 +162,9 @@ class OrderController extends Controller {
             $user = Auth::user();
             $transactionId = $request->get("braintree_transaction_id");
             $totalItemsPrice = $request->get("total_items_price");
+            $totalPayablePrice = $request->get("total_payable_price");
+            $totalDiscount = $request->get("total_discount");
+            $pointsApplied = $request->get("points_applied");
             $totalShippingRate = $request->get("total_shipping_rate");
             $totalPrice = $request->get("total_price");
             $totalPoints = $request->get("total_points");
@@ -170,10 +173,18 @@ class OrderController extends Controller {
             $shippingAddressId = $request->get("delivery_address_id");
             $paymentMethodId = $request->get("payment_method_id");
 
+            // deduct points from user info
+            $userPoints = $user->points;
+            $userPoints->amount = $userPoints->amount - $pointsApplied;
+            $userPoints->save();
+
             // create user order
             $userOrder = new UserOrder();
             $userOrder->total_price = $totalPrice;
             $userOrder->total_items_price = $totalItemsPrice;
+            $userOrder->total_payable_price = $totalPayablePrice;
+            $userOrder->total_discount = $totalDiscount;
+            $userOrder->points_applied = $pointsApplied;
             $userOrder->total_shipping_rate = $totalShippingRate;
             $userOrder->braintree_transaction_id = $transactionId;
             $userOrder->total_points = $totalPoints;
