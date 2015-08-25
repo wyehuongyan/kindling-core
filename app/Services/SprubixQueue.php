@@ -1,5 +1,6 @@
 <?php namespace App\Services;
 
+use App\Jobs\RefundShopOrder;
 use App\Jobs\SendOrderConfirmationEmail;
 use App\Jobs\SendPushNotification;
 use App\Jobs\SendShopOrderRefundApprovedEmail;
@@ -22,6 +23,27 @@ class SprubixQueue {
         $this->ironMQ = new IronMQ();
     }
 
+    // Refunds
+    public function queueRefund(ShopOrder $shopOrder, ShopOrderRefund $shopOrderRefund, $returnCartItems, $returnAmount, $delay) {
+        $queueName = "refunds";
+
+        $params = array(
+            "push_type" => "multicast",
+            "retries" => 5,
+            "delay" => $delay,
+            "subscribers" => array(
+                array("url" => env("NGROK_URL") . "/queue/receive")
+            ),
+            "error_queue" => $queueName . "_errors"
+        );
+
+        $this->ironMQ->updateQueue($queueName, $params);
+
+        $job = (new RefundShopOrder($shopOrder, $shopOrderRefund, $returnCartItems, $returnAmount, $queueName));
+        $this->dispatch($job);
+    }
+
+    // Push Notifications
     public function queuePushNotification(User $user, $message) {
         $queueName = "push_notifications";
 
@@ -40,6 +62,7 @@ class SprubixQueue {
         $this->dispatch($job);
     }
 
+    // Emails
     public function queueVerificationEmail(User $user) {
         $queueName = "email_verification";
 

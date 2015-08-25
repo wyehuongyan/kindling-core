@@ -211,14 +211,21 @@ class RefundController extends Controller {
             case Braintree_Transaction::AUTHORIZED:
             case Braintree_Transaction::SUBMITTED_FOR_SETTLEMENT:
                 // not yet settled
-                // // send to IronMQ with delay of two days
+                // // send to IronMQ with delay of one day
 
                 // refund status id 2: Request Queued
                 $shopOrderRefund->refundStatus()->associate(RefundStatus::find(2));
+                $shopOrderRefund->save();
 
                 // send requestQueued push notification and email to shop and shopper
+                $delay = 24*3600;
 
-                // $json = array();
+                SprubixQueue::queueRefund($shopOrder, $shopOrderRefund, $returnCartItems, $refundAmount, $delay);
+
+                $json = array("status" => "200",
+                    "message" => "refund_queued",
+                    "shop_order_refund" => $shopOrderRefund
+                );
 
                 break;
 
