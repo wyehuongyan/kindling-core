@@ -3,19 +3,20 @@
 use App\Models\UserPoints;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PointsController extends Controller {
     public function userPoints(Request $request) {
-        $user = $request->user();
+        $user = Auth::user();
 
-        $userPoints = $user->points()->get();
+        $userPoints = $user->points;
 
         return response()->json($userPoints)->setCallback($request->input('callback'));
     }
 
     public function addUserPoints(Request $request) {
         try {
-            $user = $request->user();
+            $user = Auth::user();
             $userPoints = $user->points;
 
             // check if user has points initialized
