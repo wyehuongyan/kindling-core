@@ -2,9 +2,10 @@
 
 use App\Models\CartItem;
 use App\Models\ShopOrder;
+use App\Models\ShopOrderRefund;
 use Illuminate\Http\Request;
-use Auth;
 use Carbon\Carbon;
+use Auth;
 use Log;
 
 class DashboardController extends Controller {
@@ -95,11 +96,11 @@ class DashboardController extends Controller {
         // orders by status
         $activeStatus = array(1, 2, 6);
         $fulfilledStatus = array(3, 4);
-        $cancelledStatus = array(5, 7);
+        $refundStatus = array(1, 2); // requested, queued
 
         $activeOrders = $shop->shopOrders()->whereIn('order_status_id',$activeStatus)->get()->count();
         $fulfilledOrders = $shop->shopOrders()->whereIn('order_status_id',$fulfilledStatus)->get()->count();
-        $refundedOrders = $shop->shopOrders()->whereIn('order_status_id',$cancelledStatus)->get()->count();
+        $refundedOrders = ShopOrderRefund::where('user_id',$shop->id)->whereIn('refund_status_id',$refundStatus)->get()->count();
 
         // return
         $json = array(
