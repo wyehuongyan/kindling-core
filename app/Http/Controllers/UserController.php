@@ -2,10 +2,13 @@
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\UserGender;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Facades\CloudStorage;
+use Carbon\Carbon;
 use Hash;
+use Log;
 
 class UserController extends Controller {
     public function users(Request $request) {
@@ -137,6 +140,9 @@ class UserController extends Controller {
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:30',
             'description' => 'max:255',
+            'first_name' => 'max:255',
+            'last_name' => 'max:255',
+            'contact_number' => 'max:255'
         ]);
 
         if ($validator->fails()) {
@@ -156,6 +162,15 @@ class UserController extends Controller {
 
             $description = new \stdClass();
             $description->description = $request->get("description");
+
+            $userInfo = $user->userInfo()->get()[0];
+
+            $firstName = $request->get("first_name");
+            $lastName = $request->get("last_name");
+            $contactNumber = $request->get("contact_number");
+            $birthdate = Carbon::createFromFormat("d-m-Y", $request->get("date_of_birth"))->startOfDay();
+            $gender = UserGender::where('gender',$request->get("gender"))->get();
+            $genderId = $gender[0]->id;
 
             try {
                 $user->name = $name;
@@ -182,10 +197,19 @@ class UserController extends Controller {
 
                 $user->save();
 
+                $userInfo->first_name = $firstName;
+                $userInfo->last_name = $lastName;
+                $userInfo->contact_number = $contactNumber;
+                $userInfo->date_of_birth = $birthdate;
+                $userInfo->gender()->associate(UserGender::find($genderId));
+
+                $userInfo->save();
+
                 $json = array(
                     "status" => "200",
                     "message" => "success",
-                    "user" => $user
+                    "user" => $user,
+                    "user_info" => $userInfo
                 );
 
             } catch (\Exception $e) {
@@ -254,5 +278,46 @@ class UserController extends Controller {
 
             return response()->json($success)->setCallback($request->input('callback'));
         }
+    }
+
+    public function userPrivateInformation(Request $request) {
+        $user = Auth::User();
+        $userInfo = $user->userInfo()->get()[0];
+
+        $firstname = $userInfo["first_name"];
+        $lastname = $userInfo["last_name"];
+        $contactnumber = $userInfo["contact_number"];
+        $birthdate = Carbon::parse($userInfo["date_of_birth"])->format("d-m-Y");
+        $gender = UserGender::find($userInfo["gender_id"])->gender;
+
+        if (!isset($userInfo["first_name"])) {
+            $firstname = "";
+        }
+
+        if (!isset($userInfo["last_name"])) {
+            $lastname = "";
+        }
+
+        if (!isset($userInfo["contact_number"])) {
+            $contactnumber = "";
+        }
+
+        if (!isset($userInfo["date_of_birth"])) {
+            $birthdate = "";
+        }
+
+        if (!isset($userInfo["gender_id"])) {
+            $gender = "";
+        }
+
+        $userInfoReturn =  Array(
+            "first_name" => $firstname,
+            "last_name" => $lastname,
+            "contact_number" => $contactnumber,
+            "date_of_birth" => $birthdate,
+            "gender" => $gender
+        );
+
+        return response()->json($userInfoReturn)->setCallback($request->input('callback'));
     }
 }
