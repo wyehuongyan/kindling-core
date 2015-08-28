@@ -134,6 +134,7 @@ Route::group(['middleware' => 'auth'], function() {
     // edit profile
     Route::post('update/profile', 'UserController@updateProfile');
     Route::post('update/password', 'UserController@updatePassword');
+    Route::get('user/privateinformation', 'UserController@userPrivateInformation');
 
     // mail
     Route::post('mail/feedback', 'MailController@feedback');
