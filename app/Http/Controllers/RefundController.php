@@ -198,6 +198,20 @@ class RefundController extends Controller {
 
                     $shopOrder->save();
 
+                    // // give the buyer back their refunded points
+                    $buyer = $shopOrder->buyer;
+                    $userPoints = $buyer->points;
+
+                    // create user points
+                    if(!isset($userPoints)) {
+                        $userPoints = new UserPoints();
+                        $userPoints->user()->associate($buyer);
+                        $userPoints->save();
+                    }
+
+                    $userPoints->amount = $userPoints->amount + $refundPoints;
+                    $userPoints->save();
+
                     $json = array("status" => "200",
                         "message" => "success",
                         "braintree_result" => array(
