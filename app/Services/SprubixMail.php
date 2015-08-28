@@ -697,6 +697,7 @@ class SprubixMail {
 
             $refundUID = $shopOrderRefund->uid;
             $totalRefundAmount = $shopOrderRefund->refund_amount;
+            $totalRefundPoints = (int)$shopOrderRefund->refund_points;
 
             $shopOrder = $shopOrderRefund->shopOrder;
             $shopOrderUID = $shopOrder->uid;
@@ -733,8 +734,6 @@ class SprubixMail {
                     $refundItems[] = $refundItem;
                 }
             }
-
-            Log::info($refundItems);
 
             // view refund url scheme
             $urlScheme = env('URL_SCHEME') . "/refund/" . $shopOrderRefund->id;
@@ -804,6 +803,10 @@ class SprubixMail {
                                 'content' => $totalRefundAmount
                             ),
                             array(
+                                'name' => 'total_refund_points',
+                                'content' => $totalRefundPoints
+                            ),
+                            array(
                                 'name' => 'seller_email',
                                 'content' => $sellerEmail
                             ),
@@ -863,6 +866,7 @@ class SprubixMail {
 
             $refundUID = $shopOrderRefund->uid;
             $totalRefundAmount = $shopOrderRefund->refund_amount;
+            $totalRefundPoints = (int)$shopOrderRefund->refund_points;
 
             $shopOrder = $shopOrderRefund->shopOrder;
             $shopOrderUID = $shopOrder->uid;
@@ -899,8 +903,6 @@ class SprubixMail {
                     $refundedItems[] = $refundedItem;
                 }
             }
-
-            Log::info($refundedItems);
 
             // view refund url scheme
             $urlScheme = env('URL_SCHEME') . "/refund/" . $shopOrderRefund->id;
@@ -964,6 +966,10 @@ class SprubixMail {
                             array(
                                 'name' => 'total_refund_amount',
                                 'content' => $totalRefundAmount
+                            ),
+                            array(
+                                'name' => 'total_refund_points',
+                                'content' => $totalRefundPoints
                             ),
                             array(
                                 'name' => 'seller_image',

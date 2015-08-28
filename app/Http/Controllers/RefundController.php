@@ -48,6 +48,7 @@ class RefundController extends Controller {
             $shopOrder = ShopOrder::find($request->get("shop_order_id"));
 
             $refundAmount = $request->get("refund_amount");
+            $refundPoints = $request->get("refund_points");
             $refundReason = $request->get("refund_reason");
 
             if ($refundAmount > $shopOrder->refundable_amount) {
@@ -57,6 +58,7 @@ class RefundController extends Controller {
             } else {
                 $shopOrderRefund = new ShopOrderRefund();
                 $shopOrderRefund->refund_amount = $refundAmount;
+                $shopOrderRefund->refund_points = $refundPoints;
                 $shopOrderRefund->refund_reason = $refundReason;
                 $shopOrderRefund->user()->associate($shopOrder->user);
                 $shopOrderRefund->buyer()->associate($shopOrder->buyer);
@@ -93,7 +95,7 @@ class RefundController extends Controller {
 
                 } else {
                     $returnCartItems = $request->get("return_cart_items");
-                    $json = $this->refund($shopOrder, $shopOrderRefund, $returnCartItems, $refundAmount);
+                    $json = $this->refund($shopOrder, $shopOrderRefund, $returnCartItems, $refundAmount, $refundPoints);
                 }
             }
         }  catch (\Exception $e) {
@@ -110,6 +112,7 @@ class RefundController extends Controller {
         try {
             $shopOrder = $shopOrderRefund->shopOrder;
             $refundAmount = $request->get("refund_amount");
+            $refundPoints = $request->get("refund_points");
 
             if ($refundAmount > $shopOrder->refundable_amount) {
                 // when refund price exceeds total refundable amount
@@ -117,7 +120,7 @@ class RefundController extends Controller {
             } else {
                 // approve refund
                 $returnCartItems = $request->get("return_cart_items");
-                $json = $this->refund($shopOrder, $shopOrderRefund, $returnCartItems, $refundAmount);
+                $json = $this->refund($shopOrder, $shopOrderRefund, $returnCartItems, $refundAmount, $refundPoints);
             }
         } catch (\Exception $e) {
             $json = array("status" => "500",
@@ -129,7 +132,7 @@ class RefundController extends Controller {
         return response()->json($json)->setCallback($request->input('callback'));
     }
 
-    private function refund($shopOrder, $shopOrderRefund, $returnCartItems, $refundAmount) {
+    private function refund($shopOrder, $shopOrderRefund, $returnCartItems, $refundAmount, $refundPoints) {
         // Braintree refund
         // // to determine the status, retrieve the braintree transaction
         $userOrder = $shopOrder->userOrder;
@@ -169,17 +172,30 @@ class RefundController extends Controller {
                     foreach($returnCartItems as $cartId => $returnAmount) {
                         if ($returnAmount > 0) {
                             $cartItem = CartItem::find($cartId);
+
+                            // set refunded points property
+                            $singleItemRefundablePoints = ceil($cartItem->refundable_points / ($cartItem->quantity - $cartItem->returned));
+                            $cartItem->refundable_points = $cartItem->refundable_points - $singleItemRefundablePoints;
+                            $cartItem->refunded_points = $cartItem->refunded_points + $singleItemRefundablePoints;
+
+                            // set RETURNED
                             $cartItem->returned = $cartItem->returned + $returnAmount;
                             $cartItem->return = 0;
+
                             $cartItem->save();
                         }
                     }
 
                     // // set the shop order refunded_amount and refundable_amount
                     $totalRefundedAmount = $shopOrder->refunded_amount + $refundAmount;
+                    $totalRefundedPoints = $shopOrder->refunded_points + $refundPoints;
 
                     $shopOrder->refunded_amount = $totalRefundedAmount;
-                    $shopOrder->refundable_amount = $shopOrder->total_price - $totalRefundedAmount;
+                    $shopOrder->refundable_amount = $shopOrder->total_payable_price - $totalRefundedAmount;
+
+                    $shopOrder->refunded_points = $totalRefundedPoints;
+                    $shopOrder->refundable_points = $shopOrder->refundable_points - $totalRefundedPoints;
+
                     $shopOrder->save();
 
                     $json = array("status" => "200",
@@ -217,7 +233,6 @@ class RefundController extends Controller {
                 $shopOrderRefund->refundStatus()->associate(RefundStatus::find(2));
                 $shopOrderRefund->save();
 
-                // send requestQueued push notification and email to shop and shopper
                 $delay = 24*3600;
 
                 SprubixQueue::queueRefund($shopOrder, $shopOrderRefund, $returnCartItems, $refundAmount, $delay);
@@ -226,6 +241,8 @@ class RefundController extends Controller {
                     "message" => "refund_queued",
                     "shop_order_refund" => $shopOrderRefund
                 );
+
+                //Log::info("BT Authorized/Submitted for Settlement - Refund Queued for 1 day.");
 
                 break;
 
