@@ -179,18 +179,6 @@ class OrderController extends Controller {
             $shippingAddressId = $request->get("delivery_address_id");
             $paymentMethodId = $request->get("payment_method_id");
 
-            // deduct points from user info
-            $userPoints = $user->points;
-
-            $remainingPoints = $userPoints->amount - $pointsApplied;
-
-            if ($remainingPoints >= 0) {
-                $userPoints->amount = $remainingPoints;
-                $userPoints->save();
-            } else {
-                throw new \Exception("Points deduction failed. Points applied is greater than what is available for deduction.");
-            }
-
             // create user order
             $userOrder = new UserOrder();
             $userOrder->total_price = $totalPrice;
@@ -397,6 +385,18 @@ class OrderController extends Controller {
                         $piece->save();
                     }
                 }
+            }
+
+            // deduct points from user info
+            $userPoints = $user->points;
+
+            $remainingPoints = $userPoints->amount - $pointsApplied;
+
+            if ($remainingPoints >= 0) {
+                $userPoints->amount = $remainingPoints;
+                $userPoints->save();
+            } else {
+                throw new \Exception("Points deduction failed. Points applied is greater than what is available for deduction.");
             }
 
             // finally, give user a new cart
