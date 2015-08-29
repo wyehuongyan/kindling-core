@@ -39,6 +39,9 @@ Route::get('user', 'UserController@user');
 /* User Pieces and Outfits */
 /////////////////////////////
 Route::group(['middleware' => 'auth'], function() {
+    // users
+    Route::post('users/search', 'UserController@searchUsers');
+
     // pieces
     Route::post('pieces', 'PieceController@pieces');
     Route::post('pieces/ids', 'PieceController@piecesByIds');
@@ -48,6 +51,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::delete('piece/{piece}', 'PieceController@deletePiece');
     Route::get('piece/categories', 'PieceController@pieceCategories');
     Route::post('piece/brands', 'PieceController@pieceBrands');
+    Route::post('pieces/search', 'PieceController@searchPieces');
 
     // outfits
     Route::post('outfits', 'OutfitController@outfits');
@@ -56,6 +60,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('user/{user}/outfits/following', 'OutfitController@followingOutfits');
     Route::get('user/{user}/outfits/community', 'OutfitController@communityOutfits');
     Route::delete('outfit/{outfit}', 'OutfitController@deleteOutfit');
+    Route::post('outfits/search', 'OutfitController@searchOutfits');
 
     // upload
     Route::post('upload/piece/create', 'MediaController@uploadPiece');

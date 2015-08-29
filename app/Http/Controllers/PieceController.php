@@ -98,4 +98,21 @@ class PieceController extends Controller {
 
         return response()->json($pieceBrands)->setCallback($request->input('callback'));
     }
+
+    public function searchPieces(Request $request) {
+        $full_text = $request->get("full_text");
+        $types = Array("HEAD", "TOP", "BOTTOM", "FEET");
+
+        $input = Array(
+            "full_text" => $full_text,
+            "types" => $types
+        );
+
+        $query = Piece::search($input)->with('user', 'category', 'brand')->orderBy('created_at', 'desc');
+        $pieces = $query->paginate(15);
+        $pieces->setPath($request->url());
+        $pieces->getCollection()->shuffle();
+
+        return response()->json($pieces)->setCallback($request->input('callback'));
+    }
 }

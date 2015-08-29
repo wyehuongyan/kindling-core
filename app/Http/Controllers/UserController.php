@@ -134,6 +134,17 @@ class UserController extends Controller {
         return response()->json($following)->setCallback($request->input('callback'));
     }
 
+    public function searchUsers(Request $request) {
+        $full_text = $request->get("full_text");
+
+        $input = Array("full_text" => $full_text);
+
+        $query = User::search($input)->orderBy('created_at', 'desc');
+        $users = $query->paginate(15);
+
+        return response()->json($users)->setCallback($request->input('callback'));
+    }
+
     // Update Profile
     public function updateProfile(Request $request) {
         // Validate the user input

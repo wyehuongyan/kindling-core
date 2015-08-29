@@ -62,6 +62,11 @@ class Outfit extends Model {
         if (isset($search_fields['description'])) {
             $query->where('description', 'like', '%' . $search_fields['description'] . '%');
         }
+        if (isset($search_fields['full_text'])) {
+            $fulltext = $search_fields['full_text'];
+
+            $query->whereRaw("MATCH (description) AGAINST ('$fulltext')");
+        }
         return $query;
     }
 }
