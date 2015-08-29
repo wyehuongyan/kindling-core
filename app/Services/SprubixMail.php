@@ -217,7 +217,8 @@ class SprubixMail {
             }
 
             $userOrderUID = $userOrder->uid;
-            $userOrderTotalPayable = $userOrder->total_payable_price;
+            $userOrderTotalPrice = $userOrder->total_price;
+            $userOrderTotalPayablePrice = $userOrder->total_payable_price;
             $userOrderTotalDiscount = $userOrder->total_discount;
             $userOrderPointsApplied = (int)$userOrder->points_applied;
 
@@ -252,6 +253,9 @@ class SprubixMail {
                 $formattedShopOrder->items_price = $shopOrder->items_price;
                 $formattedShopOrder->shipping_rate = $shopOrder->shipping_rate;
                 $formattedShopOrder->total_price = $shopOrder->total_price;
+                $formattedShopOrder->points_applied = $shopOrder->points_applied;
+                $formattedShopOrder->total_discount = $shopOrder->total_discount;
+                $formattedShopOrder->total_payable_price = $shopOrder->total_payable_price;
 
                 // // delivery info
                 $deliveryOption = $shopOrder->deliveryOption;
@@ -271,6 +275,8 @@ class SprubixMail {
                     $formattedCartItem->size = $cartItem->size;
                     $formattedCartItem->quantity = $cartItem->quantity;
                     $formattedCartItem->price = $piece->price;
+                    $formattedCartItem->discount = $cartItem->total_discount;
+                    $formattedCartItem->points_applied = $cartItem->points_applied;
 
                     $formattedCartItems[] = $formattedCartItem;
                 }
@@ -366,8 +372,12 @@ class SprubixMail {
                                 'content' => $userOrderTotalDiscount
                             ),
                             array(
-                                'name' => 'user_order_total_payable',
-                                'content' => $userOrderTotalPayable
+                                'name' => 'user_order_total_price',
+                                'content' => $userOrderTotalPrice
+                            ),
+                            array(
+                                'name' => 'user_order_total_payable_price',
+                                'content' => $userOrderTotalPayablePrice
                             ),
                             array(
                                 'name' => 'recipient_name',
@@ -406,7 +416,11 @@ class SprubixMail {
         $buyerName = $formattedShopOrder->buyer_name;
         $buyerEmail = $formattedShopOrder->buyer_email;
 
-        $shopOrderTotal = $formattedShopOrder->total_price;
+        $shopOrderTotalPrice = $formattedShopOrder->total_price;
+        $shopOrderTotalDiscount = $formattedShopOrder->total_discount;
+        $shopOrderPointsApplied = $formattedShopOrder->points_applied;
+        $shopOrderTotalPayablePrice = $formattedShopOrder->total_payable_price;
+
         $shippingMethod = $formattedShopOrder->shipping_method;
         $itemsPrice = $formattedShopOrder->items_price;
         $shippingRate = $formattedShopOrder->shipping_rate;
@@ -464,8 +478,20 @@ class SprubixMail {
                             'content' => $shippingRate
                         ),
                         array(
-                            'name' => 'shop_order_total',
-                            'content' => $shopOrderTotal
+                            'name' => 'shop_order_total_price',
+                            'content' => $shopOrderTotalPrice
+                        ),
+                        array(
+                            'name' => 'shop_order_total_discount',
+                            'content' => $shopOrderTotalDiscount
+                        ),
+                        array(
+                            'name' => 'shop_order_points_applied',
+                            'content' => $shopOrderPointsApplied
+                        ),
+                        array(
+                            'name' => 'shop_order_total_payable',
+                            'content' => $shopOrderTotalPayablePrice
                         ),
                         array(
                             'name' => 'seller_name',
@@ -506,7 +532,11 @@ class SprubixMail {
         $shopOrderUID = $shopOrder->uid;
         $itemsPrice = $shopOrder->items_price;
         $shippingRate = $shopOrder->shipping_rate;
-        $shopOrderTotal = $shopOrder->total_price;
+
+        $shopOrderTotalPrice = $shopOrder->total_price;
+        $shopOrderTotalDiscount = $shopOrder->total_discount;
+        $shopOrderPointsApplied = $shopOrder->points_applied;
+        $shopOrderTotalPayable = $shopOrder->total_payable;
 
         // // buyer
         $buyerImage = $buyer->image;
@@ -553,6 +583,8 @@ class SprubixMail {
             $formattedCartItem->size = $cartItem->size;
             $formattedCartItem->quantity = $cartItem->quantity;
             $formattedCartItem->price = $piece->price;
+            $formattedCartItem->total_payable_price = $cartItem->total_payable_price;
+            $formattedCartItem->points_applied = $cartItem->points_applied;
 
             $formattedCartItems[] = $formattedCartItem;
         }
@@ -636,8 +668,20 @@ class SprubixMail {
                                     'content' => $shippingRate
                                 ),
                                 array(
-                                    'name' => 'shop_order_total',
-                                    'content' => $shopOrderTotal
+                                    'name' => 'shop_order_total_price',
+                                    'content' => $shopOrderTotalPrice
+                                ),
+                                array(
+                                    'name' => 'shop_order_total_discount',
+                                    'content' => $shopOrderTotalDiscount
+                                ),
+                                array(
+                                    'name' => 'shop_order_points_applied',
+                                    'content' => $shopOrderPointsApplied
+                                ),
+                                array(
+                                    'name' => 'shop_order_total_payable',
+                                    'content' => $shopOrderTotalPayable
                                 ),
                                 array(
                                     'name' => 'seller_email',
