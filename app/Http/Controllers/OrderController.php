@@ -181,8 +181,15 @@ class OrderController extends Controller {
 
             // deduct points from user info
             $userPoints = $user->points;
-            $userPoints->amount = $userPoints->amount - $pointsApplied;
-            $userPoints->save();
+
+            $remainingPoints = $userPoints->amount - $pointsApplied;
+
+            if ($remainingPoints >= 0) {
+                $userPoints->amount = $remainingPoints;
+                $userPoints->save();
+            } else {
+                throw new \Exception("Points deduction failed. Points applied is greater than what is available for deduction.");
+            }
 
             // create user order
             $userOrder = new UserOrder();
