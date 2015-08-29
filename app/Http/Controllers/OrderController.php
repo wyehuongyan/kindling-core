@@ -110,7 +110,6 @@ class OrderController extends Controller {
                 }
 
                 $userPoints->amount = $userPoints->amount + ($fraction * $userOrder->total_points);
-                $userPoints->expire_at = Carbon::now()->addMonth(3); // 3 months from now
                 $userPoints->save();
             }
 
@@ -394,7 +393,7 @@ class OrderController extends Controller {
 
             if ($remainingPoints >= 0) {
                 $userPoints->amount = $remainingPoints;
-
+                $userPoints->expire_at = Carbon::now()->addMonth(3); // 3 months from now
                 $userPoints->save();
             } else {
                 throw new \Exception("Points deduction failed. Points applied is greater than what is available for deduction.");
