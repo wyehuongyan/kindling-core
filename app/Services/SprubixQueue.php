@@ -24,13 +24,12 @@ class SprubixQueue {
     }
 
     // Refunds
-    public function queueRefund(ShopOrder $shopOrder, ShopOrderRefund $shopOrderRefund, $returnCartItems, $returnAmount, $delay) {
+    public function queueRefund(ShopOrder $shopOrder, ShopOrderRefund $shopOrderRefund, $returnCartItems, $returnAmount, $refundPoints, $delay) {
         $queueName = "refunds";
 
         $params = array(
             "push_type" => "multicast",
             "retries" => 5,
-            "delay" => $delay,
             "subscribers" => array(
                 array("url" => env("NGROK_URL") . "/queue/receive")
             ),
@@ -39,7 +38,7 @@ class SprubixQueue {
 
         $this->ironMQ->updateQueue($queueName, $params);
 
-        $job = (new RefundShopOrder($shopOrder, $shopOrderRefund, $returnCartItems, $returnAmount, $queueName));
+        $job = (new RefundShopOrder($shopOrder, $shopOrderRefund, $returnCartItems, $returnAmount, $refundPoints, $queueName))->delay($delay);;
         $this->dispatch($job);
     }
 

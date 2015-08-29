@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Facades\SprubixQueue;
 use App\Jobs\Job;
 use App\Models\CartItem;
 use Illuminate\Support\Facades\Config;
@@ -25,19 +26,21 @@ class RefundShopOrder extends Job implements SelfHandling, ShouldQueue
     protected $shopOrderRefund;
     protected $returnCartItems;
     protected $refundAmount;
+    protected $refundPoints;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(ShopOrder $shopOrder, ShopOrderRefund $shopOrderRefund, $returnCartItems, $refundAmount, $queueName)
+    public function __construct(ShopOrder $shopOrder, ShopOrderRefund $shopOrderRefund, $returnCartItems, $refundAmount, $refundPoints, $queueName)
     {
         //
-        $this->$shopOrder = $shopOrder;
+        $this->shopOrder = $shopOrder;
         $this->shopOrderRefund = $shopOrderRefund;
         $this->returnCartItems = $returnCartItems;
         $this->refundAmount = $refundAmount;
+        $this->refundPoints = $refundPoints;
         $this->onQueue($queueName);
     }
 
@@ -89,6 +92,13 @@ class RefundShopOrder extends Job implements SelfHandling, ShouldQueue
                         foreach($this->returnCartItems as $cartId => $returnAmount) {
                             if ($returnAmount > 0) {
                                 $cartItem = CartItem::find($cartId);
+
+                                // set refunded points property
+                                $singleItemRefundablePoints = ceil($cartItem->refundable_points / ($cartItem->quantity - $cartItem->returned));
+                                $cartItem->refundable_points = $cartItem->refundable_points - $singleItemRefundablePoints;
+                                $cartItem->refunded_points = $cartItem->refunded_points + $singleItemRefundablePoints;
+
+                                // set RETURNED
                                 $cartItem->returned = $cartItem->returned + $returnAmount;
                                 $cartItem->return = 0;
                                 $cartItem->save();
@@ -97,10 +107,29 @@ class RefundShopOrder extends Job implements SelfHandling, ShouldQueue
 
                         // // set the shop order refunded_amount and refundable_amount
                         $totalRefundedAmount = $this->shopOrder->refunded_amount + $this->refundAmount;
+                        $totalRefundedPoints = $this->shopOrder->refunded_points + $this->refundPoints;
 
                         $this->shopOrder->refunded_amount = $totalRefundedAmount;
                         $this->shopOrder->refundable_amount = $this->shopOrder->total_price - $totalRefundedAmount;
+
+                        $this->shopOrder->refunded_points = $totalRefundedPoints;
+                        $this->shopOrder->refundable_points = $this->shopOrder->refundable_points - $totalRefundedPoints;
+
                         $this->shopOrder->save();
+
+                        // // give the buyer back their refunded points
+                        $buyer = $this->shopOrder->buyer;
+                        $userPoints = $buyer->points;
+
+                        // create user points
+                        if(!isset($userPoints)) {
+                            $userPoints = new UserPoints();
+                            $userPoints->user()->associate($buyer);
+                            $userPoints->save();
+                        }
+
+                        $userPoints->amount = $userPoints->amount + $this->refundPoints;
+                        $userPoints->save();
 
                         // send refund approved push notification and email to shop and shopper
                         $message = $this->shopOrder->user->username . " has approved your refund request.";
@@ -129,9 +158,11 @@ class RefundShopOrder extends Job implements SelfHandling, ShouldQueue
                     $this->shopOrderRefund->save();
 
                     // send requestQueued push notification and email to shop and shopper
-                    $delay = 24*3600;
+                    $delay = 12*3600;
 
-                    SprubixQueue::queueRefund($this->shopOrder, $this->shopOrderRefund, $this->returnCartItems, $this->refundAmount, $delay);
+                    SprubixQueue::queueRefund($this->shopOrder, $this->shopOrderRefund, $this->returnCartItems, $this->refundAmount, $this->refundPoints, $delay);
+
+                    Log::info("OK Queue again, still unrefundable...");
 
                     break;
 

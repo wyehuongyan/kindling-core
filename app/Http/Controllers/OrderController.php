@@ -35,7 +35,7 @@ class OrderController extends Controller {
         $user = Auth::user();
         $orderStatusIds = $request->get("order_status_ids");
 
-        $query = $user->orders()->with("shopOrders", "user")->whereIn("order_status_id", $orderStatusIds)->orderBy('created_at', 'desc');
+        $query = $user->orders()->with("shopOrders", "user.userInfo")->whereIn("order_status_id", $orderStatusIds)->orderBy('created_at', 'desc');
 
         $orders = $query->paginate(15);
 
@@ -75,9 +75,9 @@ class OrderController extends Controller {
         $shopOrderIds = $request->get("shop_order_ids");
 
         if(isset($orderStatusIds)) {
-            $query = $shop->shopOrders()->with("user", "buyer", "shopOrderRefunds.refundStatus", "shopOrderRefunds.user", "shopOrderRefunds.user", "shippingAddress", "orderStatus", "deliveryOption", "cartItems.piece")->whereIn("order_status_id", $orderStatusIds)->orderBy('created_at', 'desc');
+            $query = $shop->shopOrders()->with("user.userInfo", "buyer", "shopOrderRefunds.refundStatus", "shopOrderRefunds.user", "shopOrderRefunds.user", "shippingAddress", "orderStatus", "deliveryOption", "cartItems.piece")->whereIn("order_status_id", $orderStatusIds)->orderBy('created_at', 'desc');
         } else if (isset($shopOrderIds)) {
-            $query = ShopOrder::whereIn('id', $shopOrderIds)->with("user", "buyer", "shopOrderRefunds.refundStatus", "shopOrderRefunds.user", "shippingAddress", "orderStatus", "deliveryOption", "cartItems.piece");
+            $query = ShopOrder::whereIn('id', $shopOrderIds)->with("user.userInfo", "buyer", "shopOrderRefunds.refundStatus", "shopOrderRefunds.user", "shippingAddress", "orderStatus", "deliveryOption", "cartItems.piece");
         }
 
         $orders = $query->paginate(15);
@@ -394,6 +394,7 @@ class OrderController extends Controller {
 
             if ($remainingPoints >= 0) {
                 $userPoints->amount = $remainingPoints;
+
                 $userPoints->save();
             } else {
                 throw new \Exception("Points deduction failed. Points applied is greater than what is available for deduction.");

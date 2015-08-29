@@ -31,5 +31,12 @@ class ShopTableSeeder extends Seeder {
 
         $shop->owner()->associate($user);
         $shop->save();
+
+        // // shop 1 user info
+        $user_info = new UserInfo();
+        $user_info->first_name = "Sprubix";
+        $user_info->gender()->associate(UserGender::find(3));
+        $user_info->user()->associate($user);
+        $user_info->save();
     }
 }

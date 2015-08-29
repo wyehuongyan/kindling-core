@@ -247,16 +247,16 @@ class RefundController extends Controller {
                 $shopOrderRefund->refundStatus()->associate(RefundStatus::find(2));
                 $shopOrderRefund->save();
 
-                $delay = 24*3600;
+                $delay = 12*3600;;
 
-                SprubixQueue::queueRefund($shopOrder, $shopOrderRefund, $returnCartItems, $refundAmount, $delay);
+                SprubixQueue::queueRefund($shopOrder, $shopOrderRefund, $returnCartItems, $refundAmount, $refundPoints, $delay);
 
                 $json = array("status" => "200",
                     "message" => "refund_queued",
                     "shop_order_refund" => $shopOrderRefund
                 );
 
-                //Log::info("BT Authorized/Submitted for Settlement - Refund Queued for 1 day.");
+                Log::info("BT Authorized/Submitted for Settlement - Refund Queued for 12 hours.");
 
                 break;
 
