@@ -162,21 +162,22 @@ class OrderController extends Controller {
             $user = Auth::user();
             $transactionId = $request->get("braintree_transaction_id");
             $totalItemsPrice = $request->get("total_items_price");
+
             $totalPayablePrice = $request->get("total_payable_price");
             $totalDiscount = $request->get("total_discount");
             $pointsApplied = $request->get("points_applied");
+
             $totalShippingRate = $request->get("total_shipping_rate");
             $totalPrice = $request->get("total_price");
             $totalPoints = $request->get("total_points");
             $sellers = $request->get("sellers");
 
+            $itemPayablePrices = $request->get("item_payable_prices");
+            $itemDiscounts = $request->get("item_discounts");
+            $itemPointsApplied = $request->get("item_points_applied");
+
             $shippingAddressId = $request->get("delivery_address_id");
             $paymentMethodId = $request->get("payment_method_id");
-
-            // deduct points from user info
-            $userPoints = $user->points;
-            $userPoints->amount = $userPoints->amount - $pointsApplied;
-            $userPoints->save();
 
             // create user order
             $userOrder = new UserOrder();
@@ -309,6 +310,22 @@ class OrderController extends Controller {
 
             $cartItems = $user->cart->cartItems;
 
+            // set the payable price for each cart item
+            foreach($cartItems as $cartItem) {
+                $itemPayablePrice = $itemPayablePrices[$cartItem->id];
+                $itemDiscount = $itemDiscounts[$cartItem->id];
+                $itemPointApplied = $itemPointsApplied[$cartItem->id];
+
+                if(isset($itemPayablePrice) && isset($itemDiscount) && isset($itemPointApplied)) {
+                    $cartItem->total_payable_price = $itemPayablePrice;
+                    $cartItem->total_discount = $itemDiscount;
+                    $cartItem->points_applied = $itemPointApplied;
+                    $cartItem->refundable_points = $itemPointApplied;
+
+                    $cartItem->save();
+                }
+            }
+
             foreach($sellers as $seller) {
                 $sellerId = $seller["seller_id"];
                 $deliveryOptionId = $seller["delivery_option_id"];
@@ -316,12 +333,22 @@ class OrderController extends Controller {
                 $itemsPrice = $seller["items_price"];
                 $sellerTotalPrice = $seller["total_price"];
 
+                $sellerTotalPayablePrice = $seller["total_payable_price"];
+                $sellerTotalDiscount = $seller["total_discount"];
+                $sellerPointsApplied = $seller["points_applied"];
+
                 // create individual shop orders
                 $shopOrder = new ShopOrder();
                 $shopOrder->items_price = $itemsPrice;
                 $shopOrder->shipping_rate = $shippingRate;
                 $shopOrder->total_price = $sellerTotalPrice;
-                $shopOrder->refundable_amount = $sellerTotalPrice;
+
+                $shopOrder->refundable_amount = $sellerTotalPayablePrice;
+                $shopOrder->refundable_points = $sellerPointsApplied;
+
+                $shopOrder->total_payable_price = $sellerTotalPayablePrice;
+                $shopOrder->total_discount = $sellerTotalDiscount;
+                $shopOrder->points_applied = $sellerPointsApplied;
 
                 $shopOrder->user()->associate(User::find($sellerId));
                 $shopOrder->buyer()->associate($user);
@@ -358,6 +385,18 @@ class OrderController extends Controller {
                         $piece->save();
                     }
                 }
+            }
+
+            // deduct points from user info
+            $userPoints = $user->points;
+
+            $remainingPoints = $userPoints->amount - $pointsApplied;
+
+            if ($remainingPoints >= 0) {
+                $userPoints->amount = $remainingPoints;
+                $userPoints->save();
+            } else {
+                throw new \Exception("Points deduction failed. Points applied is greater than what is available for deduction.");
             }
 
             // finally, give user a new cart
