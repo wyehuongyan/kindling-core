@@ -165,7 +165,9 @@ class OutfitController extends Controller {
 
         // Fetch outfits
         $results_outfitId_unique = array_unique($results_outfitId);
-        $results_outfits = Outfit::whereIn('id', $results_outfitId_unique)->orderBy('created_at', 'desc');
+        $results_outfits = Outfit::whereIn('id', $results_outfitId_unique)->with('user', 'inspiredBy')->with(array('pieces' => function($query) {
+            $query->withTrashed()->with('user', 'category', 'brand');
+        }))->orderBy('created_at', 'desc');
 
         $outfits = $results_outfits->paginate(15);
         $outfits->setPath($request->url());

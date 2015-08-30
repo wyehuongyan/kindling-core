@@ -137,7 +137,16 @@ class UserController extends Controller {
     public function searchUsers(Request $request) {
         $full_text = $request->get("full_text");
 
-        $input = Array("full_text" => $full_text);
+        $full_text_array = explode(" ", $full_text);
+        $full_text_wildcard = "";
+
+        foreach ($full_text_array as $text) {
+            if ($text != "") {
+                $full_text_wildcard .= $text . "*";
+            }
+        }
+
+        $input = Array("full_text" => $full_text_wildcard);
 
         $query = User::search($input)->orderBy('created_at', 'desc');
         $users = $query->paginate(15);

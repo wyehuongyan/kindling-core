@@ -51,6 +51,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::delete('piece/{piece}', 'PieceController@deletePiece');
     Route::get('piece/categories', 'PieceController@pieceCategories');
     Route::post('piece/brands', 'PieceController@pieceBrands');
+    Route::get('piece/{piece}/user', 'PieceController@pieceUser');
     Route::post('pieces/search', 'PieceController@searchPieces');
 
     // outfits

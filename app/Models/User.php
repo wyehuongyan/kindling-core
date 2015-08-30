@@ -112,7 +112,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         if (isset($search_fields['full_text'])) {
             $fulltext = $search_fields['full_text'];
 
-            $query->whereRaw("MATCH (username, name, description) AGAINST ('$fulltext*' IN BOOLEAN MODE)");
+            $query->whereRaw("MATCH (username, name, description) AGAINST ('$fulltext' IN BOOLEAN MODE)");
         }
         return $query;
     }
