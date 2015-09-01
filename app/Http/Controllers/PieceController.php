@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Piece;
 use App\Models\PieceCategory;
 use App\Models\PieceBrand;
+use Log;
 
 class PieceController extends Controller {
     public function pieces(Request $request) {
@@ -97,5 +98,29 @@ class PieceController extends Controller {
         $pieceBrands = $query->paginate(15);
 
         return response()->json($pieceBrands)->setCallback($request->input('callback'));
+    }
+
+    public function pieceUser(Request $request, Piece $piece) {
+        // return owner of this piece
+        $user = $piece->user()->first();
+
+        return response()->json($user)->setCallback($request->input('callback'));
+    }
+
+    public function searchPieces(Request $request) {
+        $full_text = $request->get("full_text");
+        $types = Array("HEAD", "TOP", "BOTTOM", "FEET");
+
+        $input = Array(
+            "full_text" => $full_text,
+            "types" => $types
+        );
+
+        $query = Piece::search($input)->with('user', 'category', 'brand')->orderBy('created_at', 'desc');
+        $pieces = $query->paginate(15);
+        $pieces->setPath($request->url());
+        $pieces->getCollection()->shuffle();
+
+        return response()->json($pieces)->setCallback($request->input('callback'));
     }
 }

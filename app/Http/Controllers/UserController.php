@@ -134,6 +134,26 @@ class UserController extends Controller {
         return response()->json($following)->setCallback($request->input('callback'));
     }
 
+    public function searchUsers(Request $request) {
+        $full_text = $request->get("full_text");
+
+        $full_text_array = explode(" ", $full_text);
+        $full_text_wildcard = "";
+
+        foreach ($full_text_array as $text) {
+            if ($text != "") {
+                $full_text_wildcard .= $text . "*";
+            }
+        }
+
+        $input = Array("full_text" => $full_text_wildcard);
+
+        $query = User::search($input)->orderBy('created_at', 'desc');
+        $users = $query->paginate(15);
+
+        return response()->json($users)->setCallback($request->input('callback'));
+    }
+
     // Update Profile
     public function updateProfile(Request $request) {
         // Validate the user input
@@ -155,22 +175,24 @@ class UserController extends Controller {
             return response()->json($error)->setCallback($request->input('callback'));
         } else {
             // Pass
-            $authUser = Auth::user();
+            $user = Auth::user();
+            $userInfo = $user->userInfo()->first();
 
-            $user = User::find($authUser->id)->with('shoppable')->first();
             $name = $request->get("name");
-
             $description = new \stdClass();
             $description->description = $request->get("description");
-
-            $userInfo = $user->userInfo()->get()[0];
-
             $firstName = $request->get("first_name");
             $lastName = $request->get("last_name");
             $contactNumber = $request->get("contact_number");
-            $birthdate = Carbon::createFromFormat("d-m-Y", $request->get("date_of_birth"))->startOfDay();
             $gender = UserGender::where('gender',$request->get("gender"))->get();
             $genderId = $gender[0]->id;
+
+            $birthdate = $request->get("date_of_birth");
+            $birthdateCarbon =  new Carbon();
+
+            if (isset($birthdate)) {
+                $birthdateCarbon = Carbon::createFromFormat("d-m-Y", $birthdate)->startOfDay();
+            }
 
             try {
                 $user->name = $name;
@@ -200,8 +222,11 @@ class UserController extends Controller {
                 $userInfo->first_name = $firstName;
                 $userInfo->last_name = $lastName;
                 $userInfo->contact_number = $contactNumber;
-                $userInfo->date_of_birth = $birthdate;
                 $userInfo->gender()->associate(UserGender::find($genderId));
+
+                if (isset($birthdate)) {
+                    $userInfo->date_of_birth = $birthdateCarbon;
+                }
 
                 $userInfo->save();
 
@@ -282,7 +307,7 @@ class UserController extends Controller {
 
     public function userPrivateInformation(Request $request) {
         $user = Auth::User();
-        $userInfo = $user->userInfo()->get()[0];
+        $userInfo = $user->userInfo()->first();
 
         $firstname = $userInfo["first_name"];
         $lastname = $userInfo["last_name"];
