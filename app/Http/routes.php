@@ -57,6 +57,9 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('user/{user}/outfits/community', 'OutfitController@communityOutfits');
     Route::delete('outfit/{outfit}', 'OutfitController@deleteOutfit');
 
+    // spruce
+    Route::post('spruce/pieces', 'SpruceController@pieces');
+
     // upload
     Route::post('upload/piece/create', 'MediaController@uploadPiece');
     Route::post('upload/piece/update', 'MediaController@updatePiece');
