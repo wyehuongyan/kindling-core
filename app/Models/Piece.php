@@ -52,13 +52,13 @@ class Piece extends Model {
                     }
                 }
             });
+        }if (isset($search_fields['category_id'])) {
+            $query->where('category_id', '=', $search_fields['category_id']);
         }
         if (isset($search_fields['full_text'])) {
             $fulltext = $search_fields['full_text'];
 
-            $query->whereRaw("MATCH (name, description) AGAINST ('$fulltext')")->orWhereHas('category', function($query) use ($fulltext) {
-                $query->whereRaw("MATCH (name) AGAINST ('$fulltext')");
-            })->orWhereHas('brand', function($query) use ($fulltext) {
+            $query->whereRaw("MATCH (name, description) AGAINST ('$fulltext')")->orWhereHas('brand', function($query) use ($fulltext) {
                 $query->whereRaw("MATCH (name) AGAINST ('$fulltext')");
             });
         }

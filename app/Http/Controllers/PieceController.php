@@ -109,14 +109,27 @@ class PieceController extends Controller {
 
     public function searchPieces(Request $request) {
         $full_text = $request->get("full_text");
+        $category = $request->get("category");
         $types = Array("HEAD", "TOP", "BOTTOM", "FEET");
 
-        $input = Array(
-            "full_text" => $full_text,
-            "types" => $types
-        );
+        if ($category == "All") {
+
+            $input = Array(
+                "full_text" => $full_text,
+                "types" => $types
+            );
+        } else {
+            $categoryId = DB::table('piece_categories')->where('name', $category)->first()->id;
+
+            $input = Array(
+                "full_text" => $full_text,
+                "types" => $types,
+                "category_id" => $categoryId
+            );
+        }
 
         $query = Piece::search($input)->with('user', 'category', 'brand')->orderBy('created_at', 'desc');
+
         $pieces = $query->paginate(15);
         $pieces->setPath($request->url());
         $pieces->getCollection()->shuffle();
