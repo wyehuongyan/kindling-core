@@ -253,7 +253,7 @@ class SprubixMail {
                 $formattedShopOrder->items_price = $shopOrder->items_price;
                 $formattedShopOrder->shipping_rate = $shopOrder->shipping_rate;
                 $formattedShopOrder->total_price = $shopOrder->total_price;
-                $formattedShopOrder->points_applied = $shopOrder->points_applied;
+                $formattedShopOrder->points_applied = (int)$shopOrder->points_applied;
                 $formattedShopOrder->total_discount = $shopOrder->total_discount;
                 $formattedShopOrder->total_payable_price = $shopOrder->total_payable_price;
 
@@ -276,7 +276,7 @@ class SprubixMail {
                     $formattedCartItem->quantity = $cartItem->quantity;
                     $formattedCartItem->price = $piece->price;
                     $formattedCartItem->discount = $cartItem->total_discount;
-                    $formattedCartItem->points_applied = $cartItem->points_applied;
+                    $formattedCartItem->points_applied = (int)$cartItem->points_applied;
 
                     $formattedCartItems[] = $formattedCartItem;
                 }
@@ -418,7 +418,7 @@ class SprubixMail {
 
         $shopOrderTotalPrice = $formattedShopOrder->total_price;
         $shopOrderTotalDiscount = $formattedShopOrder->total_discount;
-        $shopOrderPointsApplied = $formattedShopOrder->points_applied;
+        $shopOrderPointsApplied = (int)$formattedShopOrder->points_applied;
         $shopOrderTotalPayablePrice = $formattedShopOrder->total_payable_price;
 
         $shippingMethod = $formattedShopOrder->shipping_method;
@@ -535,7 +535,7 @@ class SprubixMail {
 
         $shopOrderTotalPrice = $shopOrder->total_price;
         $shopOrderTotalDiscount = $shopOrder->total_discount;
-        $shopOrderPointsApplied = $shopOrder->points_applied;
+        $shopOrderPointsApplied = (int)$shopOrder->points_applied;
         $shopOrderTotalPayable = $shopOrder->total_payable;
 
         // // buyer
@@ -584,7 +584,7 @@ class SprubixMail {
             $formattedCartItem->quantity = $cartItem->quantity;
             $formattedCartItem->price = $piece->price;
             $formattedCartItem->total_payable_price = $cartItem->total_payable_price;
-            $formattedCartItem->points_applied = $cartItem->points_applied;
+            $formattedCartItem->points_applied = (int)$cartItem->points_applied;
 
             $formattedCartItems[] = $formattedCartItem;
         }
@@ -773,6 +773,8 @@ class SprubixMail {
                     $refundItem->size = $cartItem->size;
                     $refundItem->quantity = $cartItem->quantity;
                     $refundItem->price = $piece->price;
+                    $refundItem->total_payable_price = $cartItem->total_payable_price;
+                    $refundItem->points_applied = (int)$cartItem->points_applied;
                     $refundItem->return = $cartItem->return;
 
                     $refundItems[] = $refundItem;
