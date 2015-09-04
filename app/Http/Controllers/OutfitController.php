@@ -170,8 +170,6 @@ class OutfitController extends Controller {
         }))->orderBy('created_at', 'desc');
 
         $outfits = $results_outfits->paginate(15);
-        $outfits->setPath($request->url());
-        $outfits->getCollection()->shuffle();
 
         return response()->json($outfits)->setCallback($request->input('callback'));
     }

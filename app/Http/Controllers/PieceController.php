@@ -109,18 +109,15 @@ class PieceController extends Controller {
 
     public function searchPieces(Request $request) {
         $full_text = $request->get("full_text");
-        $category = $request->get("category");
+        $categoryId = $request->get("category_id");
         $types = Array("HEAD", "TOP", "BOTTOM", "FEET");
 
-        if ($category == "All") {
-
+        if(!isset($categoryId)) {
             $input = Array(
                 "full_text" => $full_text,
                 "types" => $types
             );
         } else {
-            $categoryId = DB::table('piece_categories')->where('name', $category)->first()->id;
-
             $input = Array(
                 "full_text" => $full_text,
                 "types" => $types,
@@ -131,8 +128,6 @@ class PieceController extends Controller {
         $query = Piece::search($input)->with('user', 'category', 'brand')->orderBy('created_at', 'desc');
 
         $pieces = $query->paginate(15);
-        $pieces->setPath($request->url());
-        $pieces->getCollection()->shuffle();
 
         return response()->json($pieces)->setCallback($request->input('callback'));
     }
