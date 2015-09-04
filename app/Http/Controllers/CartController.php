@@ -190,6 +190,7 @@ class CartController extends Controller {
                         // low stock
                         $insufficientStock = new \stdClass();
                         $insufficientStock->cart_item = $cartItem;
+                        $insufficientStock->cart_item_id = $cartItem->id;
                         $insufficientStock->cart_item_name = $piece->name;
                         $insufficientStock->size_ordered = $key;
                         $insufficientStock->quantity_ordered = $cartItem->quantity;
