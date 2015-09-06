@@ -3,6 +3,8 @@
 use Illuminate\Database\Seeder;
 use App\Models\Shop;
 use App\Models\User;
+use App\Models\UserInfo;
+use App\Models\UserGender;
 
 class ShopTableSeeder extends Seeder {
 
