@@ -11,6 +11,13 @@ class PointsController extends Controller {
 
         $userPoints = $user->points;
 
+        // check expiry
+        if($userPoints->expired_at->isYesterday()) {
+            // expired
+            $userPoints->amount = 0;
+            $userPoints->save();
+        }
+
         return response()->json($userPoints)->setCallback($request->input('callback'));
     }
 
