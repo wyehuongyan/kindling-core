@@ -4,6 +4,7 @@ use App\Models\UserPoints;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class PointsController extends Controller {
     public function userPoints(Request $request) {
@@ -12,7 +13,7 @@ class PointsController extends Controller {
         $userPoints = $user->points;
 
         // check expiry
-        if($userPoints->expired_at->isYesterday()) {
+        if($userPoints->expire_at->isYesterday()) {
             // expired
             $userPoints->amount = 0;
             $userPoints->save();

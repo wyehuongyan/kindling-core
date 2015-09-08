@@ -7,7 +7,7 @@ class UserPoints extends Model {
     use SoftDeletes;
 
     protected $table = 'user_points';
-    protected $dates = ['deleted_at'];
+    protected $dates = ['deleted_at', 'expire_at'];
 
     public function user() {
         return $this->belongsTo('App\Models\User');
