@@ -80,7 +80,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     public function deliveryOptions() {
-        return $this->hasMany('App\Models\DeliveryOptions');
+        return $this->hasMany('App\Models\DeliveryOption');
     }
 
     public function shippingAddresses() {

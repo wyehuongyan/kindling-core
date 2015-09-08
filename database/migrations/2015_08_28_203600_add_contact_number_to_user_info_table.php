@@ -35,7 +35,7 @@ class AddContactNumberToUserInfoTable extends Migration
             $table->dropColumn('contact_number');
         });
 
-        Schema::table('user_info', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             //
             $table->string('contact_number')->nullable();
         });

@@ -17,14 +17,14 @@ class OutfitController extends Controller {
             $lastOutfit = Outfit::find($lastOutfitId);
 
             $query = Outfit::search($input)->where('created_at', '<', $lastOutfit->created_at)->with('user', 'inspiredBy')->with(array('pieces' => function($query) {
-                    $query->withTrashed()->with('user', 'category', 'brand');
+                    $query->withTrashed()->with('user.shoppable', 'category', 'brand');
                 }))->orderBy('created_at', 'desc');
 
             $outfits = $query->take(15)->get();
 
         } else {
             $query = Outfit::search($input)->with('user', 'inspiredBy')->with(array('pieces' => function($query) {
-                    $query->withTrashed()->with('user', 'category', 'brand');
+                    $query->withTrashed()->with('user.shoppable', 'category', 'brand');
                 }))->orderBy('created_at', 'desc');
 
             $outfits = $query->paginate(15);
@@ -72,13 +72,13 @@ class OutfitController extends Controller {
             $lastOutfit = Outfit::find($lastOutfitId);
 
             $query = Outfit::whereIn('user_id', $userIds)->where('created_at', '<', $lastOutfit->created_at)->with('user', 'inspiredBy')->with(array('pieces' => function($query) {
-                    $query->withTrashed()->with('user', 'category', 'brand');
+                    $query->withTrashed()->with('user.shoppable', 'category', 'brand');
                 }))->orderBy('created_at', 'desc');
 
             $following = $query->take(15)->get();
         } else {
             $query = Outfit::whereIn('user_id', $userIds)->with('user', 'inspiredBy')->with(array('pieces' => function($query) {
-                    $query->withTrashed()->with('user', 'category', 'brand');
+                    $query->withTrashed()->with('user.shoppable', 'category', 'brand');
                 }))->orderBy('created_at', 'desc');
 
             $following = $query->paginate(15);

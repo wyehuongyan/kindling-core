@@ -1,10 +1,10 @@
 <?php namespace App\Http\Controllers;
 
 use App\Models\UserShippingAddress;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use App\Models\DeliveryOption;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\Debug\Exception\FatalErrorException;
 
@@ -24,12 +24,15 @@ class DeliveryController extends Controller {
     public function createDeliveryOption(Request $request) {
         $name = $request->get("name");
         $price = $request->get("price");
-        $user = User::find($request->get("user_id"));
+        $user = Auth::user();
 
         $deliveryOption = new DeliveryOption();
         $deliveryOption->name = $name;
         $deliveryOption->price = $price;
         $deliveryOption->user()->associate($user);
+
+        $user->shoppable->purchasable = true;
+        $user->shoppable->save();
 
         $deliveryOption->save();
 
@@ -63,6 +66,14 @@ class DeliveryController extends Controller {
     public function deleteDeliveryOption(Request $request, DeliveryOption $deliveryOption) {
         if($deliveryOption->user->id == $request->get("owner_id")) {
             $deliveryOption->delete();
+
+            // check if there's any delivery option left
+            $user = User::find($request->get("owner_id"));
+
+            if($user->deliveryOptions()->count() <= 0) {
+                $user->shoppable->purchasable = false;
+                $user->shoppable->save();
+            }
 
             $json = array(
                 "status" => "200",
