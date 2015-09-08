@@ -490,7 +490,7 @@ class SprubixMail {
                             'content' => $shopOrderPointsApplied
                         ),
                         array(
-                            'name' => 'shop_order_total_payable',
+                            'name' => 'shop_order_total_payable_price',
                             'content' => $shopOrderTotalPayablePrice
                         ),
                         array(
@@ -536,7 +536,7 @@ class SprubixMail {
         $shopOrderTotalPrice = $shopOrder->total_price;
         $shopOrderTotalDiscount = $shopOrder->total_discount;
         $shopOrderPointsApplied = (int)$shopOrder->points_applied;
-        $shopOrderTotalPayable = $shopOrder->total_payable;
+        $shopOrderTotalPayablePrice = $shopOrder->total_payable_price;
 
         // // buyer
         $buyerImage = $buyer->image;
@@ -680,8 +680,8 @@ class SprubixMail {
                                     'content' => $shopOrderPointsApplied
                                 ),
                                 array(
-                                    'name' => 'shop_order_total_payable',
-                                    'content' => $shopOrderTotalPayable
+                                    'name' => 'shop_order_total_payable_price',
+                                    'content' => $shopOrderTotalPayablePrice
                                 ),
                                 array(
                                     'name' => 'seller_email',

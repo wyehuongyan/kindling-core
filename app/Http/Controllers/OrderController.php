@@ -3,6 +3,7 @@
 use App\Facades\SprubixQueue;
 use App\Models\Cart;
 use App\Models\DeliveryOption;
+use App\Models\Outfit;
 use App\Models\User;
 use App\Models\ShopOrder;
 use App\Models\UserOrder;
@@ -17,7 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Braintree_Transaction;
 use Braintree_Configuration;
-use Log;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller {
 
@@ -169,6 +170,7 @@ class OrderController extends Controller {
             $totalShippingRate = $request->get("total_shipping_rate");
             $totalPrice = $request->get("total_price");
             $totalPoints = $request->get("total_points");
+            $outfitContributorsData = $request->get("outfit_contributors_data");
             $sellers = $request->get("sellers");
 
             $itemPayablePrices = $request->get("item_payable_prices");
@@ -311,15 +313,27 @@ class OrderController extends Controller {
 
             // set the payable price for each cart item
             foreach($cartItems as $cartItem) {
-                $itemPayablePrice = $itemPayablePrices[$cartItem->id];
-                $itemDiscount = $itemDiscounts[$cartItem->id];
-                $itemPointApplied = $itemPointsApplied[$cartItem->id];
 
-                if(isset($itemPayablePrice) && isset($itemDiscount) && isset($itemPointApplied)) {
-                    $cartItem->total_payable_price = $itemPayablePrice;
-                    $cartItem->total_discount = $itemDiscount;
-                    $cartItem->points_applied = $itemPointApplied;
-                    $cartItem->refundable_points = $itemPointApplied;
+                if(count($itemPayablePrices) > 0 && count($itemDiscounts) > 0 && count($itemPointsApplied) > 0) {
+                    $itemPayablePrice = $itemPayablePrices[$cartItem->id];
+                    $itemDiscount = $itemDiscounts[$cartItem->id];
+                    $itemPointApplied = $itemPointsApplied[$cartItem->id];
+
+                    if(isset($itemPayablePrice) && isset($itemDiscount) && isset($itemPointApplied)) {
+                        $cartItem->total_payable_price = $itemPayablePrice;
+                        $cartItem->total_discount = $itemDiscount;
+                        $cartItem->points_applied = $itemPointApplied;
+                        $cartItem->refundable_points = $itemPointApplied;
+
+                        $cartItem->save();
+                    }
+                } else {
+                    $cartItemPiece = $cartItem->piece;
+
+                    $cartItem->total_payable_price = $cartItemPiece->price;
+                    $cartItem->total_discount = 0;
+                    $cartItem->points_applied = 0;
+                    $cartItem->refundable_points = 0;
 
                     $cartItem->save();
                 }
@@ -397,6 +411,78 @@ class OrderController extends Controller {
                 $userPoints->save();
             } else {
                 throw new \Exception("Points deduction failed. Points applied is greater than what is available for deduction.");
+            }
+
+            // allocate points to contributors
+            //// find out who were the ones who do not have shop orders
+            //// and give them points
+            foreach($outfitContributorsData as $outfitId => $contributorData) {
+
+                Log::info($outfitId);
+
+                $outfit = Outfit::find($outfitId);
+
+                $boughtPieceIds = $contributorData["bought_piece_ids"];
+                $contributorPointsEarned = $contributorData["contributor_points_earned"];
+
+                $pieces = $outfit->pieces;
+                $contributors = array();
+
+                foreach($pieces as $unboughtPiece) {
+                    if(!in_array($unboughtPiece->id, $boughtPieceIds)) {
+                        // if piece is not inside bought pieces
+                        // it is from a contributor
+                        $pieceOwner = $unboughtPiece->user;
+
+                        // make sure pieceOwner != buyer
+                        if($pieceOwner->id != $user->id) {
+                            $contributors[] = $pieceOwner;
+                        }
+                    }
+                }
+
+                // add posted by (most recent sprucer) and inspired by (previous sprucer) as contributors
+                $outfitPostedByUser = $outfit->user;
+                $outfitInspiredByUser = $outfit->inspiredBy;
+
+                if(isset($outfitInspiredByUser) && $outfitInspiredByUser->id != $outfitPostedByUser->id) {
+                    // this outfit was inspired by someone else
+                    if($outfitPostedByUser->id != $user->id) {
+                        // always make sure its not from the buyer
+                        $contributors[] = $outfitPostedByUser;
+                    }
+
+                    if($outfitInspiredByUser->id != $user->id) {
+                        // always make sure its not from the buyer
+                        $contributors[] = $outfitInspiredByUser;
+                    }
+                } else {
+                    // this outfit is originally posted by $outfitPostedByUser only
+                    if($outfitPostedByUser->id != $user->id) {
+                        // always make sure its not from the buyer
+                        $contributors[] = $outfitPostedByUser;
+                    }
+                }
+
+                // divide the contributor points equality amongst the contributors
+                $pointsPerContributor = $contributorPointsEarned / count($contributors);
+                $pointsPerContributor = ceil($pointsPerContributor);
+
+                // distribute the points
+                foreach($contributors as $contributor) {
+                    $contributorPoints = $contributor->points;
+
+                    if(!isset($contributorPoints)) {
+                        $contributorPoints = new UserPoints();
+                        $contributorPoints->amount = $pointsPerContributor;
+                        $contributorPoints->expire_at = Carbon::now()->addMonth(3); // 3 months from now
+                        $contributorPoints->user()->associate($contributor);
+                    } else {
+                        $contributorPoints->amount = $contributorPoints->amount + $pointsPerContributor;
+                    }
+
+                    $contributorPoints->save();
+                }
             }
 
             // finally, give user a new cart
