@@ -37,7 +37,7 @@ class OutfitController extends Controller {
         $ids = $request->get("ids");
 
         $query = Outfit::with('user', 'inspiredBy')->with(array('pieces' => function($query) {
-                $query->withTrashed()->with('user', 'category', 'brand');
+                $query->withTrashed()->with('user.shoppable', 'category', 'brand');
             }))->whereIn('id', $ids);
 
         $outfits = $query->paginate(15);
@@ -48,7 +48,7 @@ class OutfitController extends Controller {
     public function userOutfits(Request $request, User $user) {
         // return outfits belonging to user
         $query = $user->outfits()->with('inspiredBy', 'user')->with(array('pieces' => function($query) {
-                $query->withTrashed()->with('user', 'category', 'brand');
+                $query->withTrashed()->with('user.shoppable', 'category', 'brand');
             }));
         $outfits = $query->paginate(15);
         $outfits->setPath($request->url()); // outfits/?page=2 to outfits?page=2
@@ -97,7 +97,7 @@ class OutfitController extends Controller {
 
         $query = Outfit::whereNotIn('user_id', [$user->id])->whereHas('pieces', function($query) use ($user) {
             $query->where('user_id', [$user->id]);
-        })->with('inspiredBy', 'user', 'pieces.user');
+        })->with('inspiredBy', 'user.shoppable', 'pieces.user');
 
         $outfits = $query->paginate(15);
         $outfits->setPath($request->url()); // outfits/?page=2 to outfits?page=2
@@ -166,7 +166,7 @@ class OutfitController extends Controller {
         // Fetch outfits
         $results_outfitId_unique = array_unique($results_outfitId);
         $results_outfits = Outfit::whereIn('id', $results_outfitId_unique)->with('user', 'inspiredBy')->with(array('pieces' => function($query) {
-            $query->withTrashed()->with('user', 'category', 'brand');
+            $query->withTrashed()->with('user.shoppable', 'category', 'brand');
         }))->orderBy('created_at', 'desc');
 
         $outfits = $results_outfits->paginate(15);
