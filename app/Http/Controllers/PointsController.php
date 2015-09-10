@@ -12,6 +12,13 @@ class PointsController extends Controller {
 
         $userPoints = $user->points;
 
+        if(!isset($userPoints)) {
+            $userPoints = new UserPoints();
+            $userPoints->user()->associate($user);
+            $userPoints->expire_at = Carbon::now()->addMonth(3);
+            $userPoints->save();
+        }
+
         // check expiry
         if($userPoints->expire_at->isYesterday()) {
             // expired

@@ -40,6 +40,32 @@ class PieceController extends Controller {
         return response()->json($pieces)->setCallback($request->input('callback'));
     }
 
+    public function userLowStockPieces(Request $request, User $user) {
+        $pieces = $user->pieces()->with('user', 'category', 'brand')->get();
+        $lowStockPieces = array();
+
+        foreach($pieces as $piece) {
+            $quantity = json_decode($piece->quantity);
+
+            foreach($quantity as $key => $value) {
+                if($value <= $user->shoppable->low_stock_limit) {
+                    $lowStockPieces[] = $piece;
+
+                    break;
+                }
+            }
+        }
+
+        return response()->json($lowStockPieces)->setCallback($request->input('callback'));
+    }
+
+    public function updateLowStockLimit(Request $request, User $user) {
+        $user->shoppable->low_stock_limit = $request->get("low_stock_limit");
+        $user->shoppable->save();
+
+        return response()->json($user)->setCallback($request->input('callback'));
+    }
+
     public function peoplePieces(Request $request) {
         // return pieces of promoted/popular users
 
