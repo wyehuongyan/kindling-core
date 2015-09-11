@@ -46,6 +46,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('pieces', 'PieceController@pieces');
     Route::post('pieces/ids', 'PieceController@piecesByIds');
     Route::get('user/{user}/pieces', 'PieceController@userPieces');
+    Route::get('user/{user}/low/pieces', 'PieceController@userLowStockPieces');
+    Route::post('user/{user}/low/limit', 'PieceController@updateLowStockLimit');
     Route::get('people/pieces', 'PieceController@peoplePieces');
     Route::get('piece/{piece}/outfits', 'PieceController@pieceOutfits');
     Route::delete('piece/{piece}', 'PieceController@deletePiece');

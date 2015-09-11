@@ -12,10 +12,8 @@ class PieceController extends Controller {
     public function pieces(Request $request) {
         $input = $request->all();
 
-        $query = Piece::search($input)->with('user', 'category', 'brand');
+        $query = Piece::search($input)->with('user.shoppable', 'category', 'brand');
         $pieces = $query->paginate(15);
-        $pieces->setPath($request->url());
-        $pieces->getCollection()->shuffle();
 
         return response()->json($pieces)->setCallback($request->input('callback'));
     }
@@ -23,7 +21,7 @@ class PieceController extends Controller {
     public function piecesByIds(Request $request) {
         $ids = $request->get("ids");
 
-        $query = Piece::with('user')->whereIn('id', $ids)->with('user');
+        $query = Piece::with('user.shoppable')->whereIn('id', $ids);
         $pieces = $query->paginate(15);
 
         return response()->json($pieces)->setCallback($request->input('callback'));
@@ -33,11 +31,36 @@ class PieceController extends Controller {
         // return pieces belonging to user
 
         //$query = $user->pieces()->withTrashed()->with('user');
-        $query = $user->pieces()->with('user', 'category', 'brand');
+        $query = $user->pieces()->with('user.shoppable', 'category', 'brand');
         $pieces = $query->paginate(15);
-        $pieces->setPath($request->url()); // pieces/?page=2 to pieces?page=2
 
         return response()->json($pieces)->setCallback($request->input('callback'));
+    }
+
+    public function userLowStockPieces(Request $request, User $user) {
+        $pieces = $user->pieces()->with('user.shoppable', 'category', 'brand')->get();
+        $lowStockPieces = array();
+
+        foreach($pieces as $piece) {
+            $quantity = json_decode($piece->quantity);
+
+            foreach($quantity as $key => $value) {
+                if($value <= $user->shoppable->low_stock_limit) {
+                    $lowStockPieces[] = $piece;
+
+                    break;
+                }
+            }
+        }
+
+        return response()->json($lowStockPieces)->setCallback($request->input('callback'));
+    }
+
+    public function updateLowStockLimit(Request $request, User $user) {
+        $user->shoppable->low_stock_limit = (int)$request->get("low_stock_limit");
+        $user->shoppable->save();
+
+        return response()->json($user)->setCallback($request->input('callback'));
     }
 
     public function peoplePieces(Request $request) {
@@ -46,7 +69,7 @@ class PieceController extends Controller {
         $user = Auth::User();
         $peopleIds = ["4", "1", "3", "2"];
 
-        $people = User::whereIn('id', $peopleIds)->orderByRaw('FIELD(`id`, '.implode(',', $peopleIds).')')->get()->map(function($people) use ($user) {
+        $people = User::with('shoppable')->whereIn('id', $peopleIds)->orderByRaw('FIELD(`id`, '.implode(',', $peopleIds).')')->get()->map(function($people) use ($user) {
             $people->pieces = $people->pieces()->take(6)->get();
             $people->followed = $people->followers->contains($user->id);
 
@@ -59,7 +82,7 @@ class PieceController extends Controller {
     public function pieceOutfits(Request $request, Piece $piece) {
         // return outfits that this piece belongs to
 
-        $query = $piece->outfits()->with('inspiredBy', 'user', 'pieces.user', 'pieces.category', 'pieces.brand');
+        $query = $piece->outfits()->with('inspiredBy', 'user', 'pieces.user.shoppable', 'pieces.category', 'pieces.brand');
         $outfits = $query->paginate(15);
 
         return response()->json($outfits)->setCallback($request->input('callback'));
@@ -125,7 +148,7 @@ class PieceController extends Controller {
             );
         }
 
-        $query = Piece::search($input)->with('user', 'category', 'brand')->orderBy('created_at', 'desc');
+        $query = Piece::search($input)->with('user.shoppable', 'category', 'brand')->orderBy('created_at', 'desc');
 
         $pieces = $query->paginate(15);
 
