@@ -151,6 +151,7 @@ Route::group(['middleware' => 'auth'], function() {
 
     // dashboard
     Route::post('dashboard/report', 'DashboardController@report');
+    Route::get('dashboard/onboarding', 'DashboardController@onboardingInformation');
 });
 
 /////////////////////////////

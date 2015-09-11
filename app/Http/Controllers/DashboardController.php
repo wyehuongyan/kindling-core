@@ -129,4 +129,21 @@ class DashboardController extends Controller {
         }
         return (($pieceA["sold"] > $pieceB["sold"])) ? -1 : 1;
     }
+
+    public function onboardingInformation(Request $request) {
+        $shop = Auth::user();
+        $piecesCount = $shop->pieces()->count();
+        $deliveryOptionsCount = $shop->deliveryOptions()->count();
+
+        $json = array(
+            "status" => "200",
+            "message" => "success",
+            "data" => array (
+                "piecesCount" => $piecesCount,
+                "deliveryOptionsCount" => $deliveryOptionsCount
+            )
+        );
+
+        return response()->json($json)->setCallback($request->input('callback'));
+    }
 }

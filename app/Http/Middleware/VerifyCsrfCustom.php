@@ -41,6 +41,7 @@ class VerifyCsrfCustom extends \Illuminate\Foundation\Http\Middleware\VerifyCsrf
         'mail/feedback',
         'mail/orders',
         'dashboard/report',
+        'dashboard/onboarding',
     ];
 
     /**
