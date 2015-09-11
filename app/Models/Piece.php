@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Log;
 
 class Piece extends Model {
     use SoftDeletes;
@@ -60,7 +61,9 @@ class Piece extends Model {
 
             $query->whereRaw("MATCH (name, description) AGAINST ('$fulltext')")->orWhereHas('brand', function($query) use ($fulltext) {
                 $query->whereRaw("MATCH (name) AGAINST ('$fulltext')");
-            });
+            })->orWhereHas('category', function($query) use ($fulltext) {
+                    $query->whereRaw("MATCH (name) AGAINST ('$fulltext')");
+                });
         }
         if (isset($search_fields['description'])) {
             $query->where('description', 'like', '%' . $search_fields['description'] . '%');

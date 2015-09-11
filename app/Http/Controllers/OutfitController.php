@@ -97,7 +97,7 @@ class OutfitController extends Controller {
 
         $query = Outfit::whereNotIn('user_id', [$user->id])->whereHas('pieces', function($query) use ($user) {
             $query->where('user_id', [$user->id]);
-        })->with('inspiredBy', 'user.shoppable', 'pieces.user');
+        })->with('inspiredBy', 'user', 'pieces.user.shoppable');
 
         $outfits = $query->paginate(15);
         $outfits->setPath($request->url()); // outfits/?page=2 to outfits?page=2
