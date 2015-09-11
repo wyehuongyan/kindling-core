@@ -8,6 +8,7 @@ use Braintree_Customer;
 use Braintree_Configuration;
 use Braintree_Test_Nonces;
 use Braintree_Transaction;
+use Mixpanel;
 
 class PaymentController extends Controller {
     public function userPaymentMethods(Request $request) {
@@ -244,6 +245,10 @@ class PaymentController extends Controller {
                     "BT_code" => $statusCode,
                     "BT_text" => $statusText
                 );
+
+                // Mixpanel - People - Revenue (Add)
+                $mixpanel = Mixpanel::getInstance(env("MIXPANEL_TOKEN"));
+                $mixpanel->people->trackCharge($user->id, $amount);
 
             } else {
                 $errorString = 'Braintree Error: ';

@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Config;
 use Braintree_Transaction;
 use Braintree_Configuration;
 use Illuminate\Support\Facades\Log;
+use Mixpanel;
 
 class OrderController extends Controller {
 
@@ -413,6 +414,10 @@ class OrderController extends Controller {
                 throw new \Exception("Points deduction failed. Points applied is greater than what is available for deduction.");
             }
 
+            // Mixpanel - People - Points (Deduct)
+            $mixpanel = Mixpanel::getInstance(env("MIXPANEL_TOKEN"));
+            $mixpanel->people->increment($user->id, "Points", -$pointsApplied);
+
             // allocate points to contributors
             //// find out who were the ones who do not have shop orders
             //// and give them points
@@ -482,6 +487,9 @@ class OrderController extends Controller {
                     }
 
                     $contributorPoints->save();
+
+                    // Mixpanel - People - Contributors Points (Add)
+                    $mixpanel->people->increment($contributor->id, "Points", $pointsPerContributor);
                 }
             }
 

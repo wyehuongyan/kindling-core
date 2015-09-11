@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Config;
 use Braintree_Transaction;
 use Braintree_Configuration;
 use Illuminate\Support\Facades\Auth;
+use Mixpanel;
 use Log;
 
 class RefundController extends Controller {
@@ -225,6 +226,11 @@ class RefundController extends Controller {
                     $message = $shopOrder->user->username . " has approved your refund request.";
                     SprubixQueue::queuePushNotification($shopOrder->buyer, $message);
                     SprubixQueue::queueRefundApprovedEmail($shopOrderRefund);
+
+                    // Mixpanel - People - Refund Points (Add) and Revenue (Deduct)
+                    $mixpanel = Mixpanel::getInstance(env("MIXPANEL_TOKEN"));
+                    $mixpanel->people->increment($buyer->id, "Points", $userPoints);
+                    $mixpanel->people->trackCharge($buyer->id, -$refundAmount);
 
                 } else {
                     $refundTransactionStatus = $result->transaction->status;
