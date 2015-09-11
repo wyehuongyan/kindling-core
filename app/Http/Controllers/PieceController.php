@@ -14,8 +14,6 @@ class PieceController extends Controller {
 
         $query = Piece::search($input)->with('user.shoppable', 'category', 'brand');
         $pieces = $query->paginate(15);
-        $pieces->setPath($request->url());
-        $pieces->getCollection()->shuffle();
 
         return response()->json($pieces)->setCallback($request->input('callback'));
     }
@@ -35,7 +33,6 @@ class PieceController extends Controller {
         //$query = $user->pieces()->withTrashed()->with('user');
         $query = $user->pieces()->with('user.shoppable', 'category', 'brand');
         $pieces = $query->paginate(15);
-        $pieces->setPath($request->url()); // pieces/?page=2 to pieces?page=2
 
         return response()->json($pieces)->setCallback($request->input('callback'));
     }
