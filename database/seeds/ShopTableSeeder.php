@@ -22,8 +22,8 @@ class ShopTableSeeder extends Seeder {
         $user->email = "developers@sprubix.com";
         $user->password = bcrypt("password");
         $user->name = "Sprubix Shop";
-        $user->image = "https://d33m37h1i2d8gt.cloudfront.net/users/4/profile_display_user4_sprubixshop.jpg";
-        $user->cover = "https://d33m37h1i2d8gt.cloudfront.net/users/4/profile_cover_user4_sprubixshop_2.jpg";
+        $user->image = cdn("/users/3/profile_display_user4_sprubixshop.jpg");
+        $user->cover = cdn("/users/3/profile_cover_user4_sprubixshop_2.jpg"); 
         $user->save();
 
         // // polymorphic shop 1
