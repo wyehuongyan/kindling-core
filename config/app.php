@@ -38,7 +38,7 @@ return [
     */
 
     'storage' => array(
-        "s3" => "sprubixtest"
+        "s3" => env('S3_BUCKET')
     ),
 
     /*
@@ -51,7 +51,7 @@ return [
     */
 
     'cdn' => array(
-        "d33m37h1i2d8gt.cloudfront.net" => ""
+        env('CDN_URL') => ""
     ),
 
     /*
