@@ -21,8 +21,8 @@ class UserTableSeeder extends Seeder {
         $user_1->email = "cameron@example.com";
         $user_1->password = bcrypt("password");
         $user_1->name = "Cameron";
-        $user_1->image = cdn("/users/3/profile_display_user1_cameron.jpg");
-        $user_1->cover = cdn("/users/3/profile_cover_user1_cameron.jpg");
+        $user_1->image = cdn("/users/1/profile_display_user1_cameron.jpg");
+        $user_1->cover = cdn("/users/1/profile_cover_user1_cameron.jpg");
         $user_1->save();
 
         // // polymorphic shopper 1
