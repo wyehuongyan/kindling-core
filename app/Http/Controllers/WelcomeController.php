@@ -35,40 +35,4 @@ class WelcomeController extends Controller {
 	{
 		return view('welcome');
 	}
-
-    public function aws() {
-        $client = S3Client::factory(array(
-            'profile' => 'sprubixtest',
-        ));
-
-
-        $result = $client->listBuckets();
-        $list = array();
-        $bucketName = 'sprubixtest';
-
-        foreach ($result['Buckets'] as $bucket) {
-            // Each Bucket value will contain a Name and CreationDate
-            echo "{$bucket['Name']} - {$bucket['CreationDate']}\n";
-        }
-
-        $iterator = $client->getIterator('ListObjects', array(
-            'Bucket' => $bucketName,
-            'Prefix' => 'pieces/1/'
-        ));
-
-        foreach ($iterator as $object) {
-            //echo $object['Key'] . "\n";
-
-            if($object['Size'] > 0) { // avoid folders
-                array_push($list, $object['Key']);
-            }
-        }
-
-        echo count($list) . " Keys retrieved!\n";
-
-        return response()->json($list)
-            ->setCallback(Request::input('callback'));
-
-    }
-
 }
