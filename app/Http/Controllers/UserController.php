@@ -162,7 +162,9 @@ class UserController extends Controller {
             'description' => 'max:255',
             'first_name' => 'max:255',
             'last_name' => 'max:255',
-            'contact_number' => 'max:255'
+            'contact_number' => 'max:255',
+            'date_of_birth' => 'date|before:today',
+            'gender' => 'max:255'
         ]);
 
         if ($validator->fails()) {
