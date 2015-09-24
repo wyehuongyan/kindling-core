@@ -1,5 +1,7 @@
 <?php namespace App\Http\Middleware;
 
+use Illuminate\Session\TokenMismatchException;
+
 class VerifyCsrfCustom extends \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken
 {
     /**
@@ -62,7 +64,7 @@ class VerifyCsrfCustom extends \Illuminate\Foundation\Http\Middleware\VerifyCsrf
             return $this->addCookieToResponse($request, $next($request));
         }
 
-        throw new \TokenMismatchException;
+        throw new TokenMismatchException;
     }
 
     /**
