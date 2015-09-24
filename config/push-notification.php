@@ -3,7 +3,7 @@
 return array(
 
     'sprubixIOS'     => array(
-        'environment' => 'development',
+        'environment' => 'production',
         'certificate' => base_path() . '/' . env('PEM_FILE'),
         'passPhrase'  => env('PEM_PASSPHRASE'),
         'service'     => 'apns'
