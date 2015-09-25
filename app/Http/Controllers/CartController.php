@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Piece;
 use App\Models\Outfit;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class CartController extends Controller {
 
@@ -134,14 +135,17 @@ class CartController extends Controller {
 
     // Cart
     public function cart(Request $request) {
-        $cart = Auth::user()->cart;
-        $cartItems = new \stdClass();
+        $user = Auth::user();
 
-        if(isset($cart)) {
-            $cartItems = $cart->with('cartItems.outfit', 'cartItems.piece', 'cartItems.seller', 'cartItems.deliveryOption')->first();
+        if(isset($user)) {
+            $cart = $user->cart;
+
+            $cartItems = Cart::where('user_id', '=', $user->id)->with(array('cartItems' => function($query) use ($cart) {
+                $query->with('outfit', 'piece', 'seller', 'deliveryOption');
+            }))->orderBy('created_at', 'desc');
         }
 
-        return response()->json($cartItems)->setCallback($request->input('callback'));
+        return response()->json($cartItems->first())->setCallback($request->input('callback'));
     }
 
     public function updateCart(Request $request, Cart $cart) {
