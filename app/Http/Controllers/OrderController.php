@@ -47,9 +47,9 @@ class OrderController extends Controller {
     public function userOrder(Request $request) {
         $userOrderId = $request->get("user_order_id");
 
-        $userOrder = UserOrder::find($userOrderId)->with("shippingAddress")->with(array("shopOrders" => function($query) {
+        $userOrder = UserOrder::with("shippingAddress")->with(array("shopOrders" => function($query) {
                 $query->with("user", "orderStatus");
-            }))->first();
+            }))->find($userOrderId);
 
         return response()->json($userOrder)->setCallback($request->input('callback'));
     }
@@ -316,15 +316,27 @@ class OrderController extends Controller {
             foreach($cartItems as $cartItem) {
 
                 if(count($itemPayablePrices) > 0 && count($itemDiscounts) > 0 && count($itemPointsApplied) > 0) {
-                    $itemPayablePrice = $itemPayablePrices[$cartItem->id];
-                    $itemDiscount = $itemDiscounts[$cartItem->id];
-                    $itemPointApplied = $itemPointsApplied[$cartItem->id];
 
-                    if(isset($itemPayablePrice) && isset($itemDiscount) && isset($itemPointApplied)) {
-                        $cartItem->total_payable_price = $itemPayablePrice;
-                        $cartItem->total_discount = $itemDiscount;
-                        $cartItem->points_applied = $itemPointApplied;
-                        $cartItem->refundable_points = $itemPointApplied;
+                    if(array_key_exists($cartItem->id, $itemPayablePrices) && array_key_exists($cartItem->id, $itemDiscounts) && array_key_exists($cartItem->id, $itemPointsApplied)) {
+                        $itemPayablePrice = $itemPayablePrices[$cartItem->id];
+                        $itemDiscount = $itemDiscounts[$cartItem->id];
+                        $itemPointApplied = $itemPointsApplied[$cartItem->id];
+
+                        if(isset($itemPayablePrice) && isset($itemDiscount) && isset($itemPointApplied)) {
+                            $cartItem->total_payable_price = $itemPayablePrice;
+                            $cartItem->total_discount = $itemDiscount;
+                            $cartItem->points_applied = $itemPointApplied;
+                            $cartItem->refundable_points = $itemPointApplied;
+
+                            $cartItem->save();
+                        }
+                    } else {
+                        $cartItemPiece = $cartItem->piece;
+
+                        $cartItem->total_payable_price = $cartItemPiece->price;
+                        $cartItem->total_discount = 0;
+                        $cartItem->points_applied = 0;
+                        $cartItem->refundable_points = 0;
 
                         $cartItem->save();
                     }
@@ -468,6 +480,9 @@ class OrderController extends Controller {
                         $contributors[] = $outfitPostedByUser;
                     }
                 }
+
+                // make sure contributors are unique
+                $contributors = array_unique($contributors);
 
                 // divide the contributor points equality amongst the contributors
                 $pointsPerContributor = $contributorPointsEarned / count($contributors);

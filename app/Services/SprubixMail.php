@@ -28,7 +28,7 @@ class SprubixMail {
             $recipientEmail = $user->email;
             $recipientName = $user->username;
             $verificationCode = $user->verification_code;
-            $verificationURL = "http://sprubix-wh.ngrok.io/~wyehuongyan/kindling-core/public/index.php" . "/auth/email/verify?id=" . $user->id . "&vc=" . $verificationCode;
+            $verificationURL = env("NGROK_URL") . "/auth/email/verify?id=" . $user->id . "&vc=" . $verificationCode;
 
             // user mandrill subaccount id
             $userMandrillSubaccountId = $user->mandrill_subaccount_id;

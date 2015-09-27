@@ -35,7 +35,8 @@ class CartController extends Controller {
 
             // check if cart already contains this item
             $existingCartItem = CartItem::search(["piece_id" => $pieceId,
-                                            "cart_id" => $cart->id])->first();
+                                            "cart_id" => $cart->id,
+                                            "outfit_id" => $outfitId])->first();
 
             // if there's an existing item with the same size
             if(isset($existingCartItem) && $existingCartItem->size == $size) {
@@ -177,11 +178,15 @@ class CartController extends Controller {
     public function verifyStock(Request $request) {
         // for each cart item check if stock is still available
         // return a json of "insufficient_stock" if some items are unavailable
+        $markedPieces = array();
         $insufficientStocks = array();
         $insufficient = false;
         $cart = Auth::user()->cart;
 
         $cartItems = $cart->cartItems;
+
+        // associative to store quantity of similar piece cartItem
+        $piecePurchasedQuantity = array();
 
         foreach($cartItems as $cartItem) {
             $piece = $cartItem->piece;
@@ -189,25 +194,61 @@ class CartController extends Controller {
 
             foreach($quantity as $key => $value) {
                 if($cartItem->size == $key) {
-                    // verify stock
-                    if($cartItem->quantity > $value) {
-                        // low stock
-                        $insufficientStock = new \stdClass();
-                        $insufficientStock->cart_item = $cartItem;
-                        $insufficientStock->cart_item_id = $cartItem->id;
-                        $insufficientStock->cart_item_name = $piece->name;
-                        $insufficientStock->size_ordered = $key;
-                        $insufficientStock->quantity_ordered = $cartItem->quantity;
-                        $insufficientStock->quantity_left = $value;
 
+                    $alreadyPurchasedQuantity = 0;
+
+                    // was the same piece already carted?
+                    if(array_key_exists($piece->id, $piecePurchasedQuantity)) {
+                        $pieceSizeQuantityArray = $piecePurchasedQuantity[$piece->id];
+
+                        // was the same size already carted?
+                        if(array_key_exists($cartItem->size, $pieceSizeQuantityArray)) {
+                            $alreadyPurchasedQuantity = $pieceSizeQuantityArray[$cartItem->size];
+
+                            // update carted quantity for this size
+                            $pieceSizeQuantityArray[$cartItem->size] = $alreadyPurchasedQuantity + $cartItem->quantity;
+
+                        } else {
+                            // add new size
+                            $pieceSizeQuantityArray[$cartItem->size] = $cartItem->quantity;
+                        }
+
+                        // update array
+                        $piecePurchasedQuantity[$piece->id] = $pieceSizeQuantityArray;
+
+                    } else {
+                        // add new piece
+                        $piecePurchasedQuantity[$piece->id] = array($cartItem->size => $cartItem->quantity);
+                    }
+
+                    // verify stock
+                    if($cartItem->quantity + $alreadyPurchasedQuantity > $value) {
+                        // low stock for this piece size
+                        $markedPieces[$piece->id] = $value;
                         $insufficient = true;
-                        $insufficientStocks[] = $insufficientStock;
                     }
                 }
             }
         }
 
         if($insufficient) {
+            // loop through cartItems and mark cartItems with insufficient stock
+            foreach($cartItems as $cartItem) {
+                $piece = $cartItem->piece;
+
+                if(array_key_exists($piece->id, $markedPieces)) {
+                    $insufficientStock = new \stdClass();
+                    $insufficientStock->cart_item = $cartItem;
+                    $insufficientStock->cart_item_id = $cartItem->id;
+                    $insufficientStock->cart_item_name = $piece->name;
+                    $insufficientStock->size_ordered = $cartItem->size;
+                    $insufficientStock->quantity_ordered = $cartItem->quantity;
+                    $insufficientStock->quantity_left = $markedPieces[$piece->id];
+
+                    $insufficientStocks[] = $insufficientStock;
+                }
+            }
+
             $json = array("status" => "200",
                 "message" => "success",
                 "insufficient_stocks" => $insufficientStocks
