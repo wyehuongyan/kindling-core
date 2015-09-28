@@ -635,6 +635,15 @@ class MediaController extends Controller {
                 }
 
                 $new_outfit->save();
+                $outfit = Outfit::with('pieces.user')->find($new_outfit->id);
+
+                $json = array(
+                    "status" => "200",
+                    "message" => "success",
+                    "outfit" => $outfit
+                );
+
+                return response()->json($json)->setCallback($request->input('callback'));
 
             } else {
                 throw new Exception("No files were uploaded");
@@ -642,7 +651,13 @@ class MediaController extends Controller {
         } catch (Exception $e) {
             Log::Error("Exception caught: \n" . $e->getMessage());
 
-            return response()->json($e)->setCallback($request->input('callback'));
+            $json = array(
+                "status" => "500",
+                "message" => "exception",
+                "exception" => $e->getMessage()
+            );
+
+            return response()->json($json)->setCallback($request->input('callback'));
         }
     }
 
