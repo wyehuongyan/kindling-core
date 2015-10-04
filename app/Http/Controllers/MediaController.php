@@ -580,84 +580,100 @@ class MediaController extends Controller {
     }
 
     public function uploadSprucedOutfit(Request $request) {
-        try {
-            if ($request->hasFile("outfit")) {
 
-                // retrieve posting user
-                $postedByUser = User::find($request->get("created_by"));
+        $validator = Validator::make($request->all(), [
+            'description' => 'max:255'
+        ]);
 
-                // retrieve credited from user
-                $fromUser = User::find($request->get("from"));
+        if ($validator->fails()) {
+            $error = array(
+                "status" => "400",
+                "message" => "error",
+                "data" => $validator->messages()
+            );
 
-                //////////////////////////////////////////
-                //////////////// Outfit //////////////////
-                //////////////////////////////////////////
+            return response()->json($error)->setCallback($request->input('callback'));
+        } else {
+            // Pass
+            try {
+                if ($request->hasFile("outfit")) {
 
-                $media = new stdClass();
-                $outfit_image = new stdClass();
+                    // retrieve posting user
+                    $postedByUser = User::find($request->get("created_by"));
 
-                // create new outfit
-                $new_outfit = new Outfit();
-                $new_outfit->description = $request->get("description");
-                $new_outfit->height = $request->get("height");
-                $new_outfit->width = $request->get("width");
-                $new_outfit->inspiredBy()->associate($fromUser); // inspired by fromUser
+                    // retrieve credited from user
+                    $fromUser = User::find($request->get("from"));
 
-                foreach ($this->sizes as $size_key => $size_value) {
-                    $file_name_size_time = $postedByUser->id . "_outfit_" . $size_key . "_" . time() . ".jpg";
-                    $file_path = storage_path() . "/uploads/" . $file_name_size_time;
+                    //////////////////////////////////////////
+                    //////////////// Outfit //////////////////
+                    //////////////////////////////////////////
 
-                    $containerPath = "/outfits/" . $postedByUser->id;
+                    $media = new stdClass();
+                    $outfit_image = new stdClass();
 
-                    $outfit_image->$size_key = CloudStorage::putObject($request->file("outfit"), $size_value, $file_path, $containerPath, $file_name_size_time);
-                }
+                    // create new outfit
+                    $new_outfit = new Outfit();
+                    $new_outfit->description = $request->get("description");
+                    $new_outfit->height = $request->get("height");
+                    $new_outfit->width = $request->get("width");
+                    $new_outfit->inspiredBy()->associate($fromUser); // inspired by fromUser
 
-                $media->images = $outfit_image;
-                $new_outfit->images = json_encode($media);
-                $new_outfit->user()->associate($postedByUser);
-                $new_outfit->save();
+                    foreach ($this->sizes as $size_key => $size_value) {
+                        $file_name_size_time = $postedByUser->id . "_outfit_" . $size_key . "_" . time() . ".jpg";
+                        $file_path = storage_path() . "/uploads/" . $file_name_size_time;
 
-                //////////////////////////////////////////
-                //////////////// Pieces //////////////////
-                //////////////////////////////////////////
+                        $containerPath = "/outfits/" . $postedByUser->id;
 
-                // retrieve pieces info
-                $pieces_data = $request->get("pieces");
-                $pieces = Piece::whereIn('id', $pieces_data)->get();
-
-                foreach ($pieces as $piece) {
-                    // many to many assignment
-                    $new_outfit->pieces()->save($piece);
-
-                    if (isset($piece->quantity)) {
-                        $new_outfit->purchasable = true;
+                        $outfit_image->$size_key = CloudStorage::putObject($request->file("outfit"), $size_value, $file_path, $containerPath, $file_name_size_time);
                     }
-                }
 
-                $new_outfit->save();
-                $outfit = Outfit::with('pieces.user')->find($new_outfit->id);
+                    $media->images = $outfit_image;
+                    $new_outfit->images = json_encode($media);
+                    $new_outfit->user()->associate($postedByUser);
+                    $new_outfit->save();
+
+                    //////////////////////////////////////////
+                    //////////////// Pieces //////////////////
+                    //////////////////////////////////////////
+
+                    // retrieve pieces info
+                    $pieces_data = $request->get("pieces");
+                    $pieces = Piece::whereIn('id', $pieces_data)->get();
+
+                    foreach ($pieces as $piece) {
+                        // many to many assignment
+                        $new_outfit->pieces()->save($piece);
+
+                        if (isset($piece->quantity)) {
+                            $new_outfit->purchasable = true;
+                        }
+                    }
+
+                    $new_outfit->save();
+                    $outfit = Outfit::with('pieces.user')->find($new_outfit->id);
+
+                    $json = array(
+                        "status" => "200",
+                        "message" => "success",
+                        "outfit" => $outfit
+                    );
+
+                    return response()->json($json)->setCallback($request->input('callback'));
+
+                } else {
+                    throw new Exception("No files were uploaded");
+                }
+            } catch (Exception $e) {
+                Log::Error("Exception caught: \n" . $e->getMessage());
 
                 $json = array(
-                    "status" => "200",
-                    "message" => "success",
-                    "outfit" => $outfit
+                    "status" => "500",
+                    "message" => "exception",
+                    "exception" => $e->getMessage()
                 );
 
                 return response()->json($json)->setCallback($request->input('callback'));
-
-            } else {
-                throw new Exception("No files were uploaded");
             }
-        } catch (Exception $e) {
-            Log::Error("Exception caught: \n" . $e->getMessage());
-
-            $json = array(
-                "status" => "500",
-                "message" => "exception",
-                "exception" => $e->getMessage()
-            );
-
-            return response()->json($json)->setCallback($request->input('callback'));
         }
     }
 

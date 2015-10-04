@@ -114,6 +114,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('billing/payments', 'PaymentController@userPaymentMethods');
     Route::get('billing/payment', 'PaymentController@userPaymentMethod');
     Route::post('billing/payment/create', 'PaymentController@createPaymentMethod');
+    Route::post('billing/payment/edit/{userPaymentMethod}', 'PaymentController@updatePaymentMethod');
+    Route::delete('billing/payment/{userPaymentMethod}', 'PaymentController@deletePaymentMethod');
     Route::post('billing/transaction/create', 'PaymentController@createTransaction');
 
     // orders
