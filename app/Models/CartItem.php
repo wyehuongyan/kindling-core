@@ -14,7 +14,7 @@ class CartItem extends Model {
     }
 
     public function piece() {
-        return $this->belongsTo('App\Models\Piece');
+        return $this->belongsTo('App\Models\Piece')->withTrashed();
     }
 
     public function seller() {

@@ -4,6 +4,7 @@ use App\Facades\SprubixQueue;
 use App\Http\Controllers\Controller;
 use App\Models\UserGender;
 use Carbon\Carbon;
+use Firebase\Token\TokenGenerator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
@@ -34,7 +35,7 @@ class AuthController extends Controller {
             // success, login
             $trimLoginAttr = preg_replace('/\s+/', '', $request->input($loginAttr));
 
-            $user = User::search(array($loginAttr => $trimLoginAttr))->with('shoppable')->first();
+            $user = User::with('shoppable')->preciseSearch(array($loginAttr => $trimLoginAttr))->first();
 
             $success = array(
                 "status" => "200",
@@ -186,10 +187,10 @@ class AuthController extends Controller {
 
     // verification
     public function verifyEmail(Request $request) {
-        $redirectURL = "https://sprubix.com/email-verified/";
+        //$redirectURL = "https://sprubix.com/email-verified/";
 
-        $verification_code = $request->get("vc");
-        $user = User::find($request->get("id"));
+        $verification_code = $request->get("verification_code");
+        $user = User::find($request->get("user_id"));
 
         if($user->verification_code == $verification_code) {
             $user->verified_at = Carbon::now();
@@ -198,12 +199,25 @@ class AuthController extends Controller {
             // send welcome email
             SprubixQueue::queueWelcomeEmail($user);
 
-            // redirect to verified page
-            return redirect()->to($redirectURL);
+            // successfully verified
+            $json = array("status" => "200",
+                "message" => "success",
+                "data" => $user
+            );
+
+            //return redirect()->to($redirectURL);
+
         } else {
             // verification code does not match
+            $json = array("status" => "400",
+                "message" => "error",
+                "data" => "verification code does not match"
+            );
+
             // Log to sentry
         }
+
+        return response()->json($json)->setCallback($request->input('callback'));
     }
 
     public function testVerifyEmail(Request $request) {
@@ -225,8 +239,9 @@ class AuthController extends Controller {
         try {
             $user = Auth::user();
 
-            $tokenGen = new Services_FirebaseTokenGenerator(env("FIREBASE_KEY"));
-            $token = $tokenGen->createToken(array("uid" => "sprubix-user:" . $user->id));
+            $tokenGen = new TokenGenerator(env("FIREBASE_KEY"));
+            $tokenGen->setData(array("uid" => "sprubix-user:" . $user->id));
+            $token = $tokenGen->create();//array("uid" => "sprubix-user:" . $user->id));
 
             $json = array(
                 "status" => "200",

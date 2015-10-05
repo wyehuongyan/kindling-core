@@ -26,7 +26,7 @@ Route::post('auth/login', 'Auth\AuthController@authenticate');
 Route::post('auth/login/facebook', 'Auth\AuthController@authenticateFacebook');
 Route::get('auth/check', 'Auth\AuthController@checkLoggedIn');
 Route::get('auth/email/verify/test', 'Auth\AuthController@testVerifyEmail');
-Route::get('auth/email/verify', 'Auth\AuthController@verifyEmail');
+Route::post('auth/email/verify', 'Auth\AuthController@verifyEmail');
 Route::controller('password', 'Auth\PasswordController');
 
 /////////////////////////////
@@ -85,6 +85,7 @@ Route::group(['middleware' => 'auth'], function() {
     // delivery
     // // delivery options
     Route::post('delivery/options', 'DeliveryController@deliveryOptions');
+    Route::get('delivery/option/{deliveryOption}', 'DeliveryController@deliveryOption');
     Route::post('delivery/option/create', 'DeliveryController@createDeliveryOption');
     Route::post('delivery/option/edit/{deliveryOption}', 'DeliveryController@updateDeliveryOption');
     Route::delete('delivery/option/{deliveryOption}', 'DeliveryController@deleteDeliveryOption');

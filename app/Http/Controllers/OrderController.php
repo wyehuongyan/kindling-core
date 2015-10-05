@@ -57,9 +57,9 @@ class OrderController extends Controller {
     public function userShopOrders(Request $request) {
         $input = $request->all();
 
-        $query = ShopOrder::search($input)->with("user", "buyer", "shippingAddress", "orderStatus", "deliveryOption", "cartItems.piece");
+        $query = ShopOrder::search($input)->with("user", "buyer", "shippingAddress", "orderStatus", "deliveryOption", "cartItems.piece")->orderBy('created_at', 'desc');
 
-        $userShopOrders = $query->paginate()->toJson();
+        $userShopOrders = $query->paginate(15)->toJson();
         $userTotalSpending = $query->sum("total_price");
 
         $json = array("status" => "200",
@@ -435,8 +435,6 @@ class OrderController extends Controller {
             //// and give them points
             foreach($outfitContributorsData as $outfitId => $contributorData) {
 
-                Log::info($outfitId);
-
                 $outfit = Outfit::find($outfitId);
 
                 $boughtPieceIds = $contributorData["bought_piece_ids"];
@@ -488,6 +486,8 @@ class OrderController extends Controller {
                 $pointsPerContributor = $contributorPointsEarned / count($contributors);
                 $pointsPerContributor = ceil($pointsPerContributor);
 
+                $contributionArray = array();
+
                 // distribute the points
                 foreach($contributors as $contributor) {
                     $contributorPoints = $contributor->points;
@@ -502,6 +502,12 @@ class OrderController extends Controller {
                     }
 
                     $contributorPoints->save();
+
+                    $contribution = new \stdClass();
+                    $contribution->contributor = $contributor;
+                    $contribution->awarded_points = $pointsPerContributor;
+                    $contribution->outfit = $outfit;
+                    $contributionArray[] = $contribution;
 
                     // Mixpanel - People - Contributors Points (Add)
                     $mixpanel->people->increment($contributor->id, "Points", $pointsPerContributor);
@@ -520,7 +526,8 @@ class OrderController extends Controller {
 
             $json = array("status" => "200",
                 "message" => "success",
-                "user_order_id" => $userOrder->id
+                "user_order_id" => $userOrder->id,
+                "contributions" => $contributionArray
             );
 
         } catch (\Exception $e) {

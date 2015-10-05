@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Support\Facades\Log;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract {
 
@@ -145,8 +146,12 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     public function getFollowedAttribute() {
-        $user = Auth::user();
+        if(Auth::check()) {
+            $user = Auth::user();
 
-        return $this->followers()->get()->contains($user->id);
+            return $this->followers()->get()->contains($user->id);
+        } else {
+            return false;
+        }
     }
 }

@@ -31,15 +31,15 @@ class ShopOrder extends Model {
     }
 
     public function deliveryOption() {
-        return $this->belongsTo('App\Models\DeliveryOption');
+        return $this->belongsTo('App\Models\DeliveryOption')->withTrashed();
     }
 
     public function shippingAddress() {
-        return $this->belongsTo('App\Models\UserShippingAddress', 'user_shipping_address_id');
+        return $this->belongsTo('App\Models\UserShippingAddress', 'user_shipping_address_id')->withTrashed();
     }
 
     public function paymentMethod() {
-        return $this->belongsTo('App\Models\UserPaymentMethod', 'user_payment_method_id');
+        return $this->belongsTo('App\Models\UserPaymentMethod', 'user_payment_method_id')->withTrashed();
     }
 
     public function cartItems() {

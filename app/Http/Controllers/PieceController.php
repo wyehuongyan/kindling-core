@@ -12,7 +12,12 @@ class PieceController extends Controller {
     public function pieces(Request $request) {
         $input = $request->all();
 
-        $query = Piece::search($input)->with('user.shoppable', 'category', 'brand');
+        if(!isset($input['full_test'])) {
+            $query = Piece::search($input)->with('user.shoppable', 'category', 'brand')->orderBy('created_at', 'desc');
+        } else {
+            $query = Piece::search($input)->with('user.shoppable', 'category', 'brand');
+        }
+
         $pieces = $query->paginate(15);
 
         return response()->json($pieces)->setCallback($request->input('callback'));
@@ -109,7 +114,30 @@ class PieceController extends Controller {
     }
 
     public function pieceCategories(Request $request) {
-        $pieceCategories = PieceCategory::all();
+        $pieceType = $request->get("piece_type");
+
+        if(isset($pieceType)) {
+            switch($pieceType) {
+                case "HEAD":
+                    $pieceCategoryIds = ["1", "2"];
+                    break;
+                case "TOP":
+                    $pieceCategoryIds = ["3", "4"];
+                    break;
+                case "BOTTOM":
+                    $pieceCategoryIds = ["5", "6"];
+                    break;
+                case "FEET":
+                    $pieceCategoryIds = ["7"];
+                    break;
+                default:
+                    throw new \Exception("Invalid piece type.");
+            }
+
+            $pieceCategories = PieceCategory::whereIn('id', $pieceCategoryIds)->get();
+        } else {
+            $pieceCategories = PieceCategory::all();
+        }
 
         return response()->json($pieceCategories)->setCallback($request->input('callback'));
     }

@@ -36,7 +36,7 @@ class SpruceController extends Controller {
         $ids = array_merge($followIds, $userIds);
         $ids = array_unique($ids);
 
-        $query = Piece::search($input)->with('user', 'category', 'brand')->whereIn('user_id', $ids);
+        $query = Piece::search($input)->with('user', 'category', 'brand')->whereIn('user_id', $ids)->orderBy('created_at', 'desc');
         $pieces = $query->paginate(15);
 
         return response()->json($pieces)->setCallback($request->input('callback'));

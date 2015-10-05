@@ -6,7 +6,6 @@ use App\Models\DeliveryOption;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Symfony\Component\Debug\Exception\FatalErrorException;
 
 class DeliveryController extends Controller {
     //////////////////////////////////////////////
@@ -19,6 +18,12 @@ class DeliveryController extends Controller {
         $deliveryOptions = $query->paginate(15);
 
         return response()->json($deliveryOptions)->setCallback($request->input('callback'));
+    }
+
+    public function deliveryOption(Request $request, DeliveryOption $deliveryOption) {
+        $deliveryOption = $deliveryOption::with('shopOrders')->find($deliveryOption->id);
+
+        return response()->json($deliveryOption)->setCallback($request->input('callback'));
     }
 
     public function createDeliveryOption(Request $request) {

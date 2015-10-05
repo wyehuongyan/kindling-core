@@ -13,6 +13,7 @@ class VerifyCsrfCustom extends \Illuminate\Foundation\Http\Middleware\VerifyCsrf
         'auth/register',
         'auth/login',
         'auth/login/facebook',
+        'auth/email/verify',
         'auth/apns/*',
         'queue/receive',
         'notification/*',
