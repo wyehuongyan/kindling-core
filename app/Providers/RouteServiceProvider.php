@@ -35,6 +35,7 @@ class RouteServiceProvider extends ServiceProvider {
         $router->model('shopOrderRefund', 'App\Models\ShopOrderRefund');
         $router->model('userOrder', 'App\Models\UserOrder');
         $router->model('userShippingAddress', 'App\Models\UserShippingAddress');
+        $router->model('userPaymentMethod', 'App\Models\UserPaymentMethod');
 	}
 
 	/**

@@ -270,7 +270,78 @@ class PaymentController extends Controller {
         return response()->json($json)->setCallback($request->input('callback'));
     }
 
-    public function deletePaymentMethod(Request $request, UserPaymentMethod $paymentMethod) {
+    public function updatePaymentMethod(Request $request, UserPaymentMethod $userPaymentMethod) {
+        $user = $request->user();
+        $isDefault = $request->get("is_default");
 
+        try {
+            if(isset($isDefault)) {
+                if ($isDefault) {
+                    // set all other payment methods to be not default
+                    $userPaymentMethods = $user->paymentMethods()->get();
+
+                    foreach($userPaymentMethods as $paymentMethod){
+                        $paymentMethod->is_default = false;
+
+                        $paymentMethod->save();
+                    }
+
+                    $userPaymentMethod->is_default = true;
+                }
+            }
+
+            $userPaymentMethod->user()->associate($user);
+
+            $userPaymentMethod->save();
+
+            $json = array("status" => "200",
+                "message" => "success",
+                "user_shipping_address" => $userPaymentMethod
+            );
+
+        } catch (\Exception $e) {
+            $json = array("status" => "500",
+                "message" => "exception",
+                "exception" => $e->getMessage()
+            );
+        }
+
+        return response()->json($json)->setCallback($request->input('callback'));
+    }
+
+    public function deletePaymentMethod(Request $request, UserPaymentMethod $userPaymentMethod) {
+        $user = $request->user();
+
+        if($userPaymentMethod->user->id == $request->get("owner_id")) {
+            if($userPaymentMethod->is_default) {
+                // set the immediate successor to be current
+                $userPaymentMethods = $user->paymentMethods()->get();
+
+                foreach($userPaymentMethods as $paymentMethod) {
+                    if(!$paymentMethod->is_default) {
+                        $paymentMethod->is_default = true;
+                        $paymentMethod->save();
+
+                        break;
+                    }
+                }
+            }
+
+            $userPaymentMethod->delete();
+
+            $json = array(
+                "status" => "200",
+                "message" => "success",
+                "deleted" => $userPaymentMethod
+            );
+        } else {
+            $json = array(
+                "status" => "400",
+                "message" => "error",
+                "data" => "failed to delete, please try again."
+            );
+        }
+
+        return response()->json($json)->setCallback($request->input('callback'));
     }
 }
