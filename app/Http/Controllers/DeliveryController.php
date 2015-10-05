@@ -29,11 +29,14 @@ class DeliveryController extends Controller {
     public function createDeliveryOption(Request $request) {
         $name = $request->get("name");
         $price = $request->get("price");
+        $estimatedTime = $request->get("estimated_time");
+
         $user = Auth::user();
 
         $deliveryOption = new DeliveryOption();
         $deliveryOption->name = $name;
         $deliveryOption->price = $price;
+        $deliveryOption->estimated_time = $estimatedTime;
         $deliveryOption->user()->associate($user);
 
         $user->shoppable->purchasable = true;
