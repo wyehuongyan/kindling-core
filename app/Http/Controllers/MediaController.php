@@ -37,7 +37,7 @@ class MediaController extends Controller {
                 'description' => 'max:255',
                 'size' => 'required|max:255',
                 'quantity' => 'required|max:255',
-                'price' => 'required|numeric|min:10'
+                'price' => 'required|numeric|min:15'
             ]);
 
             if ($validator_piece->fails()) {
@@ -209,7 +209,7 @@ class MediaController extends Controller {
                 $json = array(
                     "status" => "500",
                     "message" => "exception",
-                    "exception" => $e->getMessage()
+                    "data" => $e->getMessage()
                 );
 
                 return response()->json($json)->setCallback($request->input('callback'));

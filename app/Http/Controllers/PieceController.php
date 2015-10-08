@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Piece;
 use App\Models\PieceCategory;
 use App\Models\PieceBrand;
+use Validator;
 use Log;
 
 class PieceController extends Controller {
@@ -20,7 +21,7 @@ class PieceController extends Controller {
 
         $pieces = $query->paginate(15);
 
-        return response()->json($pieces)->setCallback($request->input('callback'));
+        return response()->json($pieces)->supdateLowStockLimitetCallback($request->input('callback'));
     }
 
     public function piecesByIds(Request $request) {
@@ -62,10 +63,31 @@ class PieceController extends Controller {
     }
 
     public function updateLowStockLimit(Request $request, User $user) {
-        $user->shoppable->low_stock_limit = (int)$request->get("low_stock_limit");
-        $user->shoppable->save();
+        $validator = Validator::make($request->all(), [
+            'low_stock_limit' => 'required|numeric|min:1'
+        ]);
 
-        return response()->json($user)->setCallback($request->input('callback'));
+        if ($validator->fails()) {
+            $error = array(
+                "status" => "400",
+                "message" => "error",
+                "data" => $validator->messages()
+            );
+
+            return response()->json($error)->setCallback($request->input('callback'));
+        } else {
+            // Pass
+            $user->shoppable->low_stock_limit = (int)$request->get("low_stock_limit");
+            $user->shoppable->save();
+
+            $json = array(
+                "status" => "200",
+                "message" => "success",
+                "data" => $user
+            );
+
+            return response()->json($json)->setCallback($request->input('callback'));
+        }
     }
 
     public function peoplePieces(Request $request) {
