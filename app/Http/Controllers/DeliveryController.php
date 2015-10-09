@@ -6,6 +6,7 @@ use App\Models\DeliveryOption;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Validator;
 
 class DeliveryController extends Controller {
     //////////////////////////////////////////////
@@ -27,24 +28,48 @@ class DeliveryController extends Controller {
     }
 
     public function createDeliveryOption(Request $request) {
-        $name = $request->get("name");
-        $price = $request->get("price");
-        $estimatedTime = $request->get("estimated_time");
 
-        $user = Auth::user();
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:255',
+            'price' => 'required|numeric|min:0',
+            'estimated_time' => 'required|numeric|min:0'
+        ]);
 
-        $deliveryOption = new DeliveryOption();
-        $deliveryOption->name = $name;
-        $deliveryOption->price = $price;
-        $deliveryOption->estimated_time = $estimatedTime;
-        $deliveryOption->user()->associate($user);
+        if ($validator->fails()) {
+            $error = array(
+                "status" => "400",
+                "message" => "error",
+                "data" => $validator->messages()
+            );
 
-        $user->shoppable->purchasable = true;
-        $user->shoppable->save();
+            return response()->json($error)->setCallback($request->input('callback'));
+        } else {
+            // pass
+            $name = $request->get("name");
+            $price = $request->get("price");
+            $estimatedTime = $request->get("estimated_time");
 
-        $deliveryOption->save();
+            $user = Auth::user();
 
-        return response()->json($deliveryOption)->setCallback($request->input('callback'));
+            $deliveryOption = new DeliveryOption();
+            $deliveryOption->name = $name;
+            $deliveryOption->price = $price;
+            $deliveryOption->estimated_time = $estimatedTime;
+            $deliveryOption->user()->associate($user);
+
+            $user->shoppable->purchasable = true;
+            $user->shoppable->save();
+
+            $deliveryOption->save();
+
+            $json = array(
+                "status" => "200",
+                "message" => "success",
+                "data" => $deliveryOption
+            );
+
+            return response()->json($json)->setCallback($request->input('callback'));
+        }
     }
 
     public function updateDeliveryOption(Request $request, DeliveryOption $deliveryOption) {
@@ -119,76 +144,102 @@ class DeliveryController extends Controller {
     }
 
     public function createShippingAddress(Request $request) {
-        $user= $request->user();
-        $firstName = $request->get("first_name");
-        $lastName = $request->get("last_name");
-        $company = $request->get("company");
-        $contact = $request->get("contact_number");
+        $validator = Validator::make($request->all(), [
+            'first_name' => 'required|max:255',
+            'last_name' => 'required|max:255',
+            'company' => 'max:255',
+            'contact_number' => 'required|max:255',
+            'address_1' => 'required|max:255',
+            'address_2' => 'max:255',
+            'postal_code' => 'required|max:255',
+            'city' => 'required|max:255',
+            'state' => 'required|max:255',
+            'country' => 'required|max:255',
+            'country_code' => 'required|max:255',
+        ]);
 
-        $addressLineOne = $request->get("address_1");
-        $addressLineTwo = $request->get("address_2");
-        $postalCode = $request->get("postal_code");
-        $countryCode = $request->get("country_code");
-        $city = $request->get("city");
-        $state = $request->get("state");
-        $country = $request->get("country");
+        if ($validator->fails()) {
+            $error = array(
+                "status" => "400",
+                "message" => "error",
+                "data" => $validator->messages()
+            );
 
-        $isCurrent = $request->get("is_current");
+            return response()->json($error)->setCallback($request->input('callback'));
+        } else {
+            // Pass
+            $user = $request->user();
+            $firstName = $request->get("first_name");
+            $lastName = $request->get("last_name");
+            $company = $request->get("company");
+            $contact = $request->get("contact_number");
 
-        try {
-            $userShippingAddress = new UserShippingAddress();
-            $userShippingAddress->first_name = $firstName;
-            $userShippingAddress->last_name = $lastName;
+            $addressLineOne = $request->get("address_1");
+            $addressLineTwo = $request->get("address_2");
+            $postalCode = $request->get("postal_code");
+            $countryCode = $request->get("country_code");
+            $city = $request->get("city");
+            $state = $request->get("state");
+            $country = $request->get("country");
 
-            if(isset($company)) {
-                $userShippingAddress->company = $company;
-            }
+            $isCurrent = $request->get("is_current");
 
-            $userShippingAddress->contact_number = $contact;
-            $userShippingAddress->address_1 = $addressLineOne;
+            try {
+                $userShippingAddress = new UserShippingAddress();
+                $userShippingAddress->first_name = $firstName;
+                $userShippingAddress->last_name = $lastName;
 
-            if(isset($addressLineTwo)) {
-                $userShippingAddress->address_2 = $addressLineTwo;
-            }
-
-            $userShippingAddress->postal_code = $postalCode;
-            $userShippingAddress->country_code = $countryCode;
-            $userShippingAddress->city = $city;
-            $userShippingAddress->state = $state;
-            $userShippingAddress->country = $country;
-
-            if(isset($isCurrent)) {
-                if ($isCurrent) {
-                    // set all other shipping addresses to be not current
-                    $userShippingAddresses = $user->shippingAddresses()->get();
-
-                    foreach($userShippingAddresses as $shippingAddress){
-                        $shippingAddress->is_current = false;
-
-                        $shippingAddress->save();
-                    }
-
-                    $userShippingAddress->is_current = $isCurrent;
+                if (isset($company)) {
+                    $userShippingAddress->company = $company;
                 }
+
+                $userShippingAddress->contact_number = $contact;
+                $userShippingAddress->address_1 = $addressLineOne;
+
+                if (isset($addressLineTwo)) {
+                    $userShippingAddress->address_2 = $addressLineTwo;
+                }
+
+                $userShippingAddress->postal_code = $postalCode;
+                $userShippingAddress->country_code = $countryCode;
+                $userShippingAddress->city = $city;
+                $userShippingAddress->state = $state;
+                $userShippingAddress->country = $country;
+
+                if (isset($isCurrent)) {
+                    if ($isCurrent) {
+                        // set all other shipping addresses to be not current
+                        $userShippingAddresses = $user->shippingAddresses()->get();
+
+                        foreach ($userShippingAddresses as $shippingAddress) {
+                            $shippingAddress->is_current = false;
+
+                            $shippingAddress->save();
+                        }
+
+                        $userShippingAddress->is_current = $isCurrent;
+                    }
+                }
+
+                $userShippingAddress->user()->associate($user);
+
+                $userShippingAddress->save();
+
+                $json = array(
+                    "status" => "200",
+                    "message" => "success",
+                    "data" => $userShippingAddress
+                );
+
+            } catch (\Exception $e) {
+                $json = array("status" => "500",
+                    "message" => "exception",
+                    "data" => $e->getMessage()
+                );
             }
 
-            $userShippingAddress->user()->associate($user);
-
-            $userShippingAddress->save();
-
-            $json = array("status" => "200",
-                "message" => "success",
-                "user_shipping_address" => $userShippingAddress
-            );
-
-        } catch (\Exception $e) {
-            $json = array("status" => "500",
-                "message" => "exception",
-                "exception" => $e->getMessage()
-            );
+            return response()->json($json)->setCallback($request->input('callback'));
         }
-
-        return response()->json($json)->setCallback($request->input('callback'));
     }
 
     public function updateShippingAddress(Request $request, UserShippingAddress $userShippingAddress) {
