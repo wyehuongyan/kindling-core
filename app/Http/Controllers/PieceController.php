@@ -12,7 +12,7 @@ class PieceController extends Controller {
     public function pieces(Request $request) {
         $input = $request->all();
 
-        if(!isset($input['full_test'])) {
+        if(!isset($input['full_text'])) {
             $query = Piece::search($input)->with('user.shoppable', 'category', 'brand')->orderBy('created_at', 'desc');
         } else {
             $query = Piece::search($input)->with('user.shoppable', 'category', 'brand');
@@ -95,6 +95,18 @@ class PieceController extends Controller {
 
     public function deletePiece(Request $request, Piece $piece) {
         if($piece->user->id == $request->get("owner_id")) {
+            // if piece is a purchasable piece, mark all quantities as 0
+            if(isset($piece->quantity)) {
+                $quantity = json_decode($piece->quantity);
+
+                foreach($quantity as $key => $value) {
+                    $quantity->$key = "0";
+                }
+
+                $piece->quantity = json_encode($quantity);
+                $piece->save();
+            }
+
             $piece->delete();
 
             $json = array(
@@ -176,7 +188,7 @@ class PieceController extends Controller {
             );
         }
 
-        $query = Piece::search($input)->with('user.shoppable', 'category', 'brand')->orderBy('created_at', 'desc');
+        $query = Piece::search($input)->with('user.shoppable', 'category', 'brand')->where('deleted_at', '=', null)->orderBy('created_at', 'desc');
 
         $pieces = $query->paginate(15);
 

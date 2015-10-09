@@ -28,8 +28,8 @@ class SprubixMail {
             $recipientEmail = $user->email;
             $recipientName = $user->username;
             $verificationCode = $user->verification_code;
-            //$verificationURL = env("NGROK_URL") . "/auth/email/verify?id=" . $user->id . "&vc=" . $verificationCode;
 
+            $clickVerificationURL = env("NGROK_URL") . "/auth/email/verify?id=" . $user->id . "&vc=" . $verificationCode . "&web=true";
             $verificationURL = env("URL_SCHEME") . "/auth/" . $user->id . "/verify/" . $verificationCode;
 
             // user mandrill subaccount id
@@ -71,6 +71,10 @@ class SprubixMail {
                             array(
                                 'name' => 'verification_url',
                                 'content' => $verificationURL
+                            ),
+                            array(
+                                'name' => 'click_verification_url',
+                                'content' => $clickVerificationURL
                             )
                         )
                     )

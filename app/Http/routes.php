@@ -26,7 +26,7 @@ Route::post('auth/login', 'Auth\AuthController@authenticate');
 Route::post('auth/login/facebook', 'Auth\AuthController@authenticateFacebook');
 Route::get('auth/check', 'Auth\AuthController@checkLoggedIn');
 Route::get('auth/email/verify/test', 'Auth\AuthController@testVerifyEmail');
-Route::post('auth/email/verify', 'Auth\AuthController@verifyEmail');
+Route::get('auth/email/verify', 'Auth\AuthController@verifyEmail');
 Route::controller('password', 'Auth\PasswordController');
 
 /////////////////////////////

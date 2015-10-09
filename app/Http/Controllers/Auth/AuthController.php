@@ -187,10 +187,11 @@ class AuthController extends Controller {
 
     // verification
     public function verifyEmail(Request $request) {
-        //$redirectURL = "https://sprubix.com/email-verified/";
+        $redirectURL = "https://sprubix.com/email-verified/";
 
-        $verification_code = $request->get("verification_code");
-        $user = User::find($request->get("user_id"));
+        $verification_code = $request->get("vc");
+        $user = User::find($request->get("id"));
+        $fromWeb = $request->get("web");
 
         if($user->verification_code == $verification_code) {
             $user->verified_at = Carbon::now();
@@ -205,8 +206,9 @@ class AuthController extends Controller {
                 "data" => $user
             );
 
-            //return redirect()->to($redirectURL);
-
+            if(isset($fromWeb) && $fromWeb) {
+                return redirect()->to($redirectURL);
+            }
         } else {
             // verification code does not match
             $json = array("status" => "400",
