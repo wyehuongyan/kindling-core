@@ -18,6 +18,11 @@ Route::get('/', 'WelcomeController@index');
 Route::get('home', 'HomeController@index');
 Route::get('aws', ['middleware' => 'auth', 'uses' => 'WelcomeController@aws']);
 
+///////////////////
+/* Shop Creation */
+///////////////////
+Route::post('shop/create', 'ShopController@createShop');
+
 /////////////////////////////////
 /* Authentication and Password */
 /////////////////////////////////

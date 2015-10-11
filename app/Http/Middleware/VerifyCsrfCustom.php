@@ -18,6 +18,7 @@ class VerifyCsrfCustom extends \Illuminate\Foundation\Http\Middleware\VerifyCsrf
         'queue/receive',
         'notification/*',
         'spruce/*',
+        'shop/create',
         'user/*',
         'users',
         'users/search',
