@@ -1476,5 +1476,164 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1->pieces()->save($piece_1);
         $outfit_1->pieces()->save($piece_2);
         $outfit_1->pieces()->save($piece_3);
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /*                                        Shop 2 Pieces & Outfits                                       */
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        $user = User::find(5); // find flufflea
+
+        // create the pieces first
+
+        // u5p1
+        $piece_1 = new Piece();
+        $piece_1->name = "Front Lace Blouse";
+        $piece_1->description = "The lacey flower design gives an impact on the front side of the blouse. It is designed to go well with layering as well. Of course, it also act as a one-piece jacket.";
+        $piece_1->brand()->associate(PieceBrand::find(19));
+        $sizes = array("S", "M", "L");
+        $piece_1->size = json_encode($sizes);
+        $piece_1->type = "TOP";
+        $piece_1->is_dress = false;
+        $piece_1->position = "2";
+        $piece_1->height = 697.0;
+        $piece_1->width = 750.0;
+        $piece_1->aspectRatio = 750.0 / 697.0;
+
+        $quantity = new stdClass();
+
+        foreach($sizes as $size) {
+            $quantity->$size = "10";
+        }
+
+        $piece_1->quantity = json_encode($quantity);
+        $piece_1->price = 30.00;
+
+        $media = new stdClass();
+        $media->cover = cdn("/pieces/5/user5_outfit1_top.jpg");
+
+        $image = new stdClass();
+        $image->thumbnail = cdn("/pieces/5/user5_outfit1_top.jpg");
+        $image->small = cdn("/pieces/5/user5_outfit1_top.jpg");
+        $image->medium = cdn("/pieces/5/user5_outfit1_top.jpg");
+        $image->original = cdn("/pieces/5/user5_outfit1_top.jpg");
+
+        $media->images = array($image);
+
+        $piece_1->images = json_encode($media);
+
+        $piece_1->category()->associate(PieceCategory::find(3));
+        $piece_1->user()->associate($user);
+        $piece_1->save();
+
+        // u4p2
+
+        $piece_2 = new Piece();
+        $piece_2->name = "Wrap-style Skirt";
+        $piece_2->description = "The ribbon tied to the waist serves as stylish design for the wrap-skirt. It gives a feminine touch and skirt will definitely gives you a mature feel.";
+        $piece_2->brand()->associate(PieceBrand::find(19));
+
+        $sizes = array("XS", "S", "M", "L");
+        $piece_2->size = json_encode($sizes);
+        $piece_2->type = "BOTTOM";
+        $piece_2->is_dress = false;
+        $piece_2->position = "3";
+        $piece_2->height = 663.0;
+        $piece_2->width = 750.0;
+        $piece_2->aspectRatio = 750.0 / 663.0;
+
+        $quantity = new stdClass();
+
+        foreach($sizes as $size) {
+            $quantity->$size = "10";
+        }
+
+        $piece_2->quantity = json_encode($quantity);
+        $piece_2->price = 25.00;
+
+        $media = new stdClass();
+        $media->cover = cdn("/pieces/5/user5_outfit1_bot.jpg");
+
+        $image = new stdClass();
+        $image->thumbnail = cdn("/pieces/5/user5_outfit1_bot.jpg");
+        $image->small = cdn("/pieces/5/user5_outfit1_bot.jpg");
+        $image->medium = cdn("/pieces/5/user5_outfit1_bot.jpg");
+        $image->original = cdn("/pieces/5/user5_outfit1_bot.jpg");
+
+        $media->images = array($image);
+
+        $piece_2->images = json_encode($media);
+
+        $piece_2->category()->associate(PieceCategory::find(6));
+        $piece_2->user()->associate($user);
+        $piece_2->save();
+
+        // u4p3
+
+        $piece_3 = new Piece();
+        $piece_3->name = "Pointed Squareheel Pumps";
+        $piece_3->description = "Pointed pumps. It has a not too thing heels as the heels are square-shaped.";
+        $piece_3->brand()->associate(PieceBrand::find(19));
+
+        $sizes = array("UK 6", "UK 7", "UK 8");
+        $piece_3->size = json_encode($sizes);
+        $piece_3->type = "FEET";
+        $piece_3->is_dress = false;
+        $piece_3->position = "4";
+        $piece_3->height = 412.0;
+        $piece_3->width = 750.0;
+        $piece_3->aspectRatio = 750.0 / 412.0;
+
+        $quantity = new stdClass();
+
+        foreach($sizes as $size) {
+            $quantity->$size = "10";
+        }
+
+        $piece_3->quantity = json_encode($quantity);
+        $piece_3->price = 35.00;
+
+        $media = new stdClass();
+        $media->cover = cdn("/pieces/5/user5_outfit1_shoes.jpg");
+
+        $image = new stdClass();
+        $image->thumbnail = cdn("/pieces/5/user5_outfit1_shoes.jpg");
+        $image->small = cdn("/pieces/5/user5_outfit1_shoes.jpg");
+        $image->medium = cdn("/pieces/5/user5_outfit1_shoes.jpg");
+        $image->original = cdn("/pieces/5/user5_outfit1_shoes.jpg");
+
+        $media->images = array($image);
+
+        $piece_3->images = json_encode($media);
+
+        $piece_3->category()->associate(PieceCategory::find(7));
+        $piece_3->user()->associate($user);
+        $piece_3->save();
+
+        // create 1 outfits
+        // outfit 1: piece 1, 2, 3
+
+        // 1
+        $outfit_1 = new Outfit();
+        $outfit_1->name = "Shop Outfit 1";
+        $outfit_1->description = "An outfit with brands from Japan.";
+
+        $media = new stdClass();
+        $image = new stdClass();
+        $image->thumbnail = cdn("/outfits/5/user5_outfit1.jpg");
+        $image->small = cdn("/outfits/5/user5_outfit1.jpg");
+        $image->medium = cdn("/outfits/5/user5_outfit1.jpg");
+        $image->original = cdn("/outfits/5/user5_outfit1.jpg");
+        $media->images = $image;
+
+        $outfit_1->images = json_encode($media);
+        $outfit_1->height = "1772";
+        $outfit_1->width = "750";
+        $outfit_1->purchasable = true;
+        $outfit_1->user()->associate($user);
+        $outfit_1->save();
+
+        $outfit_1->pieces()->save($piece_1);
+        $outfit_1->pieces()->save($piece_2);
+        $outfit_1->pieces()->save($piece_3);
     }
 }

@@ -172,6 +172,8 @@ class AuthController extends Controller {
             $user_info->user()->associate($user);
             $user_info->save();
 
+            $user->following()->save($user);
+
             $success = array(
                 "status" => "200",
                 "message" => "success",

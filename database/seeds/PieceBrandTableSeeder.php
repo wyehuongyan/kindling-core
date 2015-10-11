@@ -81,5 +81,9 @@ class PieceBrandTableSeeder extends Seeder {
         $brand_18 = new PieceBrand(); // 18
         $brand_18->name = "Sprubix";
         $brand_18->save();
+
+        $brand_19 = new PieceBrand(); // 19
+        $brand_19->name = "Flufflea";
+        $brand_19->save();
     }
 }
