@@ -21,7 +21,7 @@ class PieceController extends Controller {
 
         $pieces = $query->paginate(15);
 
-        return response()->json($pieces)->supdateLowStockLimitetCallback($request->input('callback'));
+        return response()->json($pieces)->setCallback($request->input('callback'));
     }
 
     public function piecesByIds(Request $request) {

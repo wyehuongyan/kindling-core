@@ -309,32 +309,32 @@ class UserController extends Controller {
 
     public function userPrivateInformation(Request $request) {
         $user = Auth::User();
-        $userInfo = $user->userInfo()->first();
+        $userInfo = $user->userInfo;
 
-        $firstname = $userInfo["first_name"];
-        $lastname = $userInfo["last_name"];
-        $contactnumber = $userInfo["contact_number"];
-        $birthdate = Carbon::parse($userInfo["date_of_birth"])->format("d-m-Y");
-        $gender = UserGender::find($userInfo["gender_id"])->gender;
+        $firstname = "";
+        $lastname = "";
+        $contactnumber = "";
+        $birthdate = "";
+        $gender = "";
 
-        if (!isset($userInfo["first_name"])) {
-            $firstname = "";
+        if (isset($userInfo["first_name"])) {
+            $firstname = $userInfo["first_name"];
         }
 
-        if (!isset($userInfo["last_name"])) {
-            $lastname = "";
+        if (isset($userInfo["last_name"])) {
+            $lastname = $userInfo["last_name"];
         }
 
-        if (!isset($userInfo["contact_number"])) {
-            $contactnumber = "";
+        if (isset($userInfo["contact_number"])) {
+            $contactnumber = $userInfo["contact_number"];
         }
 
-        if (!isset($userInfo["date_of_birth"])) {
-            $birthdate = "";
+        if (isset($userInfo["date_of_birth"])) {
+            $birthdate = Carbon::parse($userInfo["date_of_birth"])->format("d-m-Y");
         }
 
-        if (!isset($userInfo["gender_id"])) {
-            $gender = "";
+        if (isset($userInfo["gender_id"]) && $userInfo["gender_id"] != 0) {
+            $gender = UserGender::find($userInfo["gender_id"])->gender;
         }
 
         $userInfoReturn =  Array(
@@ -344,7 +344,7 @@ class UserController extends Controller {
             "date_of_birth" => $birthdate,
             "gender" => $gender
         );
-
+        Log::Info($userInfoReturn);
         return response()->json($userInfoReturn)->setCallback($request->input('callback'));
     }
 }
