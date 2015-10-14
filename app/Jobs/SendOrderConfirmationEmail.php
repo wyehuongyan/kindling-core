@@ -54,7 +54,7 @@ class SendOrderConfirmationEmail extends Job implements SelfHandling, ShouldQueu
 
                 // account created
                 if ($status == "active") {
-                    $user->mandrill_subaccount_id = $id;
+                    $user->mandrill_subaccount_id = $result['id'];
                     $user->save();
 
                     // send order confirmation email

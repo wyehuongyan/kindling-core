@@ -52,7 +52,7 @@ class SendShopOrderRefundRequestEmail extends Job implements SelfHandling, Shoul
 
                 // account created
                 if ($status == "active") {
-                    $seller->mandrill_subaccount_id = $id;
+                    $seller->mandrill_subaccount_id = $result['id'];
                     $seller->save();
 
                     // send shop order refund request email
