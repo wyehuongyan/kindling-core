@@ -183,79 +183,85 @@ class CartController extends Controller {
         $insufficient = false;
         $cart = Auth::user()->cart;
 
-        $cartItems = $cart->cartItems;
+        if(isset($cart)) {
+            $cartItems = $cart->cartItems;
 
-        // associative to store quantity of similar piece cartItem
-        $piecePurchasedQuantity = array();
+            // associative to store quantity of similar piece cartItem
+            $piecePurchasedQuantity = array();
 
-        foreach($cartItems as $cartItem) {
-            $piece = $cartItem->piece;
-            $quantity = json_decode($piece->quantity);
-
-            foreach($quantity as $key => $value) {
-                if($cartItem->size == $key) {
-
-                    $alreadyPurchasedQuantity = 0;
-
-                    // was the same piece already carted?
-                    if(array_key_exists($piece->id, $piecePurchasedQuantity)) {
-                        $pieceSizeQuantityArray = $piecePurchasedQuantity[$piece->id];
-
-                        // was the same size already carted?
-                        if(array_key_exists($cartItem->size, $pieceSizeQuantityArray)) {
-                            $alreadyPurchasedQuantity = $pieceSizeQuantityArray[$cartItem->size];
-
-                            // update carted quantity for this size
-                            $pieceSizeQuantityArray[$cartItem->size] = $alreadyPurchasedQuantity + $cartItem->quantity;
-
-                        } else {
-                            // add new size
-                            $pieceSizeQuantityArray[$cartItem->size] = $cartItem->quantity;
-                        }
-
-                        // update array
-                        $piecePurchasedQuantity[$piece->id] = $pieceSizeQuantityArray;
-
-                    } else {
-                        // add new piece
-                        $piecePurchasedQuantity[$piece->id] = array($cartItem->size => $cartItem->quantity);
-                    }
-
-                    // verify stock
-                    if($cartItem->quantity + $alreadyPurchasedQuantity > $value) {
-                        // low stock for this piece size
-                        $markedPieces[$piece->id] = $value;
-                        $insufficient = true;
-                    }
-                }
-            }
-        }
-
-        if($insufficient) {
-            // loop through cartItems and mark cartItems with insufficient stock
             foreach($cartItems as $cartItem) {
                 $piece = $cartItem->piece;
+                $quantity = json_decode($piece->quantity);
 
-                if(array_key_exists($piece->id, $markedPieces)) {
-                    $insufficientStock = new \stdClass();
-                    $insufficientStock->cart_item = $cartItem;
-                    $insufficientStock->cart_item_id = $cartItem->id;
-                    $insufficientStock->cart_item_name = $piece->name;
-                    $insufficientStock->size_ordered = $cartItem->size;
-                    $insufficientStock->quantity_ordered = $cartItem->quantity;
-                    $insufficientStock->quantity_left = $markedPieces[$piece->id];
+                foreach($quantity as $key => $value) {
+                    if($cartItem->size == $key) {
 
-                    $insufficientStocks[] = $insufficientStock;
+                        $alreadyPurchasedQuantity = 0;
+
+                        // was the same piece already carted?
+                        if(array_key_exists($piece->id, $piecePurchasedQuantity)) {
+                            $pieceSizeQuantityArray = $piecePurchasedQuantity[$piece->id];
+
+                            // was the same size already carted?
+                            if(array_key_exists($cartItem->size, $pieceSizeQuantityArray)) {
+                                $alreadyPurchasedQuantity = $pieceSizeQuantityArray[$cartItem->size];
+
+                                // update carted quantity for this size
+                                $pieceSizeQuantityArray[$cartItem->size] = $alreadyPurchasedQuantity + $cartItem->quantity;
+
+                            } else {
+                                // add new size
+                                $pieceSizeQuantityArray[$cartItem->size] = $cartItem->quantity;
+                            }
+
+                            // update array
+                            $piecePurchasedQuantity[$piece->id] = $pieceSizeQuantityArray;
+
+                        } else {
+                            // add new piece
+                            $piecePurchasedQuantity[$piece->id] = array($cartItem->size => $cartItem->quantity);
+                        }
+
+                        // verify stock
+                        if($cartItem->quantity + $alreadyPurchasedQuantity > $value) {
+                            // low stock for this piece size
+                            $markedPieces[$piece->id] = $value;
+                            $insufficient = true;
+                        }
+                    }
                 }
             }
 
-            $json = array("status" => "200",
-                "message" => "success",
-                "insufficient_stocks" => $insufficientStocks
-            );
+            if($insufficient) {
+                // loop through cartItems and mark cartItems with insufficient stock
+                foreach($cartItems as $cartItem) {
+                    $piece = $cartItem->piece;
+
+                    if(array_key_exists($piece->id, $markedPieces)) {
+                        $insufficientStock = new \stdClass();
+                        $insufficientStock->cart_item = $cartItem;
+                        $insufficientStock->cart_item_id = $cartItem->id;
+                        $insufficientStock->cart_item_name = $piece->name;
+                        $insufficientStock->size_ordered = $cartItem->size;
+                        $insufficientStock->quantity_ordered = $cartItem->quantity;
+                        $insufficientStock->quantity_left = $markedPieces[$piece->id];
+
+                        $insufficientStocks[] = $insufficientStock;
+                    }
+                }
+
+                $json = array("status" => "200",
+                    "message" => "success",
+                    "insufficient_stocks" => $insufficientStocks
+                );
+            } else {
+                $json = array("status" => "200",
+                    "message" => "success"
+                );
+            }
         } else {
-            $json = array("status" => "200",
-                "message" => "success"
+            $json = array("status" => "500",
+                "message" => "user cart empty"
             );
         }
 
