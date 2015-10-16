@@ -157,7 +157,7 @@ Route::group(['middleware' => 'auth'], function() {
 
     // mail
     Route::post('mail/feedback', 'MailController@feedback');
-    Route::post('mail/welcome', 'MailController@orders');
+    Route::post('mail/report', 'MailController@reportInappropriate');
 
     // dashboard
     Route::post('dashboard/report', 'DashboardController@report');

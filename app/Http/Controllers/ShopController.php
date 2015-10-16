@@ -31,6 +31,7 @@ class ShopController extends Controller {
             $user = new User();
 
             $user->username = $request->get("username");
+            $user->name = $request->get("username");
             $user->email = $request->get("email");
             $user->password = bcrypt($request->get("password"));
             $user->image = cdn("/users/0_default_profile_placeholder.jpg");

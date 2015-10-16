@@ -1,5 +1,7 @@
 <?php namespace App\Services;
 
+use App\Models\Outfit;
+use App\Models\Piece;
 use App\Models\ShopOrder;
 use App\Models\ShopOrderRefund;
 use Hashids\Hashids;
@@ -79,8 +81,8 @@ class SprubixMail {
                         )
                     )
                 ),
-                'tags' => array('email-verification'),
-                'subaccount' => $userMandrillSubaccountId
+                'tags' => array('email-verification')
+                //'subaccount' => $userMandrillSubaccountId
             );
 
             $result = $this->mandrill->messages->sendTemplate($template_name, $template_content, $message);
@@ -408,7 +410,13 @@ class SprubixMail {
 
         } catch(Mandrill_Error $e) {
             // Mandrill errors are thrown as exceptions
-            Log::error($e->getMessage()); // log to sentry
+            $error = array(
+                "status" => "500",
+                "message" => $e->getMessage()
+            );
+
+            // handle error
+            Log::error($error); // log to sentry
         }
     }
 
@@ -899,7 +907,13 @@ class SprubixMail {
 
         } catch(Mandrill_Error $e) {
             // Mandrill errors are thrown as exceptions
-            Log::error($e->getMessage()); // log to sentry
+            $error = array(
+                "status" => "500",
+                "message" => $e->getMessage()
+            );
+
+            // handle error
+            Log::error($error); // log to sentry
         }
     }
 
@@ -1064,7 +1078,183 @@ class SprubixMail {
 
         } catch(Mandrill_Error $e) {
             // Mandrill errors are thrown as exceptions
-            Log::error($e->getMessage()); // log to sentry
+            $error = array(
+                "status" => "500",
+                "message" => $e->getMessage()
+            );
+
+            // handle error
+            Log::error($error); // log to sentry
+        }
+    }
+
+    public function sendReportInappropriate(User $reporter, $poutfitType, $poutfitId, $time) {
+        try {
+            // reporter details
+            $reporterUserId = $reporter->id;
+            $reporterUserName = $reporter->username;
+            $reporterName = $reporter->name;
+            $reporterImage = $reporter->image;
+            $reporterEmail = $reporter->email;
+
+            if (!isset($reporter->mandrill_subaccount_id)) {
+                $id = $reporter->id;
+                $name = $reporter->username;
+                $notes = 'Signed up on ' . Carbon::now();
+
+                $result = $this->addSubAccount($id, $name, $notes);
+                $status = $result['status'];
+
+                // account created
+                if ($status == "active") {
+                    $reporter->mandrill_subaccount_id = $id;
+                    $reporter->save();
+
+                    $reporterMandrillSubaccountId = $reporter->mandrill_subaccount_id;
+                } else {
+                    // some error occured
+                    // log to sentry, subaccount not created
+                }
+            } else {
+                $reporterMandrillSubaccountId = $reporter->mandrill_subaccount_id;
+            }
+
+            // retrieve outfit/piece
+            if($poutfitType == "Outfit") {
+                $poutfit = Outfit::find($poutfitId);
+
+                $outfitImages = json_decode($poutfit->images);
+                $poutfitImage = $outfitImages->images->medium;
+
+            } else if($poutfitType == "Piece") {
+                $poutfit = Piece::find($poutfitId);
+
+                $pieceImages = json_decode($poutfit->images);
+                $poutfitImage = $pieceImages->cover;
+            }
+
+            if(isset($poutfit)) {
+                // reported details
+                $reportedUser = $poutfit->user;
+                $reportedUserId = $reportedUser->id;
+                $reportedUserName = $reportedUser->username;
+                $reportedName = $reportedUser->name;
+                $reportedUserImage = $reportedUser->image;
+                $reportedUserEmail = $reportedUser->email;
+
+                $poutfitName = $poutfit->name;
+            }
+
+            // template slug name in Mandrill
+            $template_name = 'report-inappropriate';
+            $template_content = array();
+            $support_name = "Team Sprubix";
+            $message = array(
+                'subject' => "Inappropriate Content",
+                'from_email' => $reporterEmail,
+                'from_name' => $reporterUserName,
+                'to' => array(
+                    array(
+                        'email' => env('MANDRILL_SPRUBIX_SUPPORT'),
+                        'name' => $support_name,
+                        'type' => 'to'
+                    )
+                ),
+                'headers' => array('Reply-To' => 'no-reply@sprubix.com'),
+                "auto_text" => true,
+                "inline_css" => true,
+                'merge' => true,
+                'merge_language' => 'handlebars',
+                "global_merge_vars" => array(
+                    array(
+                        'name' => 'support_email',
+                        'content' => 'support@sprubix.com'
+                    )
+                ),
+                'merge_vars' => array(
+                    array(
+                        'rcpt' => env('MANDRILL_SPRUBIX_SUPPORT'),
+                        'vars' => array(
+                            array(
+                                'name' => 'date_time',
+                                'content' => $time->toCookieString()
+                            ),
+                            array(
+                                'name' => 'poutfit_image',
+                                'content' => $poutfitImage
+                            ),
+                            array(
+                                'name' => 'poutfit_name',
+                                'content' => $poutfitName
+                            ),
+                            array(
+                                'name' => 'poutfit_type',
+                                'content' => $poutfitType
+                            ),
+                            array(
+                                'name' => 'poutfit_id',
+                                'content' => $poutfitId
+                            ),
+                            array(
+                                'name' => 'reporter_image',
+                                'content' => $reporterImage
+                            ),
+                            array(
+                                'name' => 'reporter_username',
+                                'content' => $reporterUserName
+                            ),
+                            array(
+                                'name' => 'reporter_name',
+                                'content' => $reporterName
+                            ),
+                            array(
+                                'name' => 'reporter_email',
+                                'content' => $reporterEmail
+                            ),
+                            array(
+                                'name' => 'reporter_id',
+                                'content' => $reporterUserId
+                            ),
+                            array(
+                                'name' => 'reported_image',
+                                'content' => $reportedUserImage
+                            ),
+                            array(
+                                'name' => 'reported_username',
+                                'content' => $reportedUserName
+                            ),
+                            array(
+                                'name' => 'reported_name',
+                                'content' => $reportedName
+                            ),
+                            array(
+                                'name' => 'reported_email',
+                                'content' => $reportedUserEmail
+                            ),
+                            array(
+                                'name' => 'reported_id',
+                                'content' => $reportedUserId
+                            )
+                        )
+                    )
+                ),
+                'tags' => array('report-inappropriate'),
+                'subaccount' => $reporterMandrillSubaccountId
+            );
+
+            $result = $this->mandrill->messages->sendTemplate($template_name, $template_content, $message);
+
+            Log::info("sent");
+
+        } catch(Mandrill_Error $e) {
+            // Mandrill errors are thrown as exceptions
+            $error = array(
+                "status" => "500",
+                "message" => $e->getMessage()
+            );
+
+            // handle error
+            Log::error($error); // log to sentry
         }
     }
 

@@ -3,6 +3,7 @@
 use App\Jobs\RefundShopOrder;
 use App\Jobs\SendOrderConfirmationEmail;
 use App\Jobs\SendPushNotification;
+use App\Jobs\SendReportInappropriateEmail;
 use App\Jobs\SendShopOrderRefundApprovedEmail;
 use App\Jobs\SendShopOrderRefundRequestEmail;
 use App\Jobs\SendShopOrderUpdateEmail;
@@ -187,6 +188,24 @@ class SprubixQueue {
         $this->ironMQ->updateQueue($queueName, $params);
 
         $job = (new SendShopOrderUpdateEmail($shopOrder, $queueName));
+        $this->dispatch($job);
+    }
+
+    public function queueReportInappropriateEmail(User $user, $poutfitType, $poutfitId, $time) {
+        $queueName = "email_report_inappropriate";
+
+        $params = array(
+            "push_type" => "multicast",
+            "retries" => 5,
+            "subscribers" => array(
+                array("url" => env("NGROK_URL") . "/queue/receive")
+            ),
+            "error_queue" => $queueName . "_errors"
+        );
+
+        $this->ironMQ->updateQueue($queueName, $params);
+
+        $job = (new SendReportInappropriateEmail($user, $poutfitType, $poutfitId, $time, $queueName));
         $this->dispatch($job);
     }
 }
