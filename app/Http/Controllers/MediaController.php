@@ -160,6 +160,7 @@ class MediaController extends Controller {
                     }
 
                     $existing_piece->price = $piece_data["price"];
+                    $existing_piece->sku = $piece_data["sku"];
 
                     $num_images = $piece_data["num_images"];
 
@@ -515,6 +516,7 @@ class MediaController extends Controller {
                         }
 
                         $new_piece->price = $piece_data["price"];
+                        $new_piece->sku = $piece_data["sku"];
 
                         $num_images = $piece_data["num_images"];
 
