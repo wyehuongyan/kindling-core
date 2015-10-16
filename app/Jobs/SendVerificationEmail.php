@@ -49,7 +49,7 @@ class SendVerificationEmail extends Job implements SelfHandling, ShouldQueue
 
                 // account created
                 if ($status == "active") {
-                    $this->user->mandrill_subaccount_id = $id;
+                    $this->user->mandrill_subaccount_id = $result['id'];
                     $this->user->save();
 
                     // send verification email

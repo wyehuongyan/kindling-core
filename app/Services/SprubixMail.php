@@ -319,7 +319,7 @@ class SprubixMail {
 
                     // account created
                     if ($status == "active") {
-                        $seller->mandrill_subaccount_id = $id;
+                        $seller->mandrill_subaccount_id = $result['id'];
                         $seller->save();
 
                         // send order confirmation to shop
@@ -614,7 +614,7 @@ class SprubixMail {
 
             // account created
             if ($status == "active") {
-                $buyer->mandrill_subaccount_id = $id;
+                $buyer->mandrill_subaccount_id = $result['id'];
                 $buyer->save();
             }
         }
@@ -1261,7 +1261,8 @@ class SprubixMail {
     public function addSubAccount($id, $name, $notes) {
         try {
             // create subaccount
-            $result = $this->mandrill->subaccounts->add($id, $name, $notes);
+            $newId = env('APP_ENV') . "_" . $id;
+            $result = $this->mandrill->subaccounts->add($newId, $name, $notes);
 
             return $result;
 

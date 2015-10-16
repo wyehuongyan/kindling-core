@@ -52,7 +52,7 @@ class SendShopOrderRefundApprovedEmail extends Job implements SelfHandling, Shou
 
                 // account created
                 if ($status == "active") {
-                    $buyer->mandrill_subaccount_id = $id;
+                    $buyer->mandrill_subaccount_id = $result['id'];
                     $buyer->save();
 
                     // send shop order refund approved email
