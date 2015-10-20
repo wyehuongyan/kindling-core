@@ -39,7 +39,8 @@ class SprubixQueue {
 
         $this->ironMQ->updateQueue($queueName, $params);
 
-        $job = (new RefundShopOrder($shopOrder, $shopOrderRefund, $returnCartItems, $returnAmount, $refundPoints, $queueName))->delay($delay);;
+        $job = (new RefundShopOrder($shopOrder, $shopOrderRefund, $returnCartItems, $returnAmount, $refundPoints, $queueName))->delay($delay);
+
         $this->dispatch($job);
     }
 

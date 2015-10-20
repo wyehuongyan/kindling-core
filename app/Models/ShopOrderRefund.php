@@ -39,6 +39,9 @@ class ShopOrderRefund extends Model {
         if (isset($search_fields['shop_order_id']) && is_numeric($search_fields['shop_order_id'])) {
             $query->where('shop_order_id', '=', $search_fields['shop_order_id']);
         }
+        if (isset($search_fields['refund_status_id']) && is_numeric($search_fields['refund_status_id'])) {
+            $query->where('refund_status_id', '=', $search_fields['refund_status_id']);
+        }
         return $query;
     }
 

@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers;
 
 use App\Facades\SprubixQueue;
+use App\Models\OrderStatus;
 use Hashids\Hashids;
 use App\Models\CartItem;
 use App\Models\RefundStatus;
@@ -51,6 +52,7 @@ class RefundController extends Controller {
             $refundAmount = $request->get("refund_amount");
             $refundPoints = $request->get("refund_points");
             $refundReason = $request->get("refund_reason");
+            $returnCartItems = $request->get("return_cart_items");
 
             if ($refundAmount > $shopOrder->refundable_amount) {
                 // when refund price exceeds total refundable amount
@@ -61,6 +63,7 @@ class RefundController extends Controller {
                 $shopOrderRefund->refund_amount = $refundAmount;
                 $shopOrderRefund->refund_points = $refundPoints;
                 $shopOrderRefund->refund_reason = $refundReason;
+                $shopOrderRefund->return_cart_items = json_encode($returnCartItems);
                 $shopOrderRefund->user()->associate($shopOrder->user);
                 $shopOrderRefund->buyer()->associate($shopOrder->buyer);
 
@@ -75,8 +78,6 @@ class RefundController extends Controller {
                     $shopOrderRefund->save();
 
                     // // set the RETURN amount on refunded cart item
-                    $returnCartItems = $request->get("return_cart_items");
-
                     foreach($returnCartItems as $cartId => $returnAmount) {
                         $cartItem = CartItem::find($cartId);
 
@@ -95,7 +96,6 @@ class RefundController extends Controller {
                     SprubixQueue::queueRefundRequestEmail($shopOrderRefund);
 
                 } else {
-                    $returnCartItems = $request->get("return_cart_items");
                     $json = $this->refund($shopOrder, $shopOrderRefund, $returnCartItems, $refundAmount, $refundPoints);
                 }
             }
@@ -197,6 +197,43 @@ class RefundController extends Controller {
                     $shopOrder->refunded_points = $totalRefundedPoints;
                     $shopOrder->refundable_points = $shopOrder->refundable_points - $totalRefundedPoints;
 
+                    // if all cart items in the shop order has been refunded
+                    // if (qty - returned) > 0 exists for one cart item, not cancelled
+                    // else shop order is set to 'cancelled'
+
+                    $cartItems = $shopOrder->cartItems;
+                    $cancelled = true;
+
+                    foreach($cartItems as $cartItem) {
+                        $quantity = $cartItem->quantity;
+                        $returned = $cartItem->returned;
+
+                        $remainder = $quantity - $returned;
+
+                        if($remainder > 0) {
+                            $cancelled = false;
+                            break;
+                        }
+                    }
+
+                    if($cancelled) {
+                        // set shop order to 'cancelled' status
+                        $cancelledOrderStatus = OrderStatus::find(7); // 7 = cancelled
+                        $shopOrder->orderStatus()->associate($cancelledOrderStatus);
+
+                        $shopOrder->save();
+
+                        // check parent order (user order)
+                        //// take the min id of all shop orders
+                        $userOrder = $shopOrder->userOrder;
+
+                        $minOrderStatusId = $userOrder->shopOrders->min('order_status_id');
+                        $minOrderStatus = OrderStatus::find($minOrderStatusId);
+
+                        $userOrder->orderStatus()->associate($minOrderStatus);
+                        $userOrder->save();
+                    }
+
                     $shopOrder->save();
 
                     // // give the buyer back their refunded points
@@ -246,23 +283,158 @@ class RefundController extends Controller {
 
             case Braintree_Transaction::AUTHORIZED:
             case Braintree_Transaction::SUBMITTED_FOR_SETTLEMENT:
-                // not yet settled
-                // // send to IronMQ with delay of one day
 
-                // refund status id 2: Request Queued
-                $shopOrderRefund->refundStatus()->associate(RefundStatus::find(2));
-                $shopOrderRefund->save();
+                // check if userOrder only has this shopOrder and this shopOrder only has 1 item
+                // if yes do void
+                // else, do the usual queuing method.
+                $userOrder = $shopOrder->userOrder;
 
-                $delay = 12*3600;;
+                if($userOrder->shopOrders()->count() == 1 && $shopOrder->cartItems()->count() == 1) {
 
-                SprubixQueue::queueRefund($shopOrder, $shopOrderRefund, $returnCartItems, $refundAmount, $refundPoints, $delay);
+                    // if bt transaction status == authorized/submitted for settlement
+                    // do a void instead of refund
+                    $result = Braintree_Transaction::void($transactionId);
 
-                $json = array("status" => "200",
-                    "message" => "refund_queued",
-                    "shop_order_refund" => $shopOrderRefund
-                );
+                    if ($result->success) {
+                        // refund status id 3: Refunded
+                        $shopOrderRefund->refundStatus()->associate(RefundStatus::find(3));
+                        $shopOrderRefund->save();
+                        $shopOrderRefund->braintree_transaction_id = $transaction->id;
+                        $shopOrderRefund->save();
 
-                Log::info("BT Authorized/Submitted for Settlement - Refund Queued for 12 hours.");
+                        $hashids = new Hashids("refunds", 10, "ABCDEF1234567890");
+                        $shopOrderRefund->uid = $hashids->encode($shopOrderRefund->id);
+                        $shopOrderRefund->save();
+
+                        // // set the RETURNED (not RETURN) amount on refunded cart item
+                        foreach ($returnCartItems as $cartId => $returnAmount) {
+                            if ($returnAmount > 0) {
+                                $cartItem = CartItem::find($cartId);
+
+                                // set refunded points property
+                                $singleItemRefundablePoints = ceil($cartItem->refundable_points / ($cartItem->quantity - $cartItem->returned));
+                                $cartItem->refundable_points = $cartItem->refundable_points - $singleItemRefundablePoints;
+                                $cartItem->refunded_points = $cartItem->refunded_points + $singleItemRefundablePoints;
+
+                                // set RETURNED
+                                $cartItem->returned = $cartItem->returned + $returnAmount;
+                                $cartItem->return = 0;
+
+                                $cartItem->save();
+                            }
+                        }
+
+                        // // set the shop order refunded_amount and refundable_amount
+                        $totalRefundedAmount = $shopOrder->refunded_amount + $refundAmount;
+                        $totalRefundedPoints = $shopOrder->refunded_points + $refundPoints;
+
+                        $shopOrder->refunded_amount = $totalRefundedAmount;
+                        $shopOrder->refundable_amount = $shopOrder->total_payable_price - $totalRefundedAmount;
+
+                        $shopOrder->refunded_points = $totalRefundedPoints;
+                        $shopOrder->refundable_points = $shopOrder->refundable_points - $totalRefundedPoints;
+
+                        // if all cart items in the shop order has been refunded
+                        // if (qty - returned) > 0 exists for one cart item, not cancelled
+                        // else shop order is set to 'cancelled'
+
+                        $cartItems = $shopOrder->cartItems;
+                        $cancelled = true;
+
+                        foreach ($cartItems as $cartItem) {
+                            $quantity = $cartItem->quantity;
+                            $returned = $cartItem->returned;
+
+                            $remainder = $quantity - $returned;
+
+                            if ($remainder > 0) {
+                                $cancelled = false;
+                                break;
+                            }
+                        }
+
+                        if ($cancelled) {
+                            // set shop order to 'cancelled' status
+                            $cancelledOrderStatus = OrderStatus::find(7); // 7 = cancelled
+                            $shopOrder->orderStatus()->associate($cancelledOrderStatus);
+
+                            $shopOrder->save();
+
+                            // check parent order (user order)
+                            //// take the min id of all shop orders
+                            $userOrder = $shopOrder->userOrder;
+
+                            $minOrderStatusId = $userOrder->shopOrders->min('order_status_id');
+                            $minOrderStatus = OrderStatus::find($minOrderStatusId);
+
+                            $userOrder->orderStatus()->associate($minOrderStatus);
+                            $userOrder->save();
+                        }
+
+                        $shopOrder->save();
+
+                        // // give the buyer back their refunded points
+                        $buyer = $shopOrder->buyer;
+                        $userPoints = $buyer->points;
+
+                        // create user points
+                        if (!isset($userPoints)) {
+                            $userPoints = new UserPoints();
+                            $userPoints->user()->associate($buyer);
+                            $userPoints->save();
+                        }
+
+                        $userPoints->amount = $userPoints->amount + $refundPoints;
+                        $userPoints->save();
+
+                        $json = array("status" => "200",
+                            "message" => "success",
+                            "braintree_result" => array(
+                                "braintree_transaction_type" => $result->transaction->type,
+                                "braintree_transaction_amount" => $result->transaction->amount
+                            ),
+                            "shop_order_refund" => $shopOrderRefund
+                        );
+
+                        // send refund approved push notification and email to shop and shopper
+                        $message = $shopOrder->user->username . " has approved your refund request.";
+                        SprubixQueue::queuePushNotification($shopOrder->buyer, $message);
+                        SprubixQueue::queueRefundApprovedEmail($shopOrderRefund);
+
+                        // Mixpanel - People - Refund Points (Add) and Revenue (Deduct)
+                        $mixpanel = Mixpanel::getInstance(env("MIXPANEL_TOKEN"));
+                        $mixpanel->people->increment($buyer->id, "Points", $userPoints);
+                        $mixpanel->people->trackCharge($buyer->id, -$refundAmount);
+
+                    } else {
+                        $refundTransactionStatus = $result->transaction->status;
+                        $processorSettlementResponseCode = $result->transaction->processorSettlementResponseCode;
+                        $processorSettlementResponseText = $result->transaction->processorSettlementResponseText;
+
+                        //Log::info($result);
+
+                        throw new \Exception("Void Failed. Void Transaction Status: " . $refundTransactionStatus . "SettlementResponseCode: " . $processorSettlementResponseCode . "SettlementResponseText: " . $processorSettlementResponseText);
+                    }
+
+                } else {
+                    // not yet settled
+                    // // send to IronMQ with delay of six hours
+                    //$delay = 6*3600;
+
+                    // refund status id 2: Request Queued
+                    $shopOrderRefund->refundStatus()->associate(RefundStatus::find(2));
+                    $shopOrderRefund->save();
+
+                    // queue refund
+                    //SprubixQueue::queueRefund($shopOrder, $shopOrderRefund, $returnCartItems, $refundAmount, $refundPoints, $delay);
+
+                    $json = array("status" => "200",
+                        "message" => "refund_queued",
+                        "shop_order_refund" => $shopOrderRefund
+                    );
+
+                    Log::info("BT Authorized/Submitted for Settlement - Refund Queued for 6 hours.");
+                }
 
                 break;
 

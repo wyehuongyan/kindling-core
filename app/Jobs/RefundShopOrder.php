@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Facades\SprubixQueue;
 use App\Jobs\Job;
 use App\Models\CartItem;
+use App\Models\OrderStatus;
 use Illuminate\Support\Facades\Config;
 use Braintree_Transaction;
 use Braintree_Configuration;
@@ -115,6 +116,43 @@ class RefundShopOrder extends Job implements SelfHandling, ShouldQueue
                         $this->shopOrder->refunded_points = $totalRefundedPoints;
                         $this->shopOrder->refundable_points = $this->shopOrder->refundable_points - $totalRefundedPoints;
 
+                        // if all cart items in the shop order has been refunded
+                        // if (qty - returned) > 0 exists for one cart item, not cancelled
+                        // else shop order is set to 'cancelled'
+
+                        $cartItems = $this->shopOrder->cartItems;
+                        $cancelled = true;
+
+                        foreach($cartItems as $cartItem) {
+                            $quantity = $cartItem->quantity;
+                            $returned = $cartItem->returned;
+
+                            $remainder = $quantity - $returned;
+
+                            if($remainder > 0) {
+                                $cancelled = false;
+                                break;
+                            }
+                        }
+
+                        if($cancelled) {
+                            // set shop order to 'cancelled' status
+                            $cancelledOrderStatus = OrderStatus::find(7); // 7 = cancelled
+                            $this->shopOrder->orderStatus()->associate($cancelledOrderStatus);
+
+                            $this->shopOrder->save();
+
+                            // check parent order (user order)
+                            //// take the min id of all shop orders
+                            $userOrder = $this->shopOrder->userOrder;
+
+                            $minOrderStatusId = $userOrder->shopOrders->min('order_status_id');
+                            $minOrderStatus = OrderStatus::find($minOrderStatusId);
+
+                            $userOrder->orderStatus()->associate($minOrderStatus);
+                            $userOrder->save();
+                        }
+
                         $this->shopOrder->save();
 
                         // // give the buyer back their refunded points
@@ -151,18 +189,17 @@ class RefundShopOrder extends Job implements SelfHandling, ShouldQueue
                 case Braintree_Transaction::AUTHORIZED:
                 case Braintree_Transaction::SUBMITTED_FOR_SETTLEMENT:
                     // not yet settled
-                    // // send to IronMQ with delay of one day
+                    // // send to IronMQ with delay of 6 hours
+                    //$delay = 6*3600;
 
                     // refund status id 2: Request Queued
                     $this->shopOrderRefund->refundStatus()->associate(RefundStatus::find(2));
                     $this->shopOrderRefund->save();
 
-                    // send requestQueued push notification and email to shop and shopper
-                    $delay = 12*3600;
+                    // queue refund
+                    //SprubixQueue::queueRefund($this->shopOrder, $this->shopOrderRefund, $this->returnCartItems, $this->refundAmount, $this->refundPoints, $delay);
 
-                    SprubixQueue::queueRefund($this->shopOrder, $this->shopOrderRefund, $this->returnCartItems, $this->refundAmount, $this->refundPoints, $delay);
-
-                    Log::info("OK Queue again, still unrefundable...");
+                    Log::info("OK Queue again for 6 hours, still unrefundable...");
 
                     break;
 

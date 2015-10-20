@@ -12,6 +12,7 @@ class Kernel extends ConsoleKernel {
 	 */
 	protected $commands = [
 		'App\Console\Commands\Inspire',
+		'App\Console\Commands\CheckQueuedRefunds'
 	];
 
 	/**
@@ -22,8 +23,9 @@ class Kernel extends ConsoleKernel {
 	 */
 	protected function schedule(Schedule $schedule)
 	{
-		$schedule->command('inspire')
-				 ->hourly();
+		//$schedule->command('inspire')->hourly();
+		//$schedule->command('refunds:check --force')->cron('0 */6 * * * *'); // daily, with 6 hour intervals
+		$schedule->command('refunds:check --force')->everyMinute();
 	}
 
 }
