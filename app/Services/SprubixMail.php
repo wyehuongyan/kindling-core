@@ -964,6 +964,8 @@ class SprubixMail {
                     $refundedItem->size = $cartItem->size;
                     $refundedItem->quantity = $cartItem->quantity;
                     $refundedItem->price = $piece->price;
+                    $refundedItem->total_payable_price = $cartItem->total_payable_price;
+                    $refundedItem->points_applied = (int)$cartItem->points_applied;
                     $refundedItem->returned = $cartItem->returned;
 
                     $refundedItems[] = $refundedItem;
