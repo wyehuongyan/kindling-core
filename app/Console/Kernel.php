@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel {
 	{
 		//$schedule->command('inspire')->hourly();
 		//$schedule->command('refunds:check --force')->cron('0 */6 * * * *'); // daily, with 6 hour intervals
-		$schedule->command('refunds:check --force')->everyMinute();
+		$schedule->command('refunds:check')->everyMinute();
 	}
 
 }
