@@ -284,12 +284,18 @@ class RefundController extends Controller {
             case Braintree_Transaction::AUTHORIZED:
             case Braintree_Transaction::SUBMITTED_FOR_SETTLEMENT:
 
+                /* // special case
+
                 // check if userOrder only has this shopOrder and this shopOrder only has 1 item
                 // if yes do void
                 // else, do the usual queuing method.
                 $userOrder = $shopOrder->userOrder;
 
-                if($userOrder->shopOrders()->count() == 1 && $shopOrder->cartItems()->count() == 1) {
+                if( $userOrder->shopOrders()->count() == 1 &&
+                    $shopOrder->cartItems()->count() == 1 &&
+                    $shopOrder->cartItems()->first()->quantity == 1) {
+
+                    Log::info("Only one shop order, and only one item with quantity 1");
 
                     // if bt transaction status == authorized/submitted for settlement
                     // do a void instead of refund
@@ -417,24 +423,24 @@ class RefundController extends Controller {
                     }
 
                 } else {
-                    // not yet settled
-                    // // send to IronMQ with delay of six hours
-                    //$delay = 6*3600;
+                */
 
-                    // refund status id 2: Request Queued
-                    $shopOrderRefund->refundStatus()->associate(RefundStatus::find(2));
-                    $shopOrderRefund->save();
+                // not yet settled
+                //$delay = 6*3600;
 
-                    // queue refund
-                    //SprubixQueue::queueRefund($shopOrder, $shopOrderRefund, $returnCartItems, $refundAmount, $refundPoints, $delay);
+                // refund status id 2: Request Queued
+                $shopOrderRefund->refundStatus()->associate(RefundStatus::find(2));
+                $shopOrderRefund->save();
 
-                    $json = array("status" => "200",
-                        "message" => "refund_queued",
-                        "shop_order_refund" => $shopOrderRefund
-                    );
+                // queue refund
+                //SprubixQueue::queueRefund($shopOrder, $shopOrderRefund, $returnCartItems, $refundAmount, $refundPoints, $delay);
 
-                    Log::info("BT Authorized/Submitted for Settlement - Refund Queued for 6 hours.");
-                }
+                $json = array("status" => "200",
+                    "message" => "refund_queued",
+                    "shop_order_refund" => $shopOrderRefund
+                );
+
+                Log::info("BT Authorized/Submitted for Settlement - Refund Queued for 6 hours.");
 
                 break;
 
