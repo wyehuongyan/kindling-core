@@ -1109,7 +1109,7 @@ class SprubixMail {
 
                 // account created
                 if ($status == "active") {
-                    $reporter->mandrill_subaccount_id = $id;
+                    $reporter->mandrill_subaccount_id = $result['id'];
                     $reporter->save();
 
                     $reporterMandrillSubaccountId = $reporter->mandrill_subaccount_id;
@@ -1245,8 +1245,6 @@ class SprubixMail {
             );
 
             $result = $this->mandrill->messages->sendTemplate($template_name, $template_content, $message);
-
-            Log::info("sent");
 
         } catch(Mandrill_Error $e) {
             // Mandrill errors are thrown as exceptions
