@@ -186,8 +186,6 @@ class UserController extends Controller {
             $firstName = $request->get("first_name");
             $lastName = $request->get("last_name");
             $contactNumber = $request->get("contact_number");
-            $gender = UserGender::where('gender',$request->get("gender"))->get();
-            $genderId = $gender[0]->id;
 
             $birthdate = $request->get("date_of_birth");
             $birthdateCarbon =  new Carbon();
@@ -224,7 +222,15 @@ class UserController extends Controller {
                 $userInfo->first_name = $firstName;
                 $userInfo->last_name = $lastName;
                 $userInfo->contact_number = $contactNumber;
-                $userInfo->gender()->associate(UserGender::find($genderId));
+
+                if($request->get('gender') != "") {
+                    $gender = UserGender::where('gender',$request->get("gender"))->get();
+
+                    if(count($gender) > 0) {
+                        $genderId = $gender[0]->id;
+                        $userInfo->gender()->associate(UserGender::find($genderId));
+                    }
+                }
 
                 if (isset($birthdate)) {
                     $userInfo->date_of_birth = $birthdateCarbon;
