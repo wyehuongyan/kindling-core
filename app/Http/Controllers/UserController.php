@@ -350,7 +350,7 @@ class UserController extends Controller {
             "date_of_birth" => $birthdate,
             "gender" => $gender
         );
-        Log::Info($userInfoReturn);
+        
         return response()->json($userInfoReturn)->setCallback($request->input('callback'));
     }
 }
