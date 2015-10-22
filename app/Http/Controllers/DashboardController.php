@@ -132,15 +132,17 @@ class DashboardController extends Controller {
 
     public function onboardingInformation(Request $request) {
         $shop = Auth::user();
-        $piecesCount = $shop->pieces()->count();
-        $deliveryOptionsCount = $shop->deliveryOptions()->count();
+        $hasPieces = $shop->pieces()->count() > 0 ? true : false;
+        $hasDeliveryOptions= $shop->deliveryOptions()->count() > 0 ? true : false; ;
+        $hasVerified = isset($shop->verified_at) ? true : false;
 
         $json = array(
             "status" => "200",
             "message" => "success",
             "data" => array (
-                "piecesCount" => $piecesCount,
-                "deliveryOptionsCount" => $deliveryOptionsCount
+                "has_verified" => $hasVerified,
+                "has_pieces" => $hasPieces,
+                "has_delivery_options" => $hasDeliveryOptions
             )
         );
 

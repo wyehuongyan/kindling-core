@@ -38,7 +38,8 @@ class MediaController extends Controller {
                 'size' => 'required|max:255',
                 'quantity' => 'required|max:255',
                 //'price' => 'required|numeric|min:15'
-                'price' => 'required|numeric'
+                'price' => 'required|numeric',
+                'sku' => 'max:255'
             ]);
 
             if ($validator_piece->fails()) {
@@ -236,7 +237,9 @@ class MediaController extends Controller {
                     'description' => 'max:255',
                     'size' => 'required|max:255',
                     'quantity' => 'required|max:255',
-                    'price' => 'required|numeric|min:10'
+                    //'price' => 'required|numeric|min:15'
+                    'price' => 'required|numeric',
+                    'sku' => 'max:255'
                 ]);
             } else {
                 $validator_piece = Validator::make($piece_data, [
@@ -399,7 +402,9 @@ class MediaController extends Controller {
                     'description' => 'max:255',
                     'size' => 'required|max:255',
                     'quantity' => 'required|max:255',
-                    'price' => 'required|numeric|min:10'
+                    //'price' => 'required|numeric|min:15'
+                    'price' => 'required|numeric',
+                    'sku' => 'max:255'
                 ]);
             } else {
                 $validator_piece = Validator::make($piece_data, [
