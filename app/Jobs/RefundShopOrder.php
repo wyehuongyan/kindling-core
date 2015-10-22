@@ -36,8 +36,6 @@ class RefundShopOrder extends Job implements SelfHandling, ShouldQueue
      */
     public function __construct(ShopOrder $shopOrder, ShopOrderRefund $shopOrderRefund, $returnCartItems, $refundAmount, $refundPoints, $queueName)
     {
-        Log::info("refund shop order construct");
-
         //
         $this->shopOrder = $shopOrder;
         $this->shopOrderRefund = $shopOrderRefund;
@@ -56,8 +54,6 @@ class RefundShopOrder extends Job implements SelfHandling, ShouldQueue
     {
         //
         try {
-            Log::info("refund shop order try..");
-
             // Braintree refund
             // // to determine the status, retrieve the braintree transaction
             $userOrder = $this->shopOrder->userOrder;
