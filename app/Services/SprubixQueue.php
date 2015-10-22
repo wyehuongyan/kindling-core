@@ -26,8 +26,6 @@ class SprubixQueue {
 
     // Refunds
     public function queueRefund(ShopOrder $shopOrder, ShopOrderRefund $shopOrderRefund, $returnCartItems, $returnAmount, $refundPoints, $delay) {
-        Log::info("queue refunds");
-
         $queueName = "refunds";
 
         $params = array(
