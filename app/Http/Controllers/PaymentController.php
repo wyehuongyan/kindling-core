@@ -84,7 +84,8 @@ class PaymentController extends Controller {
                 // // just create a new payment method
                 $result = \Braintree_PaymentMethod::create([
                     'customerId' => $user->braintree_cust_id,
-                    'paymentMethodNonce' => Braintree_Test_Nonces::$transactable,
+                    'paymentMethodNonce' => $nonceFromTheClient,
+                    //'paymentMethodNonce' => Braintree_Test_Nonces::$transactable,
                     'options' => [
                         'verifyCard' => true,
                         'failOnDuplicatePaymentMethod' => true,
