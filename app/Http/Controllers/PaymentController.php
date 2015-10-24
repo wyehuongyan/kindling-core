@@ -45,17 +45,32 @@ class PaymentController extends Controller {
             // check if user has is already a braintree customer
             if(!isset($user->braintree_cust_id)) {
                 // if not, init a new customer + payment method at braintree
-                $result = Braintree_Customer::create([
-                    'creditCard' => [
-                        'paymentMethodNonce' => $nonceFromTheClient,
-                        //'paymentMethodNonce' => Braintree_Test_Nonces::$transactable,
-                        'options' => [
-                            'verifyCard' => true,
-                            'failOnDuplicatePaymentMethod' => true,
-                            'makeDefault' => $isDefault
+                if(env('BT_ENV') != "production") {
+                    // sandbox and staging
+                    $result = Braintree_Customer::create([
+                        'creditCard' => [
+                            'paymentMethodNonce' => Braintree_Test_Nonces::$transactable,
+                            'options' => [
+                                'verifyCard' => true,
+                                //'failOnDuplicatePaymentMethod' => true,
+                                'makeDefault' => $isDefault
+                            ]
                         ]
-                    ]
-                ]);
+                    ]);
+                } else {
+                    // production
+                    $result = Braintree_Customer::create([
+                        'creditCard' => [
+                            'paymentMethodNonce' => $nonceFromTheClient,
+                            //'paymentMethodNonce' => Braintree_Test_Nonces::$transactable,
+                            'options' => [
+                                'verifyCard' => true,
+                                'failOnDuplicatePaymentMethod' => true,
+                                'makeDefault' => $isDefault
+                            ]
+                        ]
+                    ]);
+                }
 
                 if($result->success) {
                     // set token for payment method
@@ -82,16 +97,30 @@ class PaymentController extends Controller {
             } else {
                 // already has a BT account
                 // // just create a new payment method
-                $result = \Braintree_PaymentMethod::create([
-                    'customerId' => $user->braintree_cust_id,
-                    'paymentMethodNonce' => $nonceFromTheClient,
-                    //'paymentMethodNonce' => Braintree_Test_Nonces::$transactable,
-                    'options' => [
-                        'verifyCard' => true,
-                        'failOnDuplicatePaymentMethod' => true,
-                        'makeDefault' => $isDefault
-                    ]
-                ]);
+                if(env('BT_ENV') != "production") {
+                    // sandbox and staging
+                    $result = \Braintree_PaymentMethod::create([
+                        'customerId' => $user->braintree_cust_id,
+                        'paymentMethodNonce' => Braintree_Test_Nonces::$transactable,
+                        'options' => [
+                            'verifyCard' => true,
+                            //'failOnDuplicatePaymentMethod' => true,
+                            'makeDefault' => $isDefault
+                        ]
+                    ]);
+                } else {
+                    // production
+                    $result = \Braintree_PaymentMethod::create([
+                        'customerId' => $user->braintree_cust_id,
+                        'paymentMethodNonce' => $nonceFromTheClient,
+                        //'paymentMethodNonce' => Braintree_Test_Nonces::$transactable,
+                        'options' => [
+                            'verifyCard' => true,
+                            'failOnDuplicatePaymentMethod' => true,
+                            'makeDefault' => $isDefault
+                        ]
+                    ]);
+                }
 
                 if($result->success) {
                     // set token for payment method
