@@ -24,6 +24,30 @@ class UserController extends Controller {
         return response()->json(Auth::user())->setCallback($request->input('callback'));
     }
 
+    public function userVerified(Request $request) {
+        try {
+            // check if user is verified
+            $user = Auth::user();
+            $verified = false;
+
+            if (isset($user->verified_at)) {
+                $verified = true;
+            }
+
+            $json = array("status" => "200",
+                "message" => "success",
+                "verified" => $verified
+            );
+        } catch (\Exception $e) {
+            $json = array("status" => "500",
+                "message" => "exception",
+                "exception" => $e->getMessage()
+            );
+        }
+
+        return response()->json($json)->setCallback($request->input('callback'));
+    }
+
     public function followUser(Request $request) {
         $user = Auth::user();
 

@@ -46,6 +46,7 @@ Route::get('user', 'UserController@user');
 Route::group(['middleware' => 'auth'], function() {
     // users
     Route::post('users/search', 'UserController@searchUsers');
+    Route::get('user/verified', 'UserController@userVerified');
 
     // pieces
     Route::post('pieces', 'PieceController@pieces');
