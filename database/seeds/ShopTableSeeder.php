@@ -13,6 +13,10 @@ class ShopTableSeeder extends Seeder {
         // empty the shops table first
         DB::table('shops')->truncate();
 
+        // clear Mixpanel events queue
+        $mixpanel = Mixpanel::getInstance(env("MIXPANEL_TOKEN"));
+        $mixpanel->reset();
+
         // cameron owns sprubix shop
         $owner = User::find(1);
 
@@ -41,6 +45,32 @@ class ShopTableSeeder extends Seeder {
         $user_info_1->user()->associate($user_1);
         $user_info_1->save();
 
+        // // shop 1 mixpanel
+        $mixpanel->people->set($user_1->id, array(
+            '$email'                    => $user_1->email,
+            'ID'                        => $user_1->id,
+            'Username'                  => $user_1->username,
+            '$first_name'               => $user_1->username,
+            '$last_name'                =>  "",
+            '$created'                  => date("F j, Y, g:i a"),
+            'Distinct ID'               => uniqid()."-".dechex($user_1->id),
+            'Points'                    => 0,
+            'Outfits Exposed'           => 0,
+            'Pieces Exposed'            => 0,
+            'Outfits Liked'             => 0,
+            'Pieces Liked'              => 0,
+            'Outfits Created'           => 0,
+            'Pieces Created'            => 0,
+            'Spruce Outfit'             => 0,
+            'Spruce Outfit Swipe'       => 0,
+            'Outfit Details Viewed'     => 0,
+            'Piece Details Viewed'      => 0,
+            'Outfit Comments Viewed'    => 0,
+            'Piece Comments Viewed'     => 0
+        ));
+
+        $mixpanel->flush();
+
         // shop 2
         $user_2 = new User();
         $user_2->username = "flufflea";
@@ -65,5 +95,32 @@ class ShopTableSeeder extends Seeder {
         $user_info_2->gender()->associate(UserGender::find(3));
         $user_info_2->user()->associate($user_2);
         $user_info_2->save();
+
+        // // user 2 mixpanel
+        $mixpanel->people->set($user_2->id, array(
+            '$email'                    => $user_2->email,
+            'ID'                        => $user_2->id,
+            'Username'                  => $user_2->username,
+            '$first_name'               => $user_2->username,
+            '$last_name'                =>  "",
+            '$created'                  => date("F j, Y, g:i a"),
+            'Distinct ID'               => uniqid()."-".dechex($user_2->id),
+            'Points'                    => 0,
+            'Outfits Exposed'           => 0,
+            'Pieces Exposed'            => 0,
+            'Outfits Liked'             => 0,
+            'Pieces Liked'              => 0,
+            'Outfits Created'           => 0,
+            'Pieces Created'            => 0,
+            'Spruce Outfit'             => 0,
+            'Spruce Outfit Swipe'       => 0,
+            'Outfit Details Viewed'     => 0,
+            'Piece Details Viewed'      => 0,
+            'Outfit Comments Viewed'    => 0,
+            'Piece Comments Viewed'     => 0
+        ));
+
+        $mixpanel->flush();
+        $mixpanel->reset();
     }
 }
