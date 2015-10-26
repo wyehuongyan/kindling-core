@@ -5,6 +5,7 @@ use App\Models\Shop;
 use App\Models\User;
 use App\Models\UserInfo;
 use App\Models\UserGender;
+use Carbon\Carbon;
 
 class ShopTableSeeder extends Seeder {
 
@@ -46,14 +47,16 @@ class ShopTableSeeder extends Seeder {
         $user_info_1->save();
 
         // // shop 1 mixpanel
+        $user_distinct_id_1 = strtoupper(uniqid()."-".dechex($user_1->id));
+        $mixpanel->createAlias($user_distinct_id_1, $user_1->id);
         $mixpanel->people->set($user_1->id, array(
             '$email'                    => $user_1->email,
             'ID'                        => $user_1->id,
             'Username'                  => $user_1->username,
             '$first_name'               => $user_1->username,
             '$last_name'                =>  "",
-            '$created'                  => date("F j, Y, g:i a"),
-            'Distinct ID'               => uniqid()."-".dechex($user_1->id),
+            '$created'                  => Carbon::now()->setTimezone('UTC')->format("F j, Y, g:i a"),
+            'Distinct ID'               => $user_distinct_id_1,
             'Points'                    => 0,
             'Outfits Exposed'           => 0,
             'Pieces Exposed'            => 0,
@@ -97,14 +100,16 @@ class ShopTableSeeder extends Seeder {
         $user_info_2->save();
 
         // // user 2 mixpanel
+        $user_distinct_id_2 = strtoupper(uniqid()."-".dechex($user_2->id));
+        $mixpanel->createAlias($user_distinct_id_2, $user_2->id);
         $mixpanel->people->set($user_2->id, array(
             '$email'                    => $user_2->email,
             'ID'                        => $user_2->id,
             'Username'                  => $user_2->username,
             '$first_name'               => $user_2->username,
             '$last_name'                =>  "",
-            '$created'                  => date("F j, Y, g:i a"),
-            'Distinct ID'               => uniqid()."-".dechex($user_2->id),
+            '$created'                  => Carbon::now()->setTimezone('UTC')->format("F j, Y, g:i a"),
+            'Distinct ID'               => $user_distinct_id_2,
             'Points'                    => 0,
             'Outfits Exposed'           => 0,
             'Pieces Exposed'            => 0,
