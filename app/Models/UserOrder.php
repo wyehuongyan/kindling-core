@@ -19,11 +19,11 @@ class UserOrder extends Model {
     }
 
     public function shippingAddress() {
-        return $this->belongsTo('App\Models\UserShippingAddress', 'user_shipping_address_id');
+        return $this->belongsTo('App\Models\UserShippingAddress', 'user_shipping_address_id')->withTrashed();
     }
 
     public function paymentMethod() {
-        return $this->belongsTo('App\Models\UserPaymentMethod', 'user_payment_method_id');
+        return $this->belongsTo('App\Models\UserPaymentMethod', 'user_payment_method_id')->withTrashed();
     }
 
     public function shopOrders() {
