@@ -8,6 +8,7 @@ use Braintree_Customer;
 use Braintree_Configuration;
 use Braintree_Test_Nonces;
 use Braintree_Transaction;
+use Braintree_PaymentMethod;
 use Mixpanel;
 
 class PaymentController extends Controller {
@@ -358,13 +359,29 @@ class PaymentController extends Controller {
                 }
             }
 
-            $userPaymentMethod->delete();
+            // set up braintree environment (looks like this always has to be done)
+            Braintree_Configuration::environment(Config::get('app.braintree_environment'));
+            Braintree_Configuration::merchantId(Config::get('app.braintree_merchantid'));
+            Braintree_Configuration::publicKey(Config::get('app.braintree_public_key'));
+            Braintree_Configuration::privateKey(Config::get('app.braintree_private_key'));
 
-            $json = array(
-                "status" => "200",
-                "message" => "success",
-                "deleted" => $userPaymentMethod
-            );
+            $result = Braintree_PaymentMethod::delete($userPaymentMethod->token);
+
+            if($result->success) {
+                $userPaymentMethod->delete();
+
+                $json = array(
+                    "status" => "200",
+                    "message" => "success",
+                    "deleted" => $userPaymentMethod
+                );
+            } else {
+                $json = array(
+                    "status" => "400",
+                    "message" => "error",
+                    "data" => "failed to delete, please try again."
+                );
+            }
         } else {
             $json = array(
                 "status" => "400",
