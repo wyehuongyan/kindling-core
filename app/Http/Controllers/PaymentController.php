@@ -320,6 +320,12 @@ class PaymentController extends Controller {
 
                     $userPaymentMethod->is_default = true;
 
+                    // set up braintree environment (looks like this always has to be done)
+                    Braintree_Configuration::environment(Config::get('app.braintree_environment'));
+                    Braintree_Configuration::merchantId(Config::get('app.braintree_merchantid'));
+                    Braintree_Configuration::publicKey(Config::get('app.braintree_public_key'));
+                    Braintree_Configuration::privateKey(Config::get('app.braintree_private_key'));
+
                     $updateResult = Braintree_PaymentMethod::update(
                         $userPaymentMethod->token,
                         [
