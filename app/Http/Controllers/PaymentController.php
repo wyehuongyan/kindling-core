@@ -319,6 +319,15 @@ class PaymentController extends Controller {
                     }
 
                     $userPaymentMethod->is_default = true;
+
+                    $updateResult = Braintree_PaymentMethod::update(
+                        $userPaymentMethod->token,
+                        [
+                            'options' => [
+                                'makeDefault' => true
+                            ]
+                        ]
+                    );
                 }
             }
 
