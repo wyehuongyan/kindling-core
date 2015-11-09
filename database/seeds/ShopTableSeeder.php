@@ -11,6 +11,19 @@ class ShopTableSeeder extends Seeder {
 
     public function run()
     {
+        if(env('APP_ENV') != "production") {
+            // staging or local
+            $this->staging();
+        } else {
+            // production
+            $this->production();
+        }
+    }
+
+    public function production() {
+    }
+
+    public function staging() {
         // empty the shops table first
         DB::table('shops')->truncate();
 

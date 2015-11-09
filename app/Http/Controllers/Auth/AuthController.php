@@ -172,7 +172,15 @@ class AuthController extends Controller {
             $user_info->user()->associate($user);
             $user_info->save();
 
+            // by default, user follows self
             $user->following()->save($user);
+
+            // on production, also follow sprubix account
+            if(env('APP_ENV') == "production") {
+                // sprubix account is user 1
+                $sprubixUser = User::find(1);
+                $user->following()->save($sprubixUser);
+            }
 
             $success = array(
                 "status" => "200",

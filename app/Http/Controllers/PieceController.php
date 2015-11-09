@@ -94,7 +94,12 @@ class PieceController extends Controller {
         // return pieces of promoted/popular users
 
         $user = Auth::User();
-        $peopleIds = ["5", "4", "1", "3", "2"];
+
+        if(env('APP_ENV') != "production") {
+            $peopleIds = ["5", "4", "1", "3", "2"];
+        } else {
+            $peopleIds = ["4", "15", "5", "14", "6", "13", "7", "12", "8", "11", "9", "10"];
+        }
 
         $people = User::with('shoppable')->whereIn('id', $peopleIds)->orderByRaw('FIELD(`id`, '.implode(',', $peopleIds).')')->get()->map(function($people) use ($user) {
             $people->pieces = $people->pieces()->take(6)->get();
