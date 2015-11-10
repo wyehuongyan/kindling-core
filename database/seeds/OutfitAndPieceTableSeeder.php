@@ -565,7 +565,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_1 = new Piece();
         $piece_1->name = "Floppy Wool Hat";
         $piece_1->description = "Felted wool hat with a wide brim.";
-        $piece_1->brand()->associate(PieceBrand::find(9));
+        $piece_1->brand()->associate(PieceBrand::find(34));
         $piece_1->size = json_encode(array("Free"));
         $piece_1->type = "HEAD";
         $piece_1->is_dress = false;
@@ -602,7 +602,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_2 = new Piece();
         $piece_2->name = "Jersey Dress";
         $piece_2->description = "Short jersey dress with a slightly wider neckline.";
-        $piece_2->brand()->associate(PieceBrand::find(9));
+        $piece_2->brand()->associate(PieceBrand::find(34));
         $piece_2->size = json_encode(array("S"));
         $piece_2->type = "TOP";
         $piece_2->is_dress = true;
@@ -645,7 +645,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_3 = new Piece();
         $piece_3->name = "Trainers";
         $piece_3->description = "Glittery trainers with a twill trim and rubber soles.";
-        $piece_3->brand()->associate(PieceBrand::find(9));
+        $piece_3->brand()->associate(PieceBrand::find(34));
         $piece_3->size = json_encode(array("36"));
         $piece_3->type = "FEET";
         $piece_3->is_dress = false;
@@ -1551,7 +1551,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_1 = new Piece();
         $piece_1->name = "Rib-knit Jumper";
         $piece_1->description = "Long sleeves knit jumper in a cotton blend with slits in the sides.";
-        $piece_1->brand()->associate(PieceBrand::find(9));
+        $piece_1->brand()->associate(PieceBrand::find(34));
         $piece_1->size = json_encode(array("S"));
         $piece_1->type = "TOP";
         $piece_1->is_dress = false;
@@ -1588,7 +1588,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_2 = new Piece();
         $piece_2->name = "Patterned Skirt";
         $piece_2->description = "Knee-length skirt with patterned weave with and a rounded hem.";
-        $piece_2->brand()->associate(PieceBrand::find(9));
+        $piece_2->brand()->associate(PieceBrand::find(34));
         $piece_2->size = json_encode(array("36"));
         $piece_2->type = "BOTTOM";
         $piece_2->is_dress = false;
@@ -1631,7 +1631,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_3 = new Piece();
         $piece_3->name = "Platform Sandals";
         $piece_3->description = "Platform suede sandals with a metal buckle. ";
-        $piece_3->brand()->associate(PieceBrand::find(9));
+        $piece_3->brand()->associate(PieceBrand::find(34));
         $piece_3->size = json_encode(array("36"));
         $piece_3->type = "FEET";
         $piece_3->is_dress = false;
@@ -1667,7 +1667,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $additional_image_3->medium = cdn("/pieces/7/user07_outfit01_shoes4.jpg");
         $additional_image_3->original = cdn("/pieces/7/user07_outfit01_shoes4.jpg");
 
-        $media->images = array($image);
+        $media->images = array($image, $additional_image_1, $additional_image_2, $additional_image_3);
 
         $piece_3->images = json_encode($media);
 
@@ -2285,7 +2285,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $additional_image_3->medium = cdn("/pieces/8/user08_outfit03_top4.jpg");
         $additional_image_3->original = cdn("/pieces/8/user08_outfit03_top4.jpg");
 
-        $media->images = array($image);
+        $media->images = array($image, $additional_image_1, $additional_image_2, $additional_image_3);
 
         $piece_7->images = json_encode($media);
 
@@ -2383,7 +2383,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $additional_image_3->medium = cdn("/pieces/8/user08_outfit03_shoes4.jpg");
         $additional_image_3->original = cdn("/pieces/8/user08_outfit03_shoes4.jpg");
 
-        $media->images = array($image);
+        $media->images = array($image, $additional_image_1, $additional_image_2, $additional_image_3);
 
         $piece_9->images = json_encode($media);
 
@@ -2933,7 +2933,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_1 = new Piece();
         $piece_1->name = "Jacquelyn Stripe Dress";
         $piece_1->description = "Black and white stripe dress midweight cotton shift dress.";
-        $piece_1->brand()->associate(PieceBrand::find(4));
+        $piece_1->brand()->associate(PieceBrand::find(44));
         $piece_1->size = json_encode(array("M"));
         $piece_1->type = "TOP";
         $piece_1->is_dress = true;
@@ -4051,7 +4051,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $additional_image_3->medium = cdn("/pieces/12/user12_outfit01_shoes4.jpg");
         $additional_image_3->original = cdn("/pieces/12/user12_outfit01_shoes4.jpg");
 
-        $media->images = array($image);
+        $media->images = array($image, $additional_image_1, $additional_image_2, $additional_image_3);
 
         $piece_3->images = json_encode($media);
 
@@ -4295,7 +4295,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         // u12p9
 
         $piece_9 = new Piece();
-        $piece_9->name = "Emie' High Point Court Shoes";
+        $piece_9->name = "'Emie' High Point Court Shoes";
         $piece_9->description = "Black 'Emie' high pointed court shoes.";
         $piece_9->brand()->associate(PieceBrand::find(22));
         $piece_9->size = json_encode(array("UK 6"));
@@ -5691,9 +5691,9 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $piece_6->type = "TOP";
         $piece_6->is_dress = false;
         $piece_6->position = "2";
-        $piece_6->height = 699.0;
+        $piece_6->height = 669.0;
         $piece_6->width = 750.0;
-        $piece_6->aspectRatio = 750.0 / 699.0;
+        $piece_6->aspectRatio = 750.0 / 669.0;
 
         $media = new stdClass();
         $media->cover = cdn("/pieces/15/user15_outfit03_top1.jpg");
@@ -5873,7 +5873,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_2->height = "1728";
         $outfit_2->width = "750";
         $outfit_2->user()->associate($user);
-        $outfit_1->created_at = Carbon::now()->subMinute(35);
+        $outfit_2->created_at = Carbon::now()->subMinute(35);
         $outfit_2->save();
 
         $outfit_2->pieces()->save($piece_3);
