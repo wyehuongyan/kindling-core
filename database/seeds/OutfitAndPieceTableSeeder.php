@@ -6,6 +6,7 @@ use App\Models\Piece;
 use App\Models\Outfit;
 use App\Models\PieceCategory;
 use App\Models\PieceBrand;
+use Carbon\Carbon;
 
 class OutfitAndPieceTableSeeder extends Seeder {
 
@@ -495,6 +496,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1->height = "2092";
         $outfit_1->width = "750";
         $outfit_1->user()->associate($user);
+        $outfit_1->created_at = Carbon::now()->subMinute(1);
         $outfit_1->save();
 
         $outfit_1->pieces()->save($piece_1);
@@ -519,6 +521,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_2->height = "1546";
         $outfit_2->width = "750";
         $outfit_2->user()->associate($user);
+        $outfit_2->created_at = Carbon::now()->subMinute(2);
         $outfit_2->save();
 
         $outfit_2->pieces()->save($piece_5);
@@ -542,6 +545,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_3->height = "2590";
         $outfit_3->width = "750";
         $outfit_3->user()->associate($user);
+        $outfit_3->created_at = Carbon::now()->subMinute(3);
         $outfit_3->save();
 
         $outfit_3->pieces()->save($piece_8);
@@ -989,6 +993,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1->height = "1840";
         $outfit_1->width = "750";
         $outfit_1->user()->associate($user);
+        $outfit_1->created_at = Carbon::now()->subMinute(4);
         $outfit_1->save();
 
         $outfit_1->pieces()->save($piece_1);
@@ -1012,6 +1017,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_2->height = "2178";
         $outfit_2->width = "750";
         $outfit_2->user()->associate($user);
+        $outfit_2->created_at = Carbon::now()->subMinute(5);
         $outfit_2->save();
 
         $outfit_2->pieces()->save($piece_4);
@@ -1035,6 +1041,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_3->height = "2240";
         $outfit_3->width = "750";
         $outfit_3->user()->associate($user);
+        $outfit_3->created_at = Carbon::now()->subMinute(6);
         $outfit_3->save();
 
         $outfit_3->pieces()->save($piece_7);
@@ -1476,6 +1483,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1->height = "2054";
         $outfit_1->width = "750";
         $outfit_1->user()->associate($user);
+        $outfit_1->created_at = Carbon::now()->subMinute(7);
         $outfit_1->save();
 
         $outfit_1->pieces()->save($piece_1);
@@ -1499,6 +1507,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_2->height = "1460";
         $outfit_2->width = "750";
         $outfit_2->user()->associate($user);
+        $outfit_2->created_at = Carbon::now()->subMinute(8);
         $outfit_2->save();
 
         $outfit_2->pieces()->save($piece_4);
@@ -1522,6 +1531,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_3->height = "1662";
         $outfit_3->width = "750";
         $outfit_3->user()->associate($user);
+        $outfit_3->created_at = Carbon::now()->subMinute(9);
         $outfit_3->save();
 
         $outfit_3->pieces()->save($piece_7);
@@ -1878,6 +1888,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1->height = "2156";
         $outfit_1->width = "750";
         $outfit_1->user()->associate($user);
+        $outfit_1->created_at = Carbon::now()->subMinute(10);
         $outfit_1->save();
 
         $outfit_1->pieces()->save($piece_1);
@@ -1901,6 +1912,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_2->height = "1626";
         $outfit_2->width = "750";
         $outfit_2->user()->associate($user);
+        $outfit_2->created_at = Carbon::now()->subMinute(11);
         $outfit_2->save();
 
         $outfit_2->pieces()->save($piece_4);
@@ -1924,6 +1936,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_3->height = "1482";
         $outfit_3->width = "750";
         $outfit_3->user()->associate($user);
+        $outfit_3->created_at = Carbon::now()->subMinute(12);
         $outfit_3->save();
 
         $outfit_3->pieces()->save($piece_7);
@@ -2400,6 +2413,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1->height = "1754";
         $outfit_1->width = "750";
         $outfit_1->user()->associate($user);
+        $outfit_1->created_at = Carbon::now()->subMinute(13);
         $outfit_1->save();
 
         $outfit_1->pieces()->save($piece_1);
@@ -2423,6 +2437,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_2->height = "1887";
         $outfit_2->width = "750";
         $outfit_2->user()->associate($user);
+        $outfit_2->created_at = Carbon::now()->subMinute(14);
         $outfit_2->save();
 
         $outfit_2->pieces()->save($piece_4);
@@ -2446,6 +2461,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_3->height = "1746";
         $outfit_3->width = "750";
         $outfit_3->user()->associate($user);
+        $outfit_3->created_at = Carbon::now()->subMinute(15);
         $outfit_3->save();
 
         $outfit_3->pieces()->save($piece_7);
@@ -2850,6 +2866,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1->height = "1802";
         $outfit_1->width = "750";
         $outfit_1->user()->associate($user);
+        $outfit_1->created_at = Carbon::now()->subMinute(16);
         $outfit_1->save();
 
         $outfit_1->pieces()->save($piece_1);
@@ -2873,6 +2890,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_2->height = "1364";
         $outfit_2->width = "750";
         $outfit_2->user()->associate($user);
+        $outfit_2->created_at = Carbon::now()->subMinute(17);
         $outfit_2->save();
 
         $outfit_2->pieces()->save($piece_4);
@@ -2895,6 +2913,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_3->height = "1856";
         $outfit_3->width = "750";
         $outfit_3->user()->associate($user);
+        $outfit_3->created_at = Carbon::now()->subMinute(18);
         $outfit_3->save();
 
         $outfit_3->pieces()->save($piece_6);
@@ -3366,6 +3385,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1->height = "1590";
         $outfit_1->width = "750";
         $outfit_1->user()->associate($user);
+        $outfit_1->created_at = Carbon::now()->subMinute(19);
         $outfit_1->save();
 
         $outfit_1->pieces()->save($piece_1);
@@ -3388,6 +3408,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_2->height = "1850";
         $outfit_2->width = "750";
         $outfit_2->user()->associate($user);
+        $outfit_2->created_at = Carbon::now()->subMinute(20);
         $outfit_2->save();
 
         $outfit_2->pieces()->save($piece_3);
@@ -3412,6 +3433,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_3->height = "2438";
         $outfit_3->width = "750";
         $outfit_3->user()->associate($user);
+        $outfit_3->created_at = Carbon::now()->subMinute(21);
         $outfit_3->save();
 
         $outfit_3->pieces()->save($piece_7);
@@ -3828,6 +3850,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1->height = "1354";
         $outfit_1->width = "750";
         $outfit_1->user()->associate($user);
+        $outfit_1->created_at = Carbon::now()->subMinute(22);
         $outfit_1->save();
 
         $outfit_1->pieces()->save($piece_1);
@@ -3850,6 +3873,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_2->height = "1598";
         $outfit_2->width = "750";
         $outfit_2->user()->associate($user);
+        $outfit_2->created_at = Carbon::now()->subMinute(23);
         $outfit_2->save();
 
         $outfit_2->pieces()->save($piece_3);
@@ -3873,6 +3897,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_3->height = "2132";
         $outfit_3->width = "750";
         $outfit_3->user()->associate($user);
+        $outfit_3->created_at = Carbon::now()->subMinute(24);
         $outfit_3->save();
 
         $outfit_3->pieces()->save($piece_6);
@@ -4338,6 +4363,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1->height = "1470";
         $outfit_1->width = "750";
         $outfit_1->user()->associate($user);
+        $outfit_1->created_at = Carbon::now()->subMinute(25);
         $outfit_1->save();
 
         $outfit_1->pieces()->save($piece_1);
@@ -4361,6 +4387,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_2->height = "2262";
         $outfit_2->width = "750";
         $outfit_2->user()->associate($user);
+        $outfit_2->created_at = Carbon::now()->subMinute(26);
         $outfit_2->save();
 
         $outfit_2->pieces()->save($piece_4);
@@ -4384,6 +4411,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_3->height = "1970";
         $outfit_3->width = "750";
         $outfit_3->user()->associate($user);
+        $outfit_3->created_at = Carbon::now()->subMinute(27);
         $outfit_3->save();
 
         $outfit_3->pieces()->save($piece_7);
@@ -4788,6 +4816,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1->height = "2018";
         $outfit_1->width = "750";
         $outfit_1->user()->associate($user);
+        $outfit_1->created_at = Carbon::now()->subMinute(28);
         $outfit_1->save();
 
         $outfit_1->pieces()->save($piece_1);
@@ -4811,6 +4840,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_2->height = "2174";
         $outfit_2->width = "750";
         $outfit_2->user()->associate($user);
+        $outfit_2->created_at = Carbon::now()->subMinute(29);
         $outfit_2->save();
 
         $outfit_2->pieces()->save($piece_4);
@@ -4834,6 +4864,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_3->height = "1466";
         $outfit_3->width = "750";
         $outfit_3->user()->associate($user);
+        $outfit_3->created_at = Carbon::now()->subMinute(30);
         $outfit_3->save();
 
         $outfit_3->pieces()->save($piece_7);
@@ -5341,6 +5372,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1->height = "2606";
         $outfit_1->width = "750";
         $outfit_1->user()->associate($user);
+        $outfit_1->created_at = Carbon::now()->subMinute(31);
         $outfit_1->save();
 
         $outfit_1->pieces()->save($piece_1);
@@ -5365,6 +5397,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_2->height = "2038";
         $outfit_2->width = "750";
         $outfit_2->user()->associate($user);
+        $outfit_2->created_at = Carbon::now()->subMinute(32);
         $outfit_2->save();
 
         $outfit_2->pieces()->save($piece_5);
@@ -5388,6 +5421,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_3->height = "2045";
         $outfit_3->width = "750";
         $outfit_3->user()->associate($user);
+        $outfit_3->created_at = Carbon::now()->subMinute(33);
         $outfit_3->save();
 
         $outfit_3->pieces()->save($piece_8);
@@ -5816,6 +5850,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1->height = "1826";
         $outfit_1->width = "750";
         $outfit_1->user()->associate($user);
+        $outfit_1->created_at = Carbon::now()->subMinute(34);
         $outfit_1->save();
 
         $outfit_1->pieces()->save($piece_1);
@@ -5838,6 +5873,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_2->height = "1728";
         $outfit_2->width = "750";
         $outfit_2->user()->associate($user);
+        $outfit_1->created_at = Carbon::now()->subMinute(35);
         $outfit_2->save();
 
         $outfit_2->pieces()->save($piece_3);
@@ -5861,6 +5897,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_3->height = "1830";
         $outfit_3->width = "750";
         $outfit_3->user()->associate($user);
+        $outfit_3->created_at = Carbon::now()->subMinute(36);
         $outfit_3->save();
 
         $outfit_3->pieces()->save($piece_6);
@@ -6338,6 +6375,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1->height = "1940";
         $outfit_1->width = "750";
         $outfit_1->user()->associate($user);
+        $outfit_1->created_at = Carbon::now()->subMinute(1);
         $outfit_1->save();
 
         $outfit_1->pieces()->save($piece_1);
@@ -6362,6 +6400,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_2->height = "2070";
         $outfit_2->width = "750";
         $outfit_2->user()->associate($user);
+        $outfit_2->created_at = Carbon::now()->subMinute(2);
         $outfit_2->save();
 
         $outfit_2->pieces()->save($piece_5);
@@ -6386,6 +6425,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_3->height = "2016";
         $outfit_3->width = "750";
         $outfit_3->user()->associate($user);
+        $outfit_3->created_at = Carbon::now()->subMinute(3);
         $outfit_3->save();
 
         $outfit_3->pieces()->save($piece_9);
@@ -6724,6 +6764,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1->height = "1880";
         $outfit_1->width = "750";
         $outfit_1->user()->associate($user);
+        $outfit_1->created_at = Carbon::now()->subMinute(4);
         $outfit_1->save();
 
         $outfit_1->pieces()->save($piece_1);
@@ -6747,6 +6788,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_2->height = "1718";
         $outfit_2->width = "750";
         $outfit_2->user()->associate($user);
+        $outfit_2->created_at = Carbon::now()->subMinute(5);
         $outfit_2->save();
 
         $outfit_2->pieces()->save($piece_4);
@@ -6770,6 +6812,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_3->height = "1708";
         $outfit_3->width = "750";
         $outfit_3->user()->associate($user);
+        $outfit_3->created_at = Carbon::now()->subMinute(6);
         $outfit_3->save();
 
         $outfit_3->pieces()->save($piece_7);
@@ -7085,6 +7128,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1->height = "1910";
         $outfit_1->width = "750";
         $outfit_1->user()->associate($user);
+        $outfit_1->created_at = Carbon::now()->subMinute(7);
         $outfit_1->save();
 
         $outfit_1->pieces()->save($piece_1);
@@ -7108,6 +7152,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_2->height = "2132";
         $outfit_2->width = "750";
         $outfit_2->user()->associate($user);
+        $outfit_2->created_at = Carbon::now()->subMinute(8);
         $outfit_2->save();
 
         $outfit_2->pieces()->save($piece_4);
@@ -7131,6 +7176,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_3->height = "1940";
         $outfit_3->width = "750";
         $outfit_3->user()->associate($user);
+        $outfit_3->created_at = Carbon::now()->subMinute(9);
         $outfit_3->save();
 
         $outfit_3->pieces()->save($piece_7);
@@ -7160,6 +7206,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1->width = "750";
         $outfit_1->inspiredBy()->associate(User::find(1)); // inspired by cameron, cecilia was browsing cameron's outfits
         $outfit_1->user()->associate($user); // posted by cecilia
+        $outfit_1->created_at = Carbon::now()->subMinute(10);
         $outfit_1->save();
 
         $outfit_1->pieces()->save($piece_1);
@@ -7325,6 +7372,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1->width = "750";
         $outfit_1->purchasable = true;
         $outfit_1->user()->associate($user);
+        $outfit_1->created_at = Carbon::now()->subMinute(11);
         $outfit_1->save();
 
         $outfit_1->pieces()->save($piece_1);
@@ -7484,6 +7532,7 @@ class OutfitAndPieceTableSeeder extends Seeder {
         $outfit_1->width = "750";
         $outfit_1->purchasable = true;
         $outfit_1->user()->associate($user);
+        $outfit_1->created_at = Carbon::now()->subMinute(12);
         $outfit_1->save();
 
         $outfit_1->pieces()->save($piece_1);
