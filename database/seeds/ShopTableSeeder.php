@@ -38,7 +38,7 @@ class ShopTableSeeder extends Seeder {
         $user_1 = new User();
         $user_1->username = "sprubixshop";
         $user_1->email = "developers@sprubix.com";
-        $user_1->password = bcrypt("password");
+        $user_1->password = bcrypt("zxcvbnm.,?!'");
         $user_1->name = "Sprubix Shop";
         $user_1->image = cdn("/users/4/profile_display_user4_sprubixshop.jpg");
         $user_1->cover = cdn("/users/4/profile_cover_user4_sprubixshop_2.jpg");
@@ -91,7 +91,7 @@ class ShopTableSeeder extends Seeder {
         $user_2 = new User();
         $user_2->username = "flufflea";
         $user_2->email = "shop@flufflea.com";
-        $user_2->password = bcrypt("password");
+        $user_2->password = bcrypt("zxcvbnm.,?!'");
         $user_2->name = "Flufflea";
         $user_2->image = cdn("/users/5/profile_display_user5_flufflea.jpg");
         $user_2->cover = cdn("/users/5/profile_cover_user5_flufflea.jpg");
