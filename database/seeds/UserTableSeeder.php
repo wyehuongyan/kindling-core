@@ -88,7 +88,7 @@ class UserTableSeeder extends Seeder {
         $user_2->password = bcrypt("chinhan");
         $user_2->name = "Chin Han";
         $user_2->image = cdn("/users/2/user02_display.jpg");
-        $user_2->image = cdn("/users/2/user02_cover.jpg");
+        $user_2->cover = cdn("/users/2/user02_cover.jpg");
         $user_2->facebook_account_id = "10153091949198499";
         $user_2->save();
 
@@ -140,7 +140,7 @@ class UserTableSeeder extends Seeder {
         $user_3->password = bcrypt("wyehuong");
         $user_3->name = "Wye Huong";
         $user_3->image = cdn("/users/3/user03_display.jpg");
-        $user_3->image = cdn("/users/3/user03_cover.jpg");
+        $user_3->cover = cdn("/users/3/user03_cover.jpg");
         $user_3->facebook_account_id = "10153082360907467";
         $user_3->save();
 
