@@ -38,7 +38,7 @@ class OutfitController extends Controller {
 
         $query = Outfit::with('user', 'inspiredBy')->with(array('pieces' => function($query) {
                 $query->withTrashed()->with('user.shoppable', 'category', 'brand');
-            }))->whereIn('id', $ids);
+            }))->whereIn('id', $ids)->orderBy('created_at', 'desc');
 
         $outfits = $query->paginate(15);
 
@@ -49,7 +49,7 @@ class OutfitController extends Controller {
         // return outfits belonging to user
         $query = $user->outfits()->with('inspiredBy', 'user')->with(array('pieces' => function($query) {
                 $query->withTrashed()->with('user.shoppable', 'category', 'brand');
-            }));
+            }))->orderBy('created_at', 'desc');
         $outfits = $query->paginate(15);
         $outfits->setPath($request->url()); // outfits/?page=2 to outfits?page=2
 
@@ -97,7 +97,7 @@ class OutfitController extends Controller {
 
         $query = Outfit::whereNotIn('user_id', [$user->id])->whereHas('pieces', function($query) use ($user) {
             $query->where('user_id', [$user->id]);
-        })->with('inspiredBy', 'user', 'pieces.user.shoppable');
+        })->with('inspiredBy', 'user', 'pieces.user.shoppable')->orderBy('created_at', 'desc');
 
         $outfits = $query->paginate(15);
         $outfits->setPath($request->url()); // outfits/?page=2 to outfits?page=2
