@@ -10,6 +10,7 @@ use Braintree_Test_Nonces;
 use Braintree_Transaction;
 use Braintree_PaymentMethod;
 use Mixpanel;
+use Carbon\Carbon;
 
 class PaymentController extends Controller {
     public function userPaymentMethods(Request $request) {
@@ -280,7 +281,13 @@ class PaymentController extends Controller {
 
                 // Mixpanel - People - Revenue (Add)
                 $mixpanel = Mixpanel::getInstance(env("MIXPANEL_TOKEN"));
-                $mixpanel->people->trackCharge($user->id, $amount);
+                $mixpanel->people->trackCharge($user->id, $amount, strtotime(Carbon::now()->setTimezone('UTC')->format("F j, Y, g:i a")));
+                $mixpanel->track("Revenue", array(
+                    "User ID" => $user->id,
+                    "Amount" => $amount,
+                    "Source" => "Purchase",
+                    "Timestamp" => Carbon::now()->setTimezone('UTC')->format("F j, Y, g:i a")
+                ));
 
             } else {
                 $errorString = 'Braintree Error: ';

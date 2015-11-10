@@ -429,6 +429,12 @@ class OrderController extends Controller {
             // Mixpanel - People - Points (Deduct)
             $mixpanel = Mixpanel::getInstance(env("MIXPANEL_TOKEN"));
             $mixpanel->people->increment($user->id, "Points", -$pointsApplied);
+            $mixpanel->track("Points", array(
+                "User ID" => $user->id,
+                "Amount" => -$pointsApplied,
+                "Source" => "Purchase",
+                "Timestamp" => Carbon::now()->setTimezone('UTC')->format("F j, Y, g:i a")
+            ));
 
             // allocate points to contributors
             //// find out who were the ones who do not have shop orders
@@ -511,6 +517,12 @@ class OrderController extends Controller {
 
                     // Mixpanel - People - Contributors Points (Add)
                     $mixpanel->people->increment($contributor->id, "Points", $pointsPerContributor);
+                    $mixpanel->track("Points", array(
+                        "User ID" => $contributor->id,
+                        "Amount" => $pointsPerContributor,
+                        "Source" => "Contribution",
+                        "Timestamp" => Carbon::now()->setTimezone('UTC')->format("F j, Y, g:i a")
+                    ));
                 }
             }
 

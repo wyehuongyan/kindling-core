@@ -37,8 +37,7 @@ class MediaController extends Controller {
                 'description' => 'max:255',
                 'size' => 'required|max:255',
                 'quantity' => 'required|max:255',
-                //'price' => 'required|numeric|min:15'
-                'price' => 'required|numeric',
+                'price' => 'required|numeric|min:15',
                 'sku' => 'max:255'
             ]);
 
@@ -237,8 +236,7 @@ class MediaController extends Controller {
                     'description' => 'max:255',
                     'size' => 'required|max:255',
                     'quantity' => 'required|max:255',
-                    //'price' => 'required|numeric|min:15'
-                    'price' => 'required|numeric',
+                    'price' => 'required|numeric|min:15',
                     'sku' => 'max:255'
                 ]);
             } else {
@@ -402,8 +400,7 @@ class MediaController extends Controller {
                     'description' => 'max:255',
                     'size' => 'required|max:255',
                     'quantity' => 'required|max:255',
-                    //'price' => 'required|numeric|min:15'
-                    'price' => 'required|numeric',
+                    'price' => 'required|numeric|min:15',
                     'sku' => 'max:255'
                 ]);
             } else {

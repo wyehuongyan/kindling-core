@@ -15,6 +15,7 @@ use Braintree_Configuration;
 use Illuminate\Support\Facades\Auth;
 use Mixpanel;
 use Log;
+use Carbon\Carbon;
 
 class RefundController extends Controller {
     public function userRefunds(Request $request) {
@@ -266,8 +267,21 @@ class RefundController extends Controller {
 
                     // Mixpanel - People - Refund Points (Add) and Revenue (Deduct)
                     $mixpanel = Mixpanel::getInstance(env("MIXPANEL_TOKEN"));
-                    $mixpanel->people->increment($buyer->id, "Points", $userPoints);
-                    $mixpanel->people->trackCharge($buyer->id, -$refundAmount);
+                    $mixpanel->people->increment($buyer->id, "Points", $refundPoints);
+                    $mixpanel->track("Points", array(
+                        "User ID" => $buyer->id,
+                        "Amount" => $refundPoints,
+                        "Source" => "Refund",
+                        "Timestamp" => Carbon::now()->setTimezone('UTC')->format("F j, Y, g:i a")
+                    ));
+
+                    $mixpanel->people->trackCharge($buyer->id, -$refundAmount, strtotime(Carbon::now()->setTimezone('UTC')->format("F j, Y, g:i a")));
+                    $mixpanel->track("Revenue", array(
+                        "User ID" => $buyer->id,
+                        "Amount" => -$refundAmount,
+                        "Source" => "Refund",
+                        "Timestamp" => Carbon::now()->setTimezone('UTC')->format("F j, Y, g:i a")
+                    ));
 
                 } else {
                     $refundTransactionStatus = $result->transaction->status;
