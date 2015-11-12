@@ -43,7 +43,7 @@ class ShopTableSeeder extends Seeder {
         $user_1->image = cdn("/users/4/profile_display_user4_sprubixshop.jpg");
         $user_1->cover = cdn("/users/4/profile_cover_user4_sprubixshop_2.jpg");
         $description = new \stdClass();
-        $description->description = "\ud83d\udca1 Let's go invent tomorrow \ninstead of worrying about \nwhat happened yesterday. \ud83d\udca1";
+        $description->description = "Let's go invent tomorrow \ninstead of worrying about \nwhat happened yesterday.";
         $user_1->description = json_encode($description);
         $user_1->save();
 
@@ -99,7 +99,7 @@ class ShopTableSeeder extends Seeder {
         $user_2->image = cdn("/users/5/profile_display_user5_flufflea.jpg");
         $user_2->cover = cdn("/users/5/profile_cover_user5_flufflea.jpg");
         $description = new \stdClass();
-        $description->description = "Design is not just what it looks\nlike and feels like.\nDesign is how it works. \ud83d\udd0d";
+        $description->description = "Design is not just what it looks\nlike and feels like.\nDesign is how it works.";
         $user_2->description = json_encode($description);
         $user_2->save();
 

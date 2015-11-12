@@ -818,7 +818,7 @@ class UserTableSeeder extends Seeder {
         $user_1->image = cdn("/users/1/profile_display_user1_cameron.jpg");
         $user_1->cover = cdn("/users/1/profile_cover_user1_cameron.jpg");
         $description = new \stdClass();
-        $description->description = "M.\n\ud83c\udf3b\ud83d\udc1d\"Shared joy is double joy.\nShared sorrow is half a sorrow.\" \ud83d\udc95";
+        $description->description = "Deciding what not to do is as\nimportant as deciding what to do.";
         $user_1->description = json_encode($description);
         $user_1->save();
 
@@ -872,7 +872,7 @@ class UserTableSeeder extends Seeder {
         $user_2->image = cdn("/users/2/profile_display_user2_tingzhi.jpg");
         $user_2->cover = cdn("/users/2/profile_cover_user2_tingzhi.jpg");
         $description = new \stdClass();
-        $description->description = "\u2b50\ufe0f Sometimes life is going to hit\nyou in the head with a brick.\nDon't lose faith. \u2b50\ufe0f";
+        $description->description = "Sometimes life is going to hit\nyou in the head with a brick.\nDon't lose faith.";
         $user_2->description = json_encode($description);
         $user_2->save();
 
@@ -926,7 +926,7 @@ class UserTableSeeder extends Seeder {
         $user_3->image = cdn("/users/3/profile_display_user3_cecilia.jpg");
         $user_3->cover = cdn("/users/3/profile_cover_user3_cecilia.jpg");
         $description = new \stdClass();
-        $description->description = "We're here to put a dent in\nthe universe. Otherwise why\nelse even be here? \ud83c\udf0d\ud83d\udc48\ud83c\udffb";
+        $description->description = "We're here to put a dent in\nthe universe. Otherwise why\nelse even be here?";
         $user_3->description = json_encode($description);
         $user_3->save();
 
