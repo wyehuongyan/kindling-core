@@ -38,6 +38,9 @@ class UserTableSeeder extends Seeder {
         $user_1->name = "Sprubix";
         $user_1->image = cdn("/users/1/user01_display.jpg");
         $user_1->cover = cdn("/users/1/user01_cover.jpg");
+        $description = new \stdClass();
+        $description->description = "Official Sprubix account.";
+        $user_1->description = json_encode($description);
         $user_1->save();
 
         // // polymorphic shopper 1
@@ -90,6 +93,9 @@ class UserTableSeeder extends Seeder {
         $user_2->image = cdn("/users/2/user02_display.jpg");
         $user_2->cover = cdn("/users/2/user02_cover.jpg");
         $user_2->facebook_account_id = "10153091949198499";
+        $description = new \stdClass();
+        $description->description = "Believes in singularity.";
+        $user_2->description = json_encode($description);
         $user_2->save();
 
         // // polymorphic shopper 2
@@ -142,6 +148,9 @@ class UserTableSeeder extends Seeder {
         $user_3->image = cdn("/users/3/user03_display.jpg");
         $user_3->cover = cdn("/users/3/user03_cover.jpg");
         $user_3->facebook_account_id = "10153082360907467";
+        $description = new \stdClass();
+        $description->description = "I build cool stuff, with incredible people.";
+        $user_3->description = json_encode($description);
         $user_3->save();
 
         // // polymorphic shopper 3
@@ -193,6 +202,9 @@ class UserTableSeeder extends Seeder {
         $user_4->name = "Alice";
         $user_4->image = cdn("/users/4/user04_display.jpg");
         $user_4->cover = cdn("/users/4/user04_cover.jpg");
+        $description = new \stdClass();
+        $description->description = "Me and my wanderlust.";
+        $user_4->description = json_encode($description);
         $user_4->save();
 
         // // polymorphic shopper 4
@@ -244,6 +256,9 @@ class UserTableSeeder extends Seeder {
         $user_5->name = "Bella";
         $user_5->image = cdn("/users/5/user05_display.jpg");
         $user_5->cover = cdn("/users/5/user05_cover.jpg");
+        $description = new \stdClass();
+        $description->description = "Eat, laugh, sleep and shop.";
+        $user_5->description = json_encode($description);
         $user_5->save();
 
         // // polymorphic shopper 5
@@ -295,6 +310,9 @@ class UserTableSeeder extends Seeder {
         $user_6->name = "Cassandra";
         $user_6->image = cdn("/users/6/user06_display.jpg");
         $user_6->cover = cdn("/users/6/user06_cover.jpg");
+        $description = new \stdClass();
+        $description->description = "Documenting the world\nwith heart for wandering.";
+        $user_6->description = json_encode($description);
         $user_6->save();
 
         // // polymorphic shopper 6
@@ -346,6 +364,9 @@ class UserTableSeeder extends Seeder {
         $user_7->name = "Danielle";
         $user_7->image = cdn("/users/7/user07_display.jpg");
         $user_7->cover = cdn("/users/7/user07_cover.jpg");
+        $description = new \stdClass();
+        $description->description = "Coloring my life\none photo at a time.";
+        $user_7->description = json_encode($description);
         $user_7->save();
 
         // // polymorphic shopper 7
@@ -397,6 +418,9 @@ class UserTableSeeder extends Seeder {
         $user_8->name = "Elsa";
         $user_8->image = cdn("/users/8/user08_display.jpg");
         $user_8->cover = cdn("/users/8/user08_cover.jpg");
+        $description = new \stdClass();
+        $description->description = "Life has its ups and downs.";
+        $user_8->description = json_encode($description);
         $user_8->save();
 
         // // polymorphic shopper 8
@@ -448,6 +472,9 @@ class UserTableSeeder extends Seeder {
         $user_9->name = "Felicia";
         $user_9->image = cdn("/users/9/user09_display.jpg");
         $user_9->cover = cdn("/users/9/user09_cover.jpg");
+        $description = new \stdClass();
+        $description->description = "Loves travelling, loves Japan.";
+        $user_9->description = json_encode($description);
         $user_9->save();
 
         // // polymorphic shopper 9
@@ -499,6 +526,9 @@ class UserTableSeeder extends Seeder {
         $user_10->name = "Giselle";
         $user_10->image = cdn("/users/10/user10_display.jpg");
         $user_10->cover = cdn("/users/10/user10_cover.jpg");
+        $description = new \stdClass();
+        $description->description = "A bit of a loner.\nRunning, music, tattoos are my passion!";
+        $user_10->description = json_encode($description);
         $user_10->save();
 
         // // polymorphic shopper 10
@@ -550,6 +580,9 @@ class UserTableSeeder extends Seeder {
         $user_11->name = "Helen";
         $user_11->image = cdn("/users/11/user11_display.jpg");
         $user_11->cover = cdn("/users/11/user11_cover.jpg");
+        $description = new \stdClass();
+        $description->description = "Everything happens for a good reason.\nI'm one of them!";
+        $user_11->description = json_encode($description);
         $user_11->save();
 
         // // polymorphic shopper 11
@@ -601,6 +634,9 @@ class UserTableSeeder extends Seeder {
         $user_12->name = "Ivy";
         $user_12->image = cdn("/users/12/user12_display.jpg");
         $user_12->cover = cdn("/users/12/user12_cover.jpg");
+        $description = new \stdClass();
+        $description->description = "All about travel, food, \nculture, events and music.";
+        $user_12->description = json_encode($description);
         $user_12->save();
 
         // // polymorphic shopper 12
@@ -652,6 +688,9 @@ class UserTableSeeder extends Seeder {
         $user_13->name = "Jessica";
         $user_13->image = cdn("/users/13/user13_display.jpg");
         $user_13->cover = cdn("/users/13/user13_cover.jpg");
+        $description = new \stdClass();
+        $description->description = "Love the life you live,\nlive the life you love.";
+        $user_13->description = json_encode($description);
         $user_13->save();
 
         // // polymorphic shopper 10
@@ -703,6 +742,9 @@ class UserTableSeeder extends Seeder {
         $user_14->name = "Katie";
         $user_14->image = cdn("/users/14/user14_display.jpg");
         $user_14->cover = cdn("/users/14/user14_cover.jpg");
+        $description = new \stdClass();
+        $description->description = "Be the change you want to see\nin the world.";
+        $user_14->description = json_encode($description);
         $user_14->save();
 
         // // polymorphic shopper 14
@@ -754,6 +796,9 @@ class UserTableSeeder extends Seeder {
         $user_15->name = "Lucila";
         $user_15->image = cdn("/users/15/user15_display.jpg");
         $user_15->cover = cdn("/users/15/user15_cover.jpg");
+        $description = new \stdClass();
+        $description->description = "Happiness is not something ready-made,\nit comes from your actions.";
+        $user_15->description = json_encode($description);
         $user_15->save();
 
         // // polymorphic shopper 15
