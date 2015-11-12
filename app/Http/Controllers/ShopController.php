@@ -86,7 +86,7 @@ class ShopController extends Controller {
 
             // mixpanel initialization
             //// clear Mixpanel events queue
-            $mixpanel = Mixpanel::getInstance(env("MIXPANEL_TOKEN"));
+            $mixpanel = \Mixpanel::getInstance(env("MIXPANEL_TOKEN"));
 
             // // shop mixpanel
             $user_distinct_id = strtoupper(uniqid()."-".dechex($user->id));
