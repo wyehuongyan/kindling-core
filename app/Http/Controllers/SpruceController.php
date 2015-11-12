@@ -10,6 +10,7 @@ class SpruceController extends Controller {
 
     public function pieces(Request $request) {
         $input = $request->all();
+        $currentPieceId = $request->get("current_piece_id");
 
         // ids of the owners of the neighboring pieces
         $userIds = array_unique($request->get('user_ids'));
@@ -38,9 +39,10 @@ class SpruceController extends Controller {
         $ids = array_unique($ids);
 
         // retrieve pieces in ids array, as well as pieces created 15 mins ago
-        $query = Piece::search($input)->with('user', 'category', 'brand')->whereIn('user_id', $ids)->orWhere(function ($query) use ($input) {
+        $query = Piece::search($input)->with('user', 'category', 'brand')->whereIn('user_id', $ids)->where('id', '!=', $currentPieceId)->orWhere(function ($query) use ($input, $currentPieceId) {
             $query->where('created_at', '>', Carbon::now()->subMinutes(15))
-                ->where('type', 'like', '%' . $input['type'] . '%');
+                ->where('type', 'like', '%' . $input['type'] . '%')->where('id', '!=', $currentPieceId)
+            ;
         })->orderBy('created_at', 'desc');
 
         $pieces = $query->paginate(15);

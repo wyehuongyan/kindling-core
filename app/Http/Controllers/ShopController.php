@@ -84,6 +84,38 @@ class ShopController extends Controller {
                 $user->following()->save($sprubixUser);
             }
 
+            // mixpanel initialization
+            //// clear Mixpanel events queue
+            $mixpanel = Mixpanel::getInstance(env("MIXPANEL_TOKEN"));
+
+            // // shop mixpanel
+            $user_distinct_id = strtoupper(uniqid()."-".dechex($user->id));
+            $mixpanel->createAlias($user_distinct_id, $user->id);
+            $mixpanel->people->set($user->id, array(
+                '$email'                    => $user->email,
+                'ID'                        => $user->id,
+                'Username'                  => $user->username,
+                '$first_name'               => $user->username,
+                '$last_name'                =>  "",
+                '$created'                  => Carbon::now()->setTimezone('UTC')->format("F j, Y, g:i a"),
+                'Distinct ID'               => $user_distinct_id,
+                'Points'                    => 0,
+                'Outfits Exposed'           => 0,
+                'Pieces Exposed'            => 0,
+                'Outfits Liked'             => 0,
+                'Pieces Liked'              => 0,
+                'Outfits Created'           => 0,
+                'Pieces Created'            => 0,
+                'Spruce Outfit'             => 0,
+                'Spruce Outfit Swipe'       => 0,
+                'Outfit Details Viewed'     => 0,
+                'Piece Details Viewed'      => 0,
+                'Outfit Comments Viewed'    => 0,
+                'Piece Comments Viewed'     => 0
+            ));
+
+            $mixpanel->flush();
+
             $success = array(
                 "status" => "200",
                 "message" => "success",
