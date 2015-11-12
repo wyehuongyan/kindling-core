@@ -820,6 +820,7 @@ class UserTableSeeder extends Seeder {
         $description = new \stdClass();
         $description->description = "Deciding what not to do is as\nimportant as deciding what to do.";
         $user_1->description = json_encode($description);
+        $user_1->verified_at = Carbon::now();
         $user_1->save();
 
         // // polymorphic shopper 1
@@ -874,6 +875,7 @@ class UserTableSeeder extends Seeder {
         $description = new \stdClass();
         $description->description = "Sometimes life is going to hit\nyou in the head with a brick.\nDon't lose faith.";
         $user_2->description = json_encode($description);
+        $user_2->verified_at = Carbon::now();
         $user_2->save();
 
         // // polymorphic shopper 2
@@ -928,6 +930,7 @@ class UserTableSeeder extends Seeder {
         $description = new \stdClass();
         $description->description = "We're here to put a dent in\nthe universe. Otherwise why\nelse even be here?";
         $user_3->description = json_encode($description);
+        $user_3->verified_at = Carbon::now();
         $user_3->save();
 
         // // polymorphic shopper 3

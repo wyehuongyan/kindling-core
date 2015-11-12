@@ -45,6 +45,7 @@ class ShopTableSeeder extends Seeder {
         $description = new \stdClass();
         $description->description = "Let's go invent tomorrow \ninstead of worrying about \nwhat happened yesterday.";
         $user_1->description = json_encode($description);
+        $user_1->verified_at = Carbon::now();
         $user_1->save();
 
         // // polymorphic shop 1
@@ -101,6 +102,7 @@ class ShopTableSeeder extends Seeder {
         $description = new \stdClass();
         $description->description = "Design is not just what it looks\nlike and feels like.\nDesign is how it works.";
         $user_2->description = json_encode($description);
+        $user_2->verified_at = Carbon::now();
         $user_2->save();
 
         // // polymorphic shop 2
