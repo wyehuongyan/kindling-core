@@ -38,9 +38,9 @@ class SpruceController extends Controller {
         $ids = array_merge($followIds, $userIds);
         $ids = array_unique($ids);
 
-        // retrieve pieces in ids array, as well as pieces created 15 mins ago
+        // retrieve pieces in ids array, as well as pieces created 30 mins ago
         $query = Piece::search($input)->with('user', 'category', 'brand')->whereIn('user_id', $ids)->where('id', '!=', $currentPieceId)->orWhere(function ($query) use ($input, $currentPieceId) {
-            $query->where('created_at', '>', Carbon::now()->subMinutes(15))
+            $query->where('created_at', '>', Carbon::now()->subMinutes(30))
                 ->where('type', 'like', '%' . $input['type'] . '%')->where('id', '!=', $currentPieceId)
             ;
         })->orderBy('created_at', 'desc');
