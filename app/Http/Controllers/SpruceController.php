@@ -12,6 +12,10 @@ class SpruceController extends Controller {
         $input = $request->all();
         $currentPieceId = $request->get("current_piece_id");
 
+        if(!isset($currentPieceId)) {
+            $currentPieceId = 0;
+        }
+
         // ids of the owners of the neighboring pieces
         $userIds = array_unique($request->get('user_ids'));
 
