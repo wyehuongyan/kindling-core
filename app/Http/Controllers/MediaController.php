@@ -314,6 +314,14 @@ class MediaController extends Controller {
                     $new_piece->position = $this->getPosition($piece_data["type"]);
                     $new_piece->height = $piece_data["height"];
                     $new_piece->width = $piece_data["width"];
+
+                    if($piece_data["width"] != 750.0) {
+                        // resize to 750.0
+                        $resizedHeight = (750.0 * $piece_data["height"]) / $piece_data["width"];
+                        $new_piece->width = 750.0;
+                        $new_piece->height = $resizedHeight;
+                    }
+
                     $new_piece->aspectRatio = $piece_data["width"] / $piece_data["height"];
 
                     if (isset($piece_data["quantity"])) {
@@ -511,6 +519,14 @@ class MediaController extends Controller {
                         $new_piece->position = $this->getPosition($piece_data["type"]);
                         $new_piece->height = $piece_data["height"];
                         $new_piece->width = $piece_data["width"];
+
+                        if($piece_data["width"] != 750.0) {
+                            // resize to 750.0
+                            $resizedHeight = (750.0 * $piece_data["height"]) / $piece_data["width"];
+                            $new_piece->width = 750.0;
+                            $new_piece->height = $resizedHeight;
+                        }
+
                         $new_piece->aspectRatio = $piece_data["width"] / $piece_data["height"];
 
                         if (isset($piece_data["quantity"])) {
