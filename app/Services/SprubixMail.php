@@ -51,7 +51,7 @@ class SprubixMail {
                         'type' => 'to'
                     )
                 ),
-                'headers' => array('Reply-To' => 'no-reply@sprubix.com'),
+                'headers' => array('Reply-To' => 'support@sprubix.com'),
                 "auto_text" => true,
                 "inline_css" => true,
                 'merge' => true,
@@ -123,7 +123,7 @@ class SprubixMail {
                         'type' => 'to'
                     )
                 ),
-                'headers' => array('Reply-To' => 'no-reply@sprubix.com'),
+                'headers' => array('Reply-To' => 'support@sprubix.com'),
                 "auto_text" => true,
                 "inline_css" => true,
                 'merge' => true,
@@ -348,7 +348,7 @@ class SprubixMail {
                         'type' => 'to'
                     )
                 ),
-                'headers' => array('Reply-To' => 'no-reply@sprubix.com'),
+                'headers' => array('Reply-To' => 'support@sprubix.com'),
                 "auto_text" => true,
                 "inline_css" => true,
                 'merge' => true,
@@ -460,7 +460,7 @@ class SprubixMail {
                     'type' => 'to'
                 )
             ),
-            'headers' => array('Reply-To' => 'no-reply@sprubix.com'),
+            'headers' => array('Reply-To' => 'support@sprubix.com'),
             "auto_text" => true,
             "inline_css" => true,
             'merge' => true,
@@ -642,7 +642,7 @@ class SprubixMail {
                             'type' => 'to'
                         )
                     ),
-                    'headers' => array('Reply-To' => 'no-reply@sprubix.com'),
+                    'headers' => array('Reply-To' => 'support@sprubix.com'),
                     "auto_text" => true,
                     "inline_css" => true,
                     'merge' => true,
@@ -815,7 +815,7 @@ class SprubixMail {
                         'type' => 'to'
                     )
                 ),
-                'headers' => array('Reply-To' => 'no-reply@sprubix.com'),
+                'headers' => array('Reply-To' => 'support@sprubix.com'),
                 "auto_text" => true,
                 "inline_css" => true,
                 'merge' => true,
@@ -992,7 +992,7 @@ class SprubixMail {
                         'type' => 'to'
                     )
                 ),
-                'headers' => array('Reply-To' => 'no-reply@sprubix.com'),
+                'headers' => array('Reply-To' => 'support@sprubix.com'),
                 "auto_text" => true,
                 "inline_css" => true,
                 'merge' => true,
@@ -1162,7 +1162,7 @@ class SprubixMail {
                         'type' => 'to'
                     )
                 ),
-                'headers' => array('Reply-To' => 'no-reply@sprubix.com'),
+                'headers' => array('Reply-To' => 'support@sprubix.com'),
                 "auto_text" => true,
                 "inline_css" => true,
                 'merge' => true,
