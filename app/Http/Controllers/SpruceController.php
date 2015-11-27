@@ -43,10 +43,9 @@ class SpruceController extends Controller {
         $ids = array_unique($ids);
 
         // retrieve pieces in ids array, as well as pieces created 2 months ago
-        $query = Piece::search($input)->with('user', 'category', 'brand')->whereIn('user_id', $ids)->where('id', '!=', $currentPieceId)->orWhere(function ($query) use ($input, $currentPieceId) {
+        $query = Piece::search($input)->with('user', 'category', 'brand')->whereIn('user_id', $ids)->where('id', '!=', $currentPieceId)->whereNull('deleted_at')->orWhere(function ($query) use ($input, $currentPieceId) {
             $query->where('created_at', '>', Carbon::now()->subWeeks(8))
-                ->where('type', 'like', '%' . $input['type'] . '%')->where('id', '!=', $currentPieceId)
-            ;
+                ->where('type', 'like', '%' . $input['type'] . '%')->where('id', '!=', $currentPieceId)->whereNull('deleted_at');
         })->orderBy('created_at', 'desc');
 
         $pieces = $query->paginate(15);
