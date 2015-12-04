@@ -29,7 +29,7 @@ class PieceController extends Controller {
         $ids = $request->get("ids");
 
         $query = Piece::search($input)->with('user.shoppable')->whereIn('id', $ids);
-        $pieces = $query->paginate(15);
+        $pieces = $query->paginate(30);
 
         return response()->json($pieces)->setCallback($request->input('callback'));
     }
