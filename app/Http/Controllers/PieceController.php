@@ -25,9 +25,10 @@ class PieceController extends Controller {
     }
 
     public function piecesByIds(Request $request) {
+        $input = $request->all();
         $ids = $request->get("ids");
 
-        $query = Piece::with('user.shoppable')->whereIn('id', $ids);
+        $query = Piece::search($input)->with('user.shoppable')->whereIn('id', $ids);
         $pieces = $query->paginate(15);
 
         return response()->json($pieces)->setCallback($request->input('callback'));
