@@ -105,7 +105,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
             return $query->where('id', '=', $search_fields['id']);
         }
         if (isset($search_fields['username'])) {
-            $query->where('username', '=' . $search_fields['username'] . '%');
+            $query->where('username', '=', $search_fields['username']);
         }
         if (isset($search_fields['email'])) {
             return $query->where('email', '=', $search_fields['email']);
