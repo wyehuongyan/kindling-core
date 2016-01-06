@@ -180,6 +180,9 @@ class AuthController extends Controller {
                 // sprubix account is user 1
                 $sprubixUser = User::find(1);
                 $user->following()->save($sprubixUser);
+
+                // Mailchimp add current user as subscriber
+                $this->mailchimpAddSubscriber($request['email'], $request['username']);
             }
 
             $success = array(
@@ -189,9 +192,6 @@ class AuthController extends Controller {
             );
 
             SprubixQueue::queueVerificationEmail($user);
-
-            // Mailchimp add current user as subscriber
-            $this->mailchimpAddSubscriber($request['email'], $request['username']);
 
             return response()->json($success)->setCallback($request->input('callback'));
         }
